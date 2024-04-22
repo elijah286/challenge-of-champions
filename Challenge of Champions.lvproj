@@ -13,9 +13,9 @@
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
 		<Item Name="Challenge UI.vi" Type="VI" URL="../Challenge UI.vi"/>
 		<Item Name="Controller.lvlib" Type="Library" URL="../Controller/Controller.lvlib"/>
+		<Item Name="Grid Screen.lvlib" Type="Library" URL="../MC Screen/Grid Screen.lvlib"/>
 		<Item Name="Main Screen.lvlib" Type="Library" URL="../Main Screen/Main Screen.lvlib"/>
 		<Item Name="main.vi" Type="VI" URL="../main.vi"/>
-		<Item Name="MC Screen.lvlib" Type="Library" URL="../MC Screen/MC Screen.lvlib"/>
 		<Item Name="Untitled 2.vi" Type="VI" URL="../Untitled 2.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">

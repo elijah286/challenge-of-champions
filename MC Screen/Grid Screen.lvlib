@@ -5,5 +5,5 @@
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
 	<Item Name="Messages for this Actor" Type="Folder"/>
-	<Item Name="MC Screen.lvclass" Type="LVClass" URL="../MC Screen/MC Screen.lvclass"/>
+	<Item Name="Grid Screen.lvclass" Type="LVClass" URL="../MC Screen/Grid Screen.lvclass"/>
 </Library>
