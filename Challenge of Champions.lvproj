@@ -18,6 +18,7 @@
 		<Item Name="Main Screen.lvlib" Type="Library" URL="../Main Screen/Main Screen.lvlib"/>
 		<Item Name="main.vi" Type="VI" URL="../main.vi"/>
 		<Item Name="MC Prompt.lvlib" Type="Library" URL="../MC Prompt/MC Prompt.lvlib"/>
+		<Item Name="Question Display.lvlib" Type="Library" URL="../Question Display/Question Display.lvlib"/>
 		<Item Name="Untitled 2.vi" Type="VI" URL="../Untitled 2.vi"/>
 		<Item Name="Untitled 3.vi" Type="VI" URL="../../Desktop/Untitled 3.vi"/>
 		<Item Name="Untitled 9.vi" Type="VI" URL="../../Desktop/Untitled 9.vi"/>
