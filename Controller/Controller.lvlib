@@ -4,6 +4,12 @@
 	<Property Name="NI.Lib.SourceVersion" Type="Int">604012544</Property>
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
-	<Item Name="Messages for this Actor" Type="Folder"/>
+	<Item Name="Messages for this Actor" Type="Folder">
+		<Item Name="Load Contestant Panel Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Contestant Panel Msg/Load Contestant Panel Msg.lvclass"/>
+		<Item Name="Load Main Panel Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Main Panel Display Msg/Load Main Panel Display Msg.lvclass"/>
+		<Item Name="Load Questions from Disk Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Questions from Disk Msg/Load Questions from Disk Msg.lvclass"/>
+		<Item Name="Reset Contestant Lights Msg.lvclass" Type="LVClass" URL="../Controller Messages/Reset Contestant Lights Msg/Reset Contestant Lights Msg.lvclass"/>
+		<Item Name="Welcome Animation Msg.lvclass" Type="LVClass" URL="../Controller Messages/Welcome Animation Msg/Welcome Animation Msg.lvclass"/>
+	</Item>
 	<Item Name="Controller.lvclass" Type="LVClass" URL="../Controller/Controller.lvclass"/>
 </Library>

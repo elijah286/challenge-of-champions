@@ -4,8 +4,6 @@
 	<Property Name="NI.Lib.SourceVersion" Type="Int">604012544</Property>
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
-	<Item Name="Messages for this Actor" Type="Folder">
-		<Item Name="Reset Board Appearance Msg.lvclass" Type="LVClass" URL="../Grid Screen Messages/Reset Board Appearance Msg/Reset Board Appearance Msg.lvclass"/>
-	</Item>
-	<Item Name="Grid Screen.lvclass" Type="LVClass" URL="../MC Screen/Grid Screen.lvclass"/>
+	<Item Name="Messages for this Actor" Type="Folder"/>
+	<Item Name="MC Prompt.lvclass" Type="LVClass" URL="../MC Prompt/MC Prompt.lvclass"/>
 </Library>
