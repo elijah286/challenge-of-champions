@@ -5,10 +5,16 @@
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
 	<Item Name="Messages for this Actor" Type="Folder">
+		<Item Name="Answer Received Msg.lvclass" Type="LVClass" URL="../Controller Messages/Answer Received Msg/Answer Received Msg.lvclass"/>
+		<Item Name="Buzzer Pressed Msg.lvclass" Type="LVClass" URL="../Controller Messages/Buzzer Pressed Msg/Buzzer Pressed Msg.lvclass"/>
 		<Item Name="Load Contestant Panel Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Contestant Panel Msg/Load Contestant Panel Msg.lvclass"/>
 		<Item Name="Load Main Panel Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Main Panel Display Msg/Load Main Panel Display Msg.lvclass"/>
 		<Item Name="Load Questions from Disk Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Questions from Disk Msg/Load Questions from Disk Msg.lvclass"/>
+		<Item Name="Question Prompt Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Question Prompt Display Msg/Question Prompt Display Msg.lvclass"/>
 		<Item Name="Reset Contestant Lights Msg.lvclass" Type="LVClass" URL="../Controller Messages/Reset Contestant Lights Msg/Reset Contestant Lights Msg.lvclass"/>
+		<Item Name="Retrieve Question Msg.lvclass" Type="LVClass" URL="../Controller Messages/Retrieve Question Msg/Retrieve Question Msg.lvclass"/>
+		<Item Name="Send Categories to Grid Msg.lvclass" Type="LVClass" URL="../Controller Messages/Send Categories to Grid Msg/Send Categories to Grid Msg.lvclass"/>
+		<Item Name="Start Buzzer Acquisition Msg.lvclass" Type="LVClass" URL="../Controller Messages/Start Buzzer Acquisition Msg/Start Buzzer Acquisition Msg.lvclass"/>
 		<Item Name="Welcome Animation Msg.lvclass" Type="LVClass" URL="../Controller Messages/Welcome Animation Msg/Welcome Animation Msg.lvclass"/>
 		<Item Name="Write Grid Panel Reference Msg.lvclass" Type="LVClass" URL="../Controller Messages/Write Grid Panel Reference Msg/Write Grid Panel Reference Msg.lvclass"/>
 	</Item>

@@ -4,6 +4,10 @@
 	<Property Name="NI.Lib.SourceVersion" Type="Int">604012544</Property>
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
-	<Item Name="Messages for this Actor" Type="Folder"/>
+	<Item Name="Messages for this Actor" Type="Folder">
+		<Item Name="Contestant Buzzed Msg.lvclass" Type="LVClass" URL="../MC Prompt Messages/Contestant Buzzed Msg/Contestant Buzzed Msg.lvclass"/>
+		<Item Name="Correct Answer Msg.lvclass" Type="LVClass" URL="../MC Prompt Messages/Correct Answer Msg/Correct Answer Msg.lvclass"/>
+		<Item Name="Incorrect Answer Msg.lvclass" Type="LVClass" URL="../MC Prompt Messages/Incorrect Answer Msg/Incorrect Answer Msg.lvclass"/>
+	</Item>
 	<Item Name="MC Prompt.lvclass" Type="LVClass" URL="../MC Prompt/MC Prompt.lvclass"/>
 </Library>
