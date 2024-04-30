@@ -5,6 +5,7 @@
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
 	<Item Name="Messages for this Actor" Type="Folder">
+		<Item Name="Decrement Score Msg.lvclass" Type="LVClass" URL="../Contestant Messages/Decrement Score Msg/Decrement Score Msg.lvclass"/>
 		<Item Name="Increment Score Msg.lvclass" Type="LVClass" URL="../Contestant Messages/Increment Score Msg/Increment Score Msg.lvclass"/>
 		<Item Name="Light to Green Msg.lvclass" Type="LVClass" URL="../Contestant Messages/Light to Green Msg/Light to Green Msg.lvclass"/>
 		<Item Name="Light to Nuetral Msg.lvclass" Type="LVClass" URL="../Contestant Messages/Light to Nuetral Msg/Light to Nuetral Msg.lvclass"/>

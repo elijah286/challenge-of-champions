@@ -21,7 +21,6 @@
 		<Item Name="MC Prompt.lvlib" Type="Library" URL="../MC Prompt/MC Prompt.lvlib"/>
 		<Item Name="NI_Read XLSX File.vi" Type="VI" URL="../NI_Read XLSX File.vi"/>
 		<Item Name="Question Display.lvlib" Type="Library" URL="../Question Display/Question Display.lvlib"/>
-		<Item Name="Untitled 3.vi" Type="VI" URL="../../Desktop/Untitled 3.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="Actor Framework.lvlib" Type="Library" URL="/&lt;vilib&gt;/ActorFramework/Actor Framework.lvlib"/>
