@@ -8,6 +8,7 @@
 		<Item Name="Contestant Buzzed Msg.lvclass" Type="LVClass" URL="../MC Prompt Messages/Contestant Buzzed Msg/Contestant Buzzed Msg.lvclass"/>
 		<Item Name="Correct Answer Msg.lvclass" Type="LVClass" URL="../MC Prompt Messages/Correct Answer Msg/Correct Answer Msg.lvclass"/>
 		<Item Name="Incorrect Answer Msg.lvclass" Type="LVClass" URL="../MC Prompt Messages/Incorrect Answer Msg/Incorrect Answer Msg.lvclass"/>
+		<Item Name="Update Timer Display Msg.lvclass" Type="LVClass" URL="../MC Prompt Messages/Update Timer Display Msg/Update Timer Display Msg.lvclass"/>
 	</Item>
 	<Item Name="MC Prompt.lvclass" Type="LVClass" URL="../MC Prompt/MC Prompt.lvclass"/>
 </Library>

@@ -15,6 +15,7 @@
 		<Item Name="Retrieve Question Msg.lvclass" Type="LVClass" URL="../Controller Messages/Retrieve Question Msg/Retrieve Question Msg.lvclass"/>
 		<Item Name="Send Categories to Grid Msg.lvclass" Type="LVClass" URL="../Controller Messages/Send Categories to Grid Msg/Send Categories to Grid Msg.lvclass"/>
 		<Item Name="Start Buzzer Acquisition Msg.lvclass" Type="LVClass" URL="../Controller Messages/Start Buzzer Acquisition Msg/Start Buzzer Acquisition Msg.lvclass"/>
+		<Item Name="Timer Update Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Timer Update Display Msg/Timer Update Display Msg.lvclass"/>
 		<Item Name="Welcome Animation Msg.lvclass" Type="LVClass" URL="../Controller Messages/Welcome Animation Msg/Welcome Animation Msg.lvclass"/>
 		<Item Name="Write Grid Panel Reference Msg.lvclass" Type="LVClass" URL="../Controller Messages/Write Grid Panel Reference Msg/Write Grid Panel Reference Msg.lvclass"/>
 	</Item>
