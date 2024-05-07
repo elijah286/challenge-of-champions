@@ -21,6 +21,7 @@
 		<Item Name="MC Prompt.lvlib" Type="Library" URL="../MC Prompt/MC Prompt.lvlib"/>
 		<Item Name="NI_Read XLSX File.vi" Type="VI" URL="../NI_Read XLSX File.vi"/>
 		<Item Name="Question Display.lvlib" Type="Library" URL="../Question Display/Question Display.lvlib"/>
+		<Item Name="Questions.xlsx" Type="Document" URL="../Questions/Questions.xlsx"/>
 		<Item Name="Simulated Hardware.lvlib" Type="Library" URL="../Simulated HW/Simulated Hardware.lvlib"/>
 		<Item Name="Timer.lvlib" Type="Library" URL="../Timer/Timer.lvlib"/>
 		<Item Name="Dependencies" Type="Dependencies">
