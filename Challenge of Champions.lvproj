@@ -14,17 +14,24 @@
 		<Item Name="Challenge UI.vi" Type="VI" URL="../Challenge UI.vi"/>
 		<Item Name="Contestant.lvlib" Type="Library" URL="../Contestant/Contestant.lvlib"/>
 		<Item Name="Controller.lvlib" Type="Library" URL="../Controller/Controller.lvlib"/>
+		<Item Name="Draw Multiline Text At Point.vi" Type="VI" URL="../Draw Multiline Text At Point.vi"/>
 		<Item Name="Grid Screen.lvlib" Type="Library" URL="../MC Screen/Grid Screen.lvlib"/>
 		<Item Name="Hardware Buzzer.lvlib" Type="Library" URL="../Hardware Buzzer/Hardware Buzzer.lvlib"/>
 		<Item Name="Main Screen.lvlib" Type="Library" URL="../Main Screen/Main Screen.lvlib"/>
 		<Item Name="main.vi" Type="VI" URL="../main.vi"/>
 		<Item Name="MC Prompt.lvlib" Type="Library" URL="../MC Prompt/MC Prompt.lvlib"/>
 		<Item Name="NI_Read XLSX File.vi" Type="VI" URL="../NI_Read XLSX File.vi"/>
+		<Item Name="NI_Read_XLSX_File_LibreMod3.vi" Type="VI" URL="../NI_Read_XLSX_File_LibreMod3.vi"/>
 		<Item Name="Question Display.lvlib" Type="Library" URL="../Question Display/Question Display.lvlib"/>
 		<Item Name="Questions.xlsx" Type="Document" URL="../Questions/Questions.xlsx"/>
 		<Item Name="Simulated Hardware.lvlib" Type="Library" URL="../Simulated HW/Simulated Hardware.lvlib"/>
 		<Item Name="Timer.lvlib" Type="Library" URL="../Timer/Timer.lvlib"/>
+		<Item Name="Untitled 7.vi" Type="VI" URL="../Controller/Controller/Untitled 7.vi"/>
+		<Item Name="Untitled 9.vi" Type="VI" URL="../Controller/Controller/Untitled 9.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
+			<Item Name="user.lib" Type="Folder">
+				<Item Name="Search or Split String__ogtk.vi" Type="VI" URL="/&lt;userlib&gt;/_OpenG.lib/string/string.llb/Search or Split String__ogtk.vi"/>
+			</Item>
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="Actor Framework.lvlib" Type="Library" URL="/&lt;vilib&gt;/ActorFramework/Actor Framework.lvlib"/>
 				<Item Name="Application Directory.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/file.llb/Application Directory.vi"/>
@@ -185,11 +192,10 @@
 				<Item Name="Draw 4-Bit Pixmap.vi" Type="VI" URL="/&lt;vilib&gt;/picture/picture.llb/Draw 4-Bit Pixmap.vi"/>
 				<Item Name="Draw 8-Bit Pixmap.vi" Type="VI" URL="/&lt;vilib&gt;/picture/picture.llb/Draw 8-Bit Pixmap.vi"/>
 				<Item Name="Draw Flattened Pixmap.vi" Type="VI" URL="/&lt;vilib&gt;/picture/picture.llb/Draw Flattened Pixmap.vi"/>
-				<Item Name="Draw Text at Point.vi" Type="VI" URL="/&lt;vilib&gt;/picture/picture.llb/Draw Text at Point.vi"/>
-				<Item Name="Draw Text in Rect.vi" Type="VI" URL="/&lt;vilib&gt;/picture/picture.llb/Draw Text in Rect.vi"/>
 				<Item Name="Draw True-Color Pixmap.vi" Type="VI" URL="/&lt;vilib&gt;/picture/picture.llb/Draw True-Color Pixmap.vi"/>
 				<Item Name="Draw Unflattened Pixmap.vi" Type="VI" URL="/&lt;vilib&gt;/picture/picture.llb/Draw Unflattened Pixmap.vi"/>
 				<Item Name="Error Cluster From Error Code.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Error Cluster From Error Code.vi"/>
+				<Item Name="Escape String.vi" Type="VI" URL="/&lt;vilib&gt;/AdvancedString/Escape String.vi"/>
 				<Item Name="ex_CorrectErrorChain.vi" Type="VI" URL="/&lt;vilib&gt;/express/express shared/ex_CorrectErrorChain.vi"/>
 				<Item Name="FixBadRect.vi" Type="VI" URL="/&lt;vilib&gt;/picture/pictutil.llb/FixBadRect.vi"/>
 				<Item Name="Flatten Pixmap.vi" Type="VI" URL="/&lt;vilib&gt;/picture/pixmap.llb/Flatten Pixmap.vi"/>

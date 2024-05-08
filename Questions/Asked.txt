@@ -1,0 +1,1639 @@
+<Array>
+<Name>Asked Questions and Answers</Name>
+<Dimsize>2</Dimsize>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in guacamole?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Avocado</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What TV show features characters named Ross, Rachel, and Monica?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Friends</Val>
+</String>
+</Cluster>
+</Array>
+</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Darth Vader</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in guacamole?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Avocado</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the grueling cycling race that takes place over three weeks in France?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tour de France</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What sport features a "gimnast" performing routines on uneven bars and a balance beam?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gymnastics</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does the acronym “HTML” stand for in web development?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>HyperText Markup Language</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the programming language commonly used for data analysis and statistical computing?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Python</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the protocol that allows for secure transmission of data over the internet?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>HTTPS</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the technology used to verify the integrity and authenticity of digital documents and transactions?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Digital Signature</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the quantum computing company founded by Google?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Google Quantum AI Lab</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the mysterious and omnipotent being who appears throughout various "Star Trek" series, often testing humanity's morality?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Q</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the organization that oversees Starfleet and is responsible for maintaining peace and exploration in the galaxy?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>United Federation of Planets (UFP)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of pasta is shaped like small rice grains?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Orzo</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of pasta is shaped like small rice grains?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Orzo</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the rapper who released the album "Certified Lover Boy" in 2021?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Drake</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the alien species known for their ability to shape-shift and infiltrate other cultures, led by Odo in "Star Trek: Deep Space Nine"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Changelings</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the mysterious region of space where the laws of physics do not apply as expected, featured in "Star Trek: Voyager"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Delta Quadrant</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Birth of Venus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What TV show features characters named Ross, Rachel, and Monica?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Friends</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the spaceship commanded by Captain James T. Kirk in the original "Star Trek" series?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>USS Enterprise</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which fictional wizard attends Hogwarts School of Witchcraft and Wizardry?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Harry Potter</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Last Supper</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the process by which living organisms produce their own energy-rich molecules from simple inorganic molecules, using energy from sunlight?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Photosynthesis</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the SI unit of electric charge?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Coulomb</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the technology used to create digital currencies, such as Bitcoin?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Blockchain</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which Shakespeare play does the character Hamlet appear?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hamlet</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the protocol that allows for secure transmission of data over the internet?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>HTTPS</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the programming language commonly used for developing mobile applications for iOS devices?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Swift</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the title of the film that won the Academy Award for Best Picture in 2022?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"CODA"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the TV show, released in 2022, that is a prequel to the "Game of Thrones" series?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"House of the Dragon"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which superhero is known as the “Man of Steel”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Superman</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does "AI" stand for in technology?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Artificial Intelligence</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What primary color mixes with yellow to make green?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Blue</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Creation of Adam</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Last Supper</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the movement characterized by fragmented forms and dreamlike imagery?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Surrealism</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the open-source operating system developed by Google primarily for mobile devices?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Android</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote the play “Romeo and Juliet”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Shakespeare</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the virtual assistant developed by Amazon, known for its Echo devices?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Alexa</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest species of penguin?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Emperor Penguin</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the hobbit in J.R.R. Tolkien's fantasy series?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Frodo Baggins</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which Shakespeare play does the character Hamlet appear?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hamlet</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which novel features the character Holden Caulfield?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Catcher in the Rye</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which bird is the national symbol of the United States?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bald Eagle</Val>
+</String>
+</Cluster>
+</Array>
+/String>
+<String>
+<Name>String</Name>
+<Val>Drake</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote the play “Romeo and Juliet”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Shakespeare</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the starship commanded by Captain Kathryn Janeway in "Star Trek: Voyager"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>USS Voyager</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the alien species known for their aggressive and warrior-like culture, with a ridged forehead and a warrior's code of honor?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Klingons</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which sport would you perform a slam dunk?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Basketball</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What sport features a "gimnast" performing routines on uneven bars and a balance beam?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gymnastics</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the processor architecture used in most modern smartphones and tablets, developed by ARM Holdings?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>ARM (Advanced RISC Machine)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who won the 2021 Nobel Peace Prize for their efforts to combat hunger and promote peace?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>World Food Programme (WFP)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What famous Renaissance artist painted the Sistine Chapel ceiling?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Michelangelo</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Creation of Adam</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In the film “Forrest Gump,” what does Forrest say life is like?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A box of chocolates</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the wise and powerful Jedi Master who trained both Anakin and Luke Skywalker?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Yoda</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the world's longest river system?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Nile River</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in guacamole?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Avocado</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which document declared the thirteen American colonies' independence from Great Britain?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Declaration of Independence</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the grueling cycling race that takes place over three weeks in France?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tour de France</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Birth of Venus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What primary color mixes with yellow to make green?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Blue</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Why don't scientists trust atoms?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Because they make up everything</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the mysterious region of space where the laws of physics do not apply as expected, featured in "Star Trek: Voyager"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Delta Quadrant</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the programming language commonly used for data analysis and statistical computing?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Python</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the cloud computing service provided by Amazon Web Services (AWS)?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Amazon S3</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the alien race known for their strict adherence to logic and reason, as well as their pointed ears?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Vulcans</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the organization that oversees Starfleet and is responsible for maintaining peace and exploration in the galaxy?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>United Federation of Planets (UFP)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the protocol that allows for secure transmission of data over the internet?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>HTTPS</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Why did the scarecrow become a successful neurosurgeon?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>He was outstanding in his field</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the half-human, half-Vulcan science officer aboard the USS Enterprise in the original "Star Trek" series?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mr. Spock</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the space station that serves as the central setting for the series "Star Trek: Deep Space Nine"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Deep Space Nine (DS9)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote the play “Romeo and Juliet”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Shakespeare</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the hobbit in J.R.R. Tolkien's fantasy series?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Frodo Baggins</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the Romulan officer who plays a key role in the events leading to the creation of the United Federation of Planets?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Admiral Valdore</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which novel features the character Holden Caulfield?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Catcher in the Rye</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which Shakespeare play does the character Hamlet appear?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hamlet</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does the acronym “HTML” stand for in web development?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>HyperText Markup Language</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Why did the bicycle fall over?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Because it was two-tired</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the programming language commonly used for building scalable and high-performance web applications?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Node.js</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which Shakespeare play does the character Hamlet appear?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hamlet</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What did one ocean say to the other ocean?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Nothing, they just waved</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the technology that enables users to interact with computers using natural language?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Natural Language Processing (NLP)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the lead vocalist of the band Queen?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Freddie Mercury</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What sport features a "gimnast" performing routines on uneven bars and a balance beam?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gymnastics</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which sport would you perform a slam dunk?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Basketball</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>How many points are awarded for a three-pointer in basketball?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Three</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the lead vocalist of the band Queen?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Freddie Mercury</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What can you use to measure how hot or cold it is outside?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Thermometer</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In the film “Forrest Gump,” what does Forrest say life is like?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A box of chocolates</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What primary color mixes with yellow to make green?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Blue</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Birth of Venus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the lead vocalist of the band Queen?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Freddie Mercury</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What are the names of the four main members of The Beatles?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>John Lennon, Paul McCartney, George Harrison, Ringo Starr</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest species of penguin?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Emperor Penguin</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which bird is known for its distinctive laughing call?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Kookaburra</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote the play “Romeo and Juliet”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Shakespeare</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the hobbit in J.R.R. Tolkien's fantasy series?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Frodo Baggins</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What film features the iconic line, “Here’s looking at you, kid”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Casablanca</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the first country to issue paper money?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>China</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote the “Gettysburg Address”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Abraham Lincoln</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which national team competition is held every four years for the best soccer (football) players?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>FIFA World Cup</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which sport would you perform a slam dunk?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Basketball</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What sport features a "gimnast" performing routines on uneven bars and a balance beam?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gymnastics</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the protocol droid fluent in over six million forms of communication, who serves as C-3PO's counterpart?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>R2-D2</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What do you call a bear with no teeth?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A gummy bear</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which superhero is known as the “Man of Steel”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Superman</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Birth of Venus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What primary color mixes with yellow to make green?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Blue</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the virtual assistant developed by Amazon, known for its Echo devices?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Alexa</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the rapper who released the album "Certified Lover Boy" in 2021?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Drake</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the title of the film that won the Academy Award for Best Picture in 2022?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"CODA"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which superhero is known as the “Man of Steel”?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Superman</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who directed the 2022 film "Spider-Man: No Way Home"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Jon Watts</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which artist won the Album of the Year award at the 2023 Grammy Awards for their album "Evermore"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Taylor Swift</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In which Shakespeare play does the character Hamlet appear?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hamlet</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Why did the golfer bring two pairs of pants?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>In case he got a hole in one</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Why was the belt arrested?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>For holding up a pair of pants</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which fictional wizard attends Hogwarts School of Witchcraft and Wizardry?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Harry Potter</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>How many points are awarded for a three-pointer in basketball?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Three</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What sport is played in the Super Bowl?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>American Football</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What's orange and sounds like a parrot?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A carrot</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the alien species known for their aggressive and warrior-like culture, with a ridged forehead and a warrior's code of honor?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Klingons</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the mysterious and omnipotent being who appears throughout various "Star Trek" series, often testing humanity's morality?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Q</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the bounty hunter that captures Han Solo in "Star Wars: Episode V – The Empire Strikes Back"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Boba Fett</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the criminal organization led by Jabba the Hutt?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Hutt Cartel</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who painted this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Last Supper</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in guacamole?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Avocado</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of pasta is shaped like small rice grains?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Orzo</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which bird is known for its distinctive laughing call?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Kookaburra</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest species of penguin?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Emperor Penguin</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What do you call a bear with no teeth?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A gummy bear</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the national animal of the United States?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bald Eagle</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in sushi?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Vinegared rice</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the half-human, half-Vulcan science officer aboard the USS Enterprise in the original "Star Trek" series?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mr. Spock</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the android crew member aboard the USS Enterprise-D in "Star Trek: The Next Generation"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Data</Val>
+</String>
+</Cluster>
+</Array>

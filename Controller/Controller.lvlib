@@ -7,17 +7,23 @@
 	<Item Name="Messages for this Actor" Type="Folder">
 		<Item Name="Answer Received Msg.lvclass" Type="LVClass" URL="../Controller Messages/Answer Received Msg/Answer Received Msg.lvclass"/>
 		<Item Name="Buzzer Pressed Msg.lvclass" Type="LVClass" URL="../Controller Messages/Buzzer Pressed Msg/Buzzer Pressed Msg.lvclass"/>
+		<Item Name="Clear Buffer of Asked Questions Msg.lvclass" Type="LVClass" URL="../Controller Messages/Clear Buffer of Asked Questions Msg/Clear Buffer of Asked Questions Msg.lvclass"/>
+		<Item Name="Launch Contestant Actors Msg.lvclass" Type="LVClass" URL="../Controller Messages/Launch Contestant Actors Msg/Launch Contestant Actors Msg.lvclass"/>
 		<Item Name="Load Contestant Panel Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Contestant Panel Msg/Load Contestant Panel Msg.lvclass"/>
 		<Item Name="Load Main Panel Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Main Panel Display Msg/Load Main Panel Display Msg.lvclass"/>
 		<Item Name="Load Questions from Disk Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Questions from Disk Msg/Load Questions from Disk Msg.lvclass"/>
 		<Item Name="Question Prompt Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Question Prompt Display Msg/Question Prompt Display Msg.lvclass"/>
+		<Item Name="Reset All Grid Tiles Msg.lvclass" Type="LVClass" URL="../Controller Messages/Reset All Grid Tiles Msg/Reset All Grid Tiles Msg.lvclass"/>
 		<Item Name="Reset Contestant Lights Msg.lvclass" Type="LVClass" URL="../Controller Messages/Reset Contestant Lights Msg/Reset Contestant Lights Msg.lvclass"/>
 		<Item Name="Resize Image for Question Msg.lvclass" Type="LVClass" URL="../Controller Messages/Resize Image for Question Msg/Resize Image for Question Msg.lvclass"/>
 		<Item Name="Retrieve Question Msg.lvclass" Type="LVClass" URL="../Controller Messages/Retrieve Question Msg/Retrieve Question Msg.lvclass"/>
 		<Item Name="Send Categories to Grid Msg.lvclass" Type="LVClass" URL="../Controller Messages/Send Categories to Grid Msg/Send Categories to Grid Msg.lvclass"/>
 		<Item Name="Set DAQ Panel Reference Msg.lvclass" Type="LVClass" URL="../Controller Messages/Set DAQ Panel Reference Msg/Set DAQ Panel Reference Msg.lvclass"/>
 		<Item Name="Start Buzzer Acquisition Msg.lvclass" Type="LVClass" URL="../Controller Messages/Start Buzzer Acquisition Msg/Start Buzzer Acquisition Msg.lvclass"/>
+		<Item Name="Stop Looking for Buzzer Msg.lvclass" Type="LVClass" URL="../Controller Messages/Stop Looking for Buzzer Msg/Stop Looking for Buzzer Msg.lvclass"/>
+		<Item Name="Test Buzzers Msg.lvclass" Type="LVClass" URL="../Controller Messages/Test Buzzers Msg/Test Buzzers Msg.lvclass"/>
 		<Item Name="Timer Update Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Timer Update Display Msg/Timer Update Display Msg.lvclass"/>
+		<Item Name="Update Player Who Answered Correctly Last Msg.lvclass" Type="LVClass" URL="../Controller Messages/Update Player Who Answered Correctly Last Msg/Update Player Who Answered Correctly Last Msg.lvclass"/>
 		<Item Name="Welcome Animation Msg.lvclass" Type="LVClass" URL="../Controller Messages/Welcome Animation Msg/Welcome Animation Msg.lvclass"/>
 		<Item Name="Write Grid Panel Reference Msg.lvclass" Type="LVClass" URL="../Controller Messages/Write Grid Panel Reference Msg/Write Grid Panel Reference Msg.lvclass"/>
 		<Item Name="Write Question Timer Msg.lvclass" Type="LVClass" URL="../Controller Messages/Write Question Timer Msg/Write Question Timer Msg.lvclass"/>
