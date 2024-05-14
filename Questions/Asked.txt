@@ -1,30 +1,6 @@
 <Array>
 <Name>Asked Questions and Answers</Name>
-<Dimsize>6</Dimsize>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Who is this?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Gal Gadot</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Who is this?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Ryan Reynolds</Val>
-</String>
-</Cluster>
+<Dimsize>8</Dimsize>
 <Cluster>
 <Name></Name>
 <NumElts>2</NumElts>
@@ -42,11 +18,11 @@
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>Who is this?</Val>
+<Val>What is the freezing point of water in Celsius?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>George Clooney</Val>
+<Val>0 degrees Celsius</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -54,11 +30,11 @@
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What is the formula to calculate electrical resistance in a circuit?</Val>
+<Val>What is the process by which plants release oxygen into the air?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>Resistance = Voltage / Current</Val>
+<Val>Photosynthesis</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -66,17 +42,11 @@
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What is this coding pattern popularly referred to as?</Val>
+<Val>When was undo for LabVIEW released?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>Functional Global Variable</Val>
-</String>
-</Cluster>
-</Array>
-ring>
-<Name>String</Name>
-<Val>VST</Val>
+<Val>5</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -84,197 +54,11 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>If you have pressed Tab to select a specific tool in the LabVIEW editor, what keyboard shortcut can you press to turn the Auto Tool back on?</Val>
+<Val>Which LabVIEW version introduced Silver Controls? Hint: they're called "silver" for a reason.</Val>
 </String>
 <String>
-<Name>String</Name>
-<Val>Shift-Tab</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Who is this?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>George Clooney</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Who is this?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Gal Gadot</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Who is this?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Ryan Reynolds</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of the brightest star in the night sky, visible from both hemispheres?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Sirius</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of the humanoid robot in the film "Metropolis," directed by Fritz Lang and released in 1927?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Maria</Val>
-</String>
-</Cluster>
-</Array>
-
 <Name>String</Name>
 <Val>LabVIEW 2011 (25th anniversary of LabVIEW's original release in 1986)</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What year did Dr. Michio Kaku deliver a keynote at NIWeek?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>2010</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What color were error cluster wires before they were brown?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Pink / (Cluster Color)</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What hardware product was this NI Week keynote inttroducing? </Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>NI Wireless ComapactDAQ</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What year was this keynote demonstration introducing the NI Real-Time Hypervisor?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>2009</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What color were error cluster wires before they were brown?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Pink / (Cluster Color)</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>If you leave the 'index' input of Delete From Array unwired, which element of the input array is deleted?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>The last element</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>One Button Dialog</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is this coding pattern popularly referred to as?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Functional Global Variable</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Which car, first introduced in 1964, was considered the first "pony car"?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Ford Mustang</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What luxury car brand is known as the "ultimate driving machine"?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>BMW</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -294,23 +78,11 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What terminology does LabVIEW R&amp;D use when referring to submission of code to source control, named after a piece of orange Tupperware?</Val>
+<Val>The "m" in ".vim" stands for "Malleable". What did it originally stand for?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>"bowling"</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Which version of LabVIEW was the first one to include the partial version number in its taskbar icon?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>LabVIEW 2014</Val>
+<Val>"Macro"</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -318,11 +90,15 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>Which version of LabVIEW was the first one to include the partial version number in its taskbar icon?</Val>
+<Val>What does DFIR stand for?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>LabVIEW 2014</Val>
+<Val>Data flow intermediate representation</Val>
+</String>
+</Cluster>
+</Array>
+based on user configuration, but never both at the same time</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -330,23 +106,11 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What new NI hardware product is being introduced in this 2012 NI Week keynote?</Val>
+<Val>How does the appearance of a Property Node change when you right-click it and select "Ignore Errors Inside Node"?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>VST</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What was "LabVIEW" originally a pseudo-acronym for? Exact answers only!</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Laboratory Virtual Instrument Engineering Workbench</Val>
+<Val>The error output terminal glyph changes from black to red.</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -354,23 +118,11 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>Which LabVIEW release was the first version to include the letter "Q" in the version number?</Val>
+<Val>What 'data manipulation' bitwise function allows you to multiply an integer by 2</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>LabVIEW 2022 Q3</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of the commercial product that this NI Week was demonstrating?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Saw Stop</Val>
+<Val>Logical Shift or Rotate Left with Cary</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -378,23 +130,11 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What is the output of running this code?</Val>
+<Val>Name the code analysis tool that includes tests such as Backwards Wires, Wires Under Objects, and Reentrant VI Issues.</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>/Users/champion/5</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What type of engine configuration is typically found in Porsche 911 models?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Flat-six</Val>
+<Val>VI Analyzer</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -402,23 +142,11 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What is the name of this node?</Val>
+<Val>Which of the following is *not* supported by the right-click plugins feature? 1. edit-time front panel right-click menus, 2. run-time front panel right-click menus, 3. edit-time block diagram right-click menus, 4. run-time block diagram right-click menus</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>Match Regular Expression</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the output of running this code?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>/Users/champion/5</Val>
+<Val>run-time front panel right-click menus</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -426,35 +154,11 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>Name these datatypes from top to bottom</Val>
+<Val>You can add VIs to a certain folder on disk to have them show up in the LabVIEW "File" drop-down menu. Name that folder.</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>1D array of doubles, 2d arrya of doubles and 3d array of doubles</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Open Application Reference</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What does the glyph on the bottom corner of this icon mean?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Call parent method</Val>
+<Val>[LabVIEW 20xx]\wizard</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -474,18 +178,6 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>This code is supposed to load questions into maps for this game. Why doesn't it work?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>The output of the bundle by name node isn't wired</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
 <Val>What is the data-type of this constant</Val>
 </String>
 <String>
@@ -498,18 +190,268 @@ ring>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What is the name of this?</Val>
+<Val>Find the primary problem with the logic of this code:</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>In Place Element Structure</Val>
+<Val>Race Condition. The first 16 bytes of the file will be read by the left instance of Read Characters From File.vi. Offset will be set to 16, BUT the loop at the right may start and read 22 bytes from the default value of Offset rather than the expected 16.</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Match Regular Expression</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>There are 3 core features of LabVIEW that ship as Packed Project Libraries. Name 2 of them.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Any 2 of the following 3:
+Getting Started Window, Icon Editor, Control Property Pages</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Ctl+0 was replaced with what shortcut and for what functionality</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Font Dialog in LV 2023 now is Ctl+" (Ctl+0 reserved for zoom)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What year was this keynote demonstration introducing the NI Real-Time Hypervisor?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>2009</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What new hardware series is this Mr. Potato Head demo instroducing at NIWeek 2009?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>X Series</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the commercial product that this NI Week was demonstrating?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Saw Stop</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the company who had just finished introducing their new LabVIEW-powered eye surgery device in this keynote?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Optimedica</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which version of LabVIEW was the first one to include the partial version number in its taskbar icon?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>LabVIEW 2014</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What musical group, consisting of three brothers, gained fame in the 90s with hits like "MMMBop"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hanson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What animated TV show, featuring four friends living in Colorado, debuted in 1997 and became a cultural phenomenon?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>South Park</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What musical genre, characterized by its angst-filled lyrics and distorted guitar riffs, emerged in the early 90s and became immensely popular?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Grunge</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the ARPANET, the precursor to the internet, first come online?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1969</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the only mammal capable of sustained flight?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bat</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does DFIR stand for?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Data flow intermediate representation</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>With a certain INI token, you can launch a debugging tool in LabVIEW by pressing Ctrl-Shift-D-N. Name that debugging tool.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ned</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>With a certain INI token, you can launch a debugging tool in LabVIEW by pressing Ctrl-Shift-D-N. Name that debugging tool.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ned</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name the folder on disk where the scripted instance VIs for Channel Wires are stored.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>ExtraVILib</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does DFIR stand for?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Data flow intermediate representation</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>If you wire a TCP reference to the reference input of a Bluetooth Read function, what happens?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Bluetooth Read function turns into a TCP Read function</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What node enables  an event structure to respond to an event given an array of control references</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Register For Events</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gal Gadot</Val>
 </String>
 </Cluster>
 </Array>
-e>String</Name>
-<Val>In Place Element Structure</Val>
-</String>
-</Cluster>
+
 <Cluster>
 <Name></Name>
 <NumElts>2</NumElts>

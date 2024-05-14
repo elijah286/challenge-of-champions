@@ -30,6 +30,7 @@
 		<Item Name="Welcome Animation Msg.lvclass" Type="LVClass" URL="../Controller Messages/Welcome Animation Msg/Welcome Animation Msg.lvclass"/>
 		<Item Name="Write Grid Panel Reference Msg.lvclass" Type="LVClass" URL="../Controller Messages/Write Grid Panel Reference Msg/Write Grid Panel Reference Msg.lvclass"/>
 		<Item Name="Write Question Timer Msg.lvclass" Type="LVClass" URL="../Controller Messages/Write Question Timer Msg/Write Question Timer Msg.lvclass"/>
+		<Item Name="Write Sound ID Msg.lvclass" Type="LVClass" URL="../Controller Messages/Write Sound ID Msg/Write Sound ID Msg.lvclass"/>
 	</Item>
 	<Item Name="Controller.lvclass" Type="LVClass" URL="../Controller/Controller.lvclass"/>
 </Library>
