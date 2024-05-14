@@ -7,9 +7,10 @@
 	<Item Name="Messages for this Actor" Type="Folder">
 		<Item Name="Assign Point Values to Grid Msg.lvclass" Type="LVClass" URL="../Grid Screen Messages/Assign Point Values to Grid Msg/Assign Point Values to Grid Msg.lvclass"/>
 		<Item Name="Button Pressed Msg.lvclass" Type="LVClass" URL="../Grid Screen Messages/Button Pressed Msg/Button Pressed Msg.lvclass"/>
-		<Item Name="Ensure Cell is Off Msg.lvclass" Type="LVClass" URL="../Grid Screen Messages/Ensure Cell is Off Msg/Ensure Cell is Off Msg.lvclass"/>
 		<Item Name="Populate Categories Msg.lvclass" Type="LVClass" URL="../Grid Screen Messages/Populate Categories Msg/Populate Categories Msg.lvclass"/>
 		<Item Name="Reset Board Appearance Msg.lvclass" Type="LVClass" URL="../Grid Screen Messages/Reset Board Appearance Msg/Reset Board Appearance Msg.lvclass"/>
+		<Item Name="Set Cell Value.lvclass" Type="LVClass" URL="../Grid Screen Messages/Ensure Cell is Off Msg/Set Cell Value.lvclass"/>
+		<Item Name="Set Grid Value Using Coordinates Msg.lvclass" Type="LVClass" URL="../Grid Screen Messages/Set Grid Value Using Coordinates Msg/Set Grid Value Using Coordinates Msg.lvclass"/>
 	</Item>
 	<Item Name="Grid Screen.lvclass" Type="LVClass" URL="../MC Screen/Grid Screen.lvclass"/>
 </Library>

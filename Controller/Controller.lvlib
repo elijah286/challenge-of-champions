@@ -18,10 +18,13 @@
 		<Item Name="Resize Image for Question Msg.lvclass" Type="LVClass" URL="../Controller Messages/Resize Image for Question Msg/Resize Image for Question Msg.lvclass"/>
 		<Item Name="Retrieve Question Msg.lvclass" Type="LVClass" URL="../Controller Messages/Retrieve Question Msg/Retrieve Question Msg.lvclass"/>
 		<Item Name="Send Categories to Grid Msg.lvclass" Type="LVClass" URL="../Controller Messages/Send Categories to Grid Msg/Send Categories to Grid Msg.lvclass"/>
+		<Item Name="Send Display to Second Screen Msg.lvclass" Type="LVClass" URL="../Controller Messages/Send Display to Second Screen Msg/Send Display to Second Screen Msg.lvclass"/>
 		<Item Name="Set DAQ Panel Reference Msg.lvclass" Type="LVClass" URL="../Controller Messages/Set DAQ Panel Reference Msg/Set DAQ Panel Reference Msg.lvclass"/>
+		<Item Name="Set Sound Mode Msg.lvclass" Type="LVClass" URL="../Controller Messages/Set Sound Mode Msg/Set Sound Mode Msg.lvclass"/>
 		<Item Name="Start Buzzer Acquisition Msg.lvclass" Type="LVClass" URL="../Controller Messages/Start Buzzer Acquisition Msg/Start Buzzer Acquisition Msg.lvclass"/>
 		<Item Name="Stop Looking for Buzzer Msg.lvclass" Type="LVClass" URL="../Controller Messages/Stop Looking for Buzzer Msg/Stop Looking for Buzzer Msg.lvclass"/>
 		<Item Name="Test Buzzers Msg.lvclass" Type="LVClass" URL="../Controller Messages/Test Buzzers Msg/Test Buzzers Msg.lvclass"/>
+		<Item Name="Time Expired Msg.lvclass" Type="LVClass" URL="../Controller Messages/Time Expired Msg/Time Expired Msg.lvclass"/>
 		<Item Name="Timer Update Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Timer Update Display Msg/Timer Update Display Msg.lvclass"/>
 		<Item Name="Update Player Who Answered Correctly Last Msg.lvclass" Type="LVClass" URL="../Controller Messages/Update Player Who Answered Correctly Last Msg/Update Player Who Answered Correctly Last Msg.lvclass"/>
 		<Item Name="Welcome Animation Msg.lvclass" Type="LVClass" URL="../Controller Messages/Welcome Animation Msg/Welcome Animation Msg.lvclass"/>

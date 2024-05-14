@@ -1,0 +1,2824 @@
+<Array>
+<Name>Asked Questions and Answers</Name>
+<Dimsize>235</Dimsize>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name this place:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Pyramids of Giza</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Great Wall of China</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sydney Opera House</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Machu Picchu</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name this place:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Stonehenge</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the primary ingredient in the dish Eggs Benedict?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Poached eggs</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the spacecraft launched by NASA to study the planet Mars?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Perseverance rover</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did "The Real Housewives of Atlanta" debut on Bravo?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>2008</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the primary ingredient in the Italian dish risotto?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Arborio rice</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the second-brightest object in the night sky, after the Moon?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Venus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in traditional Caesar salad dressing?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Anchovies</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in the French dessert crème brûlée?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Custard</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of meat is traditionally used in the French dish coq au vin?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Chicken</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the signing of the Declaration of Independence occur in the United States?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1776</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the signing of the Treaty of Versailles officially end World War I?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1919</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the force that causes objects with mass to attract one another?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gravity</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Rwandan Civil War begin, leading to the Rwandan genocide?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1990</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which college football team s home stadium is known as "The Horseshoe"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ohio State University</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which city was the setting for the first season of "The Real Housewives" franchise?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Orange County</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is known for her tagline "I m passionate about dogs, just not crazy about bitches" on "The Real Housewives of Beverly Hills"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Lisa Vanderpump</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the process by which a massive star collapses under its own gravity at the end of its life?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Supernova</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Bolshevik Revolution take place in Russia, leading to the establishment of the Soviet Union?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1917</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest moon in the solar system?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ganymede (moon of Jupiter)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Iranian Revolution result in the overthrow of the Shah of Iran and the establishment of an Islamic republic?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1979</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first college football player to rush for 2,000 yards in a single season?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>O.J. Simpson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who holds the record for the most career goals scored in NHL history?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Wayne Gretzky</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the record for the most points scored by one team in a single college football game?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Georgia Tech scored 222 points (1916)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the only athlete to win Olympic gold medals in both the decathlon and pentathlon?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bob Mathias</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is known for her tagline "If you can t be cool, you can t be with the Countess" on "The Real Housewives of New York City"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bethenny Frankel</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who famously flipped a table during an argument on "The Real Housewives of New Jersey"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Teresa Giudice</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first president to be assassinated?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Abraham Lincoln</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main function of the digestive system in the human body?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Break down food and absorb nutrients</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"I ve never been a natural, all I do is try, try, try"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Cornelia Street</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which boy band released the best-selling album of the 1990s, "Backstreet Boys"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Backstreet Boys</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the capital city of the United States?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Washington, D.C.</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the medical term for the thigh bone?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Femur</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the gland located at the base of the brain that regulates various physiological processes including growth and metabolism?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Pituitary gland</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the membrane that surrounds the heart?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Pericardium</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the process by which plants take in carbon dioxide and release oxygen?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Photosynthesis</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote "Harry Potter and the Philosopher's Stone"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>J.K. Rowling</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the capital city of Australia?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Canberra</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the president during the Watergate scandal?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Richard Nixon</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which president negotiated the Louisiana Purchase?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Thomas Jefferson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first president to be impeached?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Andrew Johnson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the highest mountain in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mount Everest</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who sang the theme song for the TV show "Friends," which aired from 1994 to 2004?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Rembrandts</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Taylor Swift s "Evermore" and "Folklore" albums are examples of her exploration in what music genre?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Indie folk</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"But I got smarter, I got harder in the nick of time"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Blank Space</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>“I'm a soldier who’s returning half her soul.”</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>“Haunted”</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"Say you fancy me, not fancy stuff"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>So It Goes...</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who released the hit single "Livin  La Vida Loca" in 1999?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ricky Martin</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the title of Michael Jackson s final studio album released in his lifetime, in 1991?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"Dangerous"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the title of the debut album by Radiohead, released in 1993, which features the hit single "Creep"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"Pablo Honey"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the shortest-serving president, dying after just 32 days in office?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Henry Harrison</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the most common type of music listened to by teenagers? A) Pop B) Hip-hop/Rap C) Rock</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Hip-hop/Rap</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which company is known for the creation of the video game character Mario?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Nintendo</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the name of the first successfully launched satellite by the Soviet Union in 1957?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sputnik</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the robot that NASA sent to Mars in 2012, known for its extensive exploration missions?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Curiosity Rover</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the most common type of pet owned by Americans? A) Cat B) Dog C) Fish</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Dog</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the average number of hours per week that Americans spend watching television? A) 15 hours B) 30 hours C) 45 hours</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Around 30 hours</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the average number of times Americans visit a doctor each year? A) Around 1 B) Around 3 C) Around 5</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Around 3</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the average amount of credit card debt for American households? A) Around $5,000 B) Around $8,000 C) Around $12,000</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Around $8,000</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the average annual income for American households? A) Around $50,000 B) Around $68,700 C) Around $100,000</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Around $68,700</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the name of the first electronic spreadsheet program, and who developed it?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>VisiCalc, Dan Bricklin and Bob Frankston</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the most popular video game among teenagers? A) Fortnite B) Minecraft C) Among Us</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A) Fortnite</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the most common type of snack eaten by teenagers? A) Chips B) Fruit C) Chocolate</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A) Chips</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What percentage of teenagers report experiencing loneliness? A) Approximately 20% B) Approximately 40% C) Approximately 60%</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Approximately 40%</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the average amount of money teenagers spend on video games per month? A) Around $20 B) Around $50 C) Around $100</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Around $50</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"May the Force be with you." In which film series is this quote from?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Star Wars</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"I m king of the world!"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Titanic</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"My precious." Which movie is this quote from?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Lord of the Rings series</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"What we ve got here is failure to communicate." Which movie is this quote from?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Cool Hand Luke</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"I feel the need... the need for speed!"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Top Gun</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Rock OR Dwayne Douglass Johnson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the first season of "The Real Housewives of Orange County" premiere?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>2006</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which reality TV show features contestants competing in various culinary challenges to win the title of "Top Chef"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Top Chef</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which animal is known for its long, sticky tongue used for catching insects?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Chameleon</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the SI unit of magnetic flux?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Weber (Wb)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest species of bear?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Kodiak bear</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the fastest marine animal?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sailfish</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which animal has the longest lifespan?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bowhead whale</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which bird is known for its colorful, hooked beak and bright plumage?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Macaw</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who sang the hit song "Take On Me," released in 1985?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>a-ha</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who sang the hit song "Every Breath You Take," released in 1983?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Police</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who sang the hit song "Billie Jean," released in 1983?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Michael Jackson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which British band released the album "Synchronicity" in 1983, featuring the hit singles "Every Breath You Take" and "King of Pain"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Police</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who sang the hit song "Beat It," released in 1983?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Michael Jackson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the SI unit of magnetic field strength?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tesla (T)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which college football team is known as the "Fighting Irish"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Notre Dame</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first college football player to win the Heisman Trophy twice?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Archie Griffin</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first college football player to rush for over 2,000 yards in a single season?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Marcus Allen (1981)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the oldest college football rivalry in the United States?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Yale vs. Princeton</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year was the first College Football Playoff held?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>2014</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is known for her tagline "I m passionate about dogs, just not crazy about bitches" on "The Real Housewives of Beverly Hills"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Lisa Vanderpump</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is known as the "Skinnygirl" and created the Skinnygirl brand featured on "The Real Housewives of New York City"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bethenny Frankel</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is known for her tagline "If you can t be cool, you can t be with the Countess" on "The Real Housewives of New York City"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bethenny Frankel</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the reality TV show "Keeping Up with the Kardashians" first premiere on television?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>2007</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the reality TV show where contestants compete in challenges to win the title of "MasterChef"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>MasterChef</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the SI unit of resistance?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ohm (Ω)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the law stating that the voltage across a conductor is directly proportional to the current passing through it, provided its temperature remains constant?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ohm s law</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the law stating that the pressure exerted by a fixed mass of gas is directly proportional to its temperature when the volume is kept constant?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gay-Lussac s law</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the most popular ice cream flavor in the United States? A) Vanilla B) Chocolate C) Strawberry</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>A) Vanilla</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the highest waterfall in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Angel Falls</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which river is the longest in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Nile</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the capital of Spain?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Madrid</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which is the largest country by land area in Africa?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Algeria</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the coldest inhabited place on Earth?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Oymyakon, Russia</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What movie features a young boy named Kevin McCallister who defends his home from burglars?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Home Alone</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who played the role of Jack Dawson in the 1997 film "Titanic"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Leonardo DiCaprio</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What 2010 film directed by Christopher Nolan features a technology that allows architects to enter people s dreams?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Inception</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What 1927 film is considered the first feature-length synchronized sound (talkie) film?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Jazz Singer</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the United Nations adopt the Universal Declaration of Human Rights?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1948</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Treaty of Versailles officially end World War I?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1919</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Space Shuttle Challenger disaster occur, resulting in the loss of the entire crew?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1986</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Cuban Missile Crisis occur, bringing the world to the brink of nuclear war?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1962</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Iranian Revolution result in the overthrow of the Shah of Iran and the establishment of an Islamic republic?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1979</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the Rwandan genocide take place, resulting in the mass killing of hundreds of thousands of people?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1994</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What percentage of American adults report having a regular exercise routine? A) Approximately 20% B) Approximately 40% C) Approximately 60%</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Approximately 40%</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What percentage of American adults report getting less than 7 hours of sleep per night? A) Approximately 30% B) Approximately 50% C) Approximately 70%</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Approximately 50%</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What percentage of Americans live paycheck to paycheck? A) Approximately 50% B) Approximately 78% C) Approximately 95%</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Approximately 78%</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the average annual income for American households? A) Around $50,000 B) Around $68,700 C) Around $100,000</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Around $68,700</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the average amount of personal debt (excluding mortgages) for American adults? A) Around $10,000 B) Around $50,000 C) Around $100,000</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B) Around $50,000</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which college football team s home stadium is known as "The Horseshoe"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ohio State University</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what sport would you perform a "hat trick"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Cricket, Soccer</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the official diameter of a basketball hoop in inches?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>18 inches</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who holds the record for the fastest 100-meter dash in Olympic history?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Usain Bolt</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first athlete to win Olympic gold medals in two different sports in the same year?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Jim Thorpe</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first African-American woman to win an Olympic gold medal in track and field?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Alice Coachman</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"E.T. phone home." Which movie is this quote from?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>E.T. the Extra-Terrestrial</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"Keep your friends close, but your enemies closer." Which movie is this quote from?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Godfather Part II</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"Houston, we have a problem."</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Apollo 13</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"You re killing me, Smalls!"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Sandlot</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the spacecraft launched by NASA to study Saturn and its moons?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Cassini-Huygens</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the closest galaxy to the Milky Way?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Andromeda</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the spacecraft launched by NASA to study the outer planets of the solar system?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Voyager probes</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the president during the Korean War?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Harry S. Truman</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the process by which a star ends its life by collapsing under its own gravity?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Supernova</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the term for the theoretical boundary surrounding a black hole beyond which no light or other radiation can escape?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Event horizon</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the SI unit of frequency?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hertz (Hz)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the formula to calculate density?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Density = Mass/Volume</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the SI unit of force?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Newton (N)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the law stating that the pressure of a gas is inversely proportional to its volume at constant temperature?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Boyle s law</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the law stating that the total electric charge of a closed system is constant over time, regardless of changes within the system?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Law of conservation of electric charge</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the author of the novel "Neuromancer," which is considered one of the pioneering works of cyberpunk fiction?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Gibson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the starship captained by Captain Kathryn Janeway in the TV series "Star Trek: Voyager"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>USS Voyager</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the fictional planet that serves as the homeworld of the Klingon species in "Star Trek"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Qo noS</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the author of the science fiction novel "Snow Crash," which explores a dystopian future dominated by corporations and virtual reality?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Neal Stephenson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first president to be born a citizen of the United States?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Martin Van Buren</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"Say hello to my little friend!"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Scarface</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first president to be impeached?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Andrew Johnson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the president during the Gulf War?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George H. W. Bush</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which president is known for the policy of "Manifest Destiny"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>James K. Polk</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first president to die in office?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Henry Harrison</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which female artist released the album "Like a Prayer" in 1989, featuring the hit singles "Like a Prayer" and "Express Yourself"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Madonna</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who sang the theme song for the TV show "Friends," which aired from 1994 to 2004?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Rembrandts</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which female artist released the album "Jagged Little Pill" in 1995, featuring the hit singles "You Oughta Know" and "Ironic"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Alanis Morissette</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the title of Mariah Carey s best-selling album of the 1990s, released in 1995?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"Daydream"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which rock band released the album "OK Computer" in 1997, considered one of the greatest albums of all time?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Radiohead</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which R&amp;B group released the album "CrazySexyCool" in 1994, featuring the hit singles "Creep" and "Waterfalls"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>TLC</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George Clooney</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gal Gadot</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George Clooney</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George Clooney</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ryan Reynolds</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gal Gadot</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Margot Robbie</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George Clooney</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gal Gadot</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ryan Reynolds</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Margot Robbie</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Lakeith Stanfield</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Statue of Liberty</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name this place:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Kremlin</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>How many continents are there on Earth?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Seven</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the opposite of "day"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Night</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who invented the telephone?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Alexander Graham Bell</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the primary function of the heart?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Pump blood</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in chocolate?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Cocoa</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the lowest point on land on Earth?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Dead Sea</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which is the highest waterfall in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Angel Falls</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the capital of Spain?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Madrid</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the capital of Australia?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Canberra</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest desert in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sahara</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the reality TV show "The Real World" first premiere on MTV?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1992</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which reality TV show features real estate agents selling high-end properties in Los Angeles?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Million Dollar Listing: Los Angeles</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in guacamole?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Avocado</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest hot desert in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sahara</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is known as the "Skinnygirl" and created the Skinnygirl brand featured on "The Real Housewives of New York City"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Bethenny Frankel</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which "Real Housewives" series is set in Dallas, Texas, and premiered in 2016?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Real Housewives of Dallas</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In what year did the reality TV show "The Amazing Race" first premiere on television?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>2001</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the reality TV show where contestants compete in challenges to win the title of "MasterChef"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>MasterChef</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the reality TV show where contestants live together and compete in physical and mental challenges to avoid elimination?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Challenge</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of cheese is typically used in the Italian dish carbonara?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Pecorino Romano or Parmesan</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of meat is used in the Turkish dish doner kebab?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Lamb</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the primary flavoring agent in the Japanese spice blend shichimi-togarashi?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Red chili pepper</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of seafood is typically used in the Italian dish cioppino?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Various types of fish and shellfish</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What cocktail, made with rum, mint, sugar, lime juice, and soda water, is associated with Cuba?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mojito</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the main ingredient in a Margarita cocktail?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tequila</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which cocktail, consisting of rum, pineapple juice, and coconut cream, is associated with tropical vacations?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Piña Colada</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What cocktail, consisting of vodka, coffee liqueur, and cream, is named after a famous Russian ballet dancer?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>White Russian</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Rock OR Dwayne Douglass Johnson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which is the largest island in the Mediterranean Sea?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sicily</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What fashion trend, characterized by brightly colored, plastic bracelets worn in stacks, was popular among teenagers in the 90s?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Jelly bracelets</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which founder of a major private security company was involved in various controversies, including improper conduct in Iraq?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Erik Prince</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What toy, consisting of small plastic figures with interchangeable body parts, was popular among children in the 90s?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Polly Pocket</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What fashion trend, characterized by its bright colors, bold patterns, and oversized silhouettes, was popular in the 90s?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>90s Rave Fashion</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What TV show, featuring a group of teenagers with superpowers who could morph into superheroes, premiered in 1993 and became a global phenomenon?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mighty Morphin Power Rangers</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"E.T. phone home." Which movie is this quote from?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>E.T. the Extra-Terrestrial</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"To infinity and beyond!"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Toy Story</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"Elementary, my dear Watson." Which movie is this quote often associated with?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Adventures of Sherlock Holmes (not directly from films but widely attributed)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which car, first introduced in 1964, was considered the first "pony car"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ford Mustang</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who founded Tesla, Inc., and what was the company s first electric car?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Elon Musk; Tesla Roadster</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which luxury car brand is known for the Spirit of Ecstasy hood ornament?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Rolls-Royce</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What company produces the model S, 3, X, and Y electric vehicles?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tesla</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"Hasta la vista, baby." Which movie is this quote from?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Terminator 2: Judgment Day</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the Hollywood producer accused by multiple women of sexual misconduct, sparking the #MeToo movement?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Harvey Weinstein</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which U.S. television game show was hit by a major cheating scandal in the 1950s?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Twenty-One</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the name of the U.S. political scandal that involved illegal arms sales to Iran in the 1980s?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Iran-Contra Affair</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the highest waterfall in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Angel Falls</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest bay in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Hudson Bay</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the longest river entirely within Russia?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Lena River</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the capital of China?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Beijing</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest hot desert in the world?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sahara</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which country is the smallest in the world by land area?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Vatican City</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"I see dead people."</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Sixth Sense</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"You re gonna need a bigger boat."</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Jaws</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Rock OR Dwayne Douglass Johnson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Gal Gadot</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George Clooney</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Lakeith Stanfield</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ryan Reynolds</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the first college football player to win the Maxwell Award and the Heisman Trophy in the same year?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tim Tebow (2007)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Margot Robbie</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George Clooney</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>George Clooney</Val>
+</String>
+</Cluster>
+</Array>
