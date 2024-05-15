@@ -8,6 +8,7 @@
 		<Item Name="Answer Received Msg.lvclass" Type="LVClass" URL="../Controller Messages/Answer Received Msg/Answer Received Msg.lvclass"/>
 		<Item Name="Buzzer Pressed Msg.lvclass" Type="LVClass" URL="../Controller Messages/Buzzer Pressed Msg/Buzzer Pressed Msg.lvclass"/>
 		<Item Name="Clear Buffer of Asked Questions Msg.lvclass" Type="LVClass" URL="../Controller Messages/Clear Buffer of Asked Questions Msg/Clear Buffer of Asked Questions Msg.lvclass"/>
+		<Item Name="Launch Animation Actor Msg.lvclass" Type="LVClass" URL="../Controller Messages/Launch Animation Actor Msg/Launch Animation Actor Msg.lvclass"/>
 		<Item Name="Launch Contestant Actors Msg.lvclass" Type="LVClass" URL="../Controller Messages/Launch Contestant Actors Msg/Launch Contestant Actors Msg.lvclass"/>
 		<Item Name="Load Contestant Panel Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Contestant Panel Msg/Load Contestant Panel Msg.lvclass"/>
 		<Item Name="Load Main Panel Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Main Panel Display Msg/Load Main Panel Display Msg.lvclass"/>
@@ -22,6 +23,7 @@
 		<Item Name="Set DAQ Panel Reference Msg.lvclass" Type="LVClass" URL="../Controller Messages/Set DAQ Panel Reference Msg/Set DAQ Panel Reference Msg.lvclass"/>
 		<Item Name="Set Sound Mode Msg.lvclass" Type="LVClass" URL="../Controller Messages/Set Sound Mode Msg/Set Sound Mode Msg.lvclass"/>
 		<Item Name="Start Buzzer Acquisition Msg.lvclass" Type="LVClass" URL="../Controller Messages/Start Buzzer Acquisition Msg/Start Buzzer Acquisition Msg.lvclass"/>
+		<Item Name="Stop Animation Actor Msg.lvclass" Type="LVClass" URL="../Controller Messages/Stop Animation Actor Msg/Stop Animation Actor Msg.lvclass"/>
 		<Item Name="Stop Looking for Buzzer Msg.lvclass" Type="LVClass" URL="../Controller Messages/Stop Looking for Buzzer Msg/Stop Looking for Buzzer Msg.lvclass"/>
 		<Item Name="Test Buzzers Msg.lvclass" Type="LVClass" URL="../Controller Messages/Test Buzzers Msg/Test Buzzers Msg.lvclass"/>
 		<Item Name="Time Expired Msg.lvclass" Type="LVClass" URL="../Controller Messages/Time Expired Msg/Time Expired Msg.lvclass"/>

@@ -4,6 +4,8 @@
 	<Property Name="NI.Lib.SourceVersion" Type="Int">604012544</Property>
 	<Property Name="NI.Lib.Version" Type="Str">1.0.0.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
-	<Item Name="Messages for this Actor" Type="Folder"/>
+	<Item Name="Messages for this Actor" Type="Folder">
+		<Item Name="Update Pattern Msg.lvclass" Type="LVClass" URL="../Grid Animation Messages/Update Pattern Msg/Update Pattern Msg.lvclass"/>
+	</Item>
 	<Item Name="Grid Animation.lvclass" Type="LVClass" URL="../Grid Animation/Grid Animation.lvclass"/>
 </Library>
