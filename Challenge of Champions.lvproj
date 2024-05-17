@@ -12,26 +12,20 @@
 		<Property Name="server.vi.callsEnabled" Type="Bool">true</Property>
 		<Property Name="server.vi.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
-		<Item Name="Challenge UI.vi" Type="VI" URL="../Challenge UI.vi"/>
 		<Item Name="Contestant.lvlib" Type="Library" URL="../Contestant/Contestant.lvlib"/>
 		<Item Name="Controller.lvlib" Type="Library" URL="../Controller/Controller.lvlib"/>
 		<Item Name="Grid Animation.lvlib" Type="Library" URL="../Grid Animation/Grid Animation.lvlib"/>
 		<Item Name="Grid Screen.lvlib" Type="Library" URL="../MC Screen/Grid Screen.lvlib"/>
 		<Item Name="Hardware Buzzer.lvlib" Type="Library" URL="../Hardware Buzzer/Hardware Buzzer.lvlib"/>
 		<Item Name="Main Screen.lvlib" Type="Library" URL="../Main Screen/Main Screen.lvlib"/>
-		<Item Name="Draw Multiline Text At Point.vi" Type="VI" URL="../Draw Multiline Text At Point.vi"/>
 		<Item Name="main.vi" Type="VI" URL="../main.vi"/>
 		<Item Name="MC Prompt.lvlib" Type="Library" URL="../MC Prompt/MC Prompt.lvlib"/>
-		<Item Name="NI_Read XLSX File.vi" Type="VI" URL="../NI_Read XLSX File.vi"/>
 		<Item Name="NI_Read_XLSX_File_LibreMod3.vi" Type="VI" URL="../NI_Read_XLSX_File_LibreMod3.vi"/>
 		<Item Name="Question Display.lvlib" Type="Library" URL="../Question Display/Question Display.lvlib"/>
 		<Item Name="Questions.xlsx" Type="Document" URL="../Questions/Questions.xlsx"/>
 		<Item Name="Simulated Hardware.lvlib" Type="Library" URL="../Simulated HW/Simulated Hardware.lvlib"/>
 		<Item Name="Sounds.lvlib" Type="Library" URL="../Sounds/Sounds.lvlib"/>
 		<Item Name="Timer.lvlib" Type="Library" URL="../Timer/Timer.lvlib"/>
-		<Item Name="Untitled 7.vi" Type="VI" URL="../Controller/Controller/Untitled 7.vi"/>
-		<Item Name="Untitled 9.vi" Type="VI" URL="../Controller/Controller/Untitled 9.vi"/>
-		<Item Name="Untitled 3 (SubVI).vi" Type="VI" URL="../../Desktop/Untitled 3 (SubVI).vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="user.lib" Type="Folder">
 				<Item Name="Convert File Extension (Path)__ogtk.vi" Type="VI" URL="/&lt;userlib&gt;/_OpenG.lib/file/file.llb/Convert File Extension (Path)__ogtk.vi"/>

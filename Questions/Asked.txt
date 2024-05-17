@@ -1,20 +1,16 @@
 <Array>
 <Name>Asked Questions and Answers</Name>
-<Dimsize>1</Dimsize>
+<Dimsize>12</Dimsize>
 <Cluster>
 <Name></Name>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What is the output of running this code?</Val>
+<Val>What is the name of this?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>/Users/champion/5</Val>
-</String>
-</Cluster>
-</Array>
-f the bundle by name node isn't wired</Val>
+<Val>In Place Element Structure</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -22,23 +18,11 @@ f the bundle by name node isn't wired</Val>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>Name all five data types that are valid to wire to a Case Structure Selector terminal.</Val>
+<Val>Which one of these is the default classic Waveform Chart</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>Boolean, Numeric (includes both integer and float), String, Enum, Error Cluster</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Find First Error</Val>
+<Val>Left side</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -46,83 +30,11 @@ f the bundle by name node isn't wired</Val>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>With a certain INI token, you can launch a debugging tool in LabVIEW by pressing Ctrl-Shift-D-N. Name that debugging tool.</Val>
+<Val>Name these datatypes from top to bottom</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>Ned</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What does DFIR stand for?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Data flow intermediate representation</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the output of running this code?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>/Users/champion/5</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Call By Reference</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Open Application Reference</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is this coding pattern popularly referred to as?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Functional Global Variable</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>With a certain INI token, you can launch a debugging tool in LabVIEW by pressing Ctrl-Shift-D-N. Name that debugging tool.</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Ned</Val>
+<Val>1D array of doubles, 2d arrya of doubles and 3d array of doubles</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -142,11 +54,11 @@ f the bundle by name node isn't wired</Val>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>Which version of LabVIEW was the first one to include the partial version number in its taskbar icon?</Val>
+<Val>What is different about interacting with a DAQmx propery node compared to a control ref property node</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>LabVIEW 2014</Val>
+<Val>You must choose the specific type, wheras a standard property node auto-coerces to type</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -154,13 +66,90 @@ f the bundle by name node isn't wired</Val>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What hardware product was this NI Week keynote inttroducing? </Val>
+<Val>There are 3 specific front panel controls that ship with LabVIEW, but are only available on 32-bit LabVIEW for Windows. Name one of them.</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>NI Wireless ComapactDAQ</Val>
+<Val>Any 1 of the following 3:
+3D Line Graph
+3D Parametric Graph
+3D Surface Graph</Val>
 </String>
 </Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What are the 5 folders of the synchronization pallet</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Notifier, Queue, Semaphore, Rendezvous, Occurance</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What 'data manipulation' bitwise function allows you to multiply an integer by 2</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Logical Shift or Rotate Left with Cary</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which British prime minister resigned amid scandal over undisclosed loans and honors?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tony Blair</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the main street that goes through the middle of NI's Austin campus?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Kodosky Way</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which media mogul resigned as chairman of Fox News in 2016 following allegations of sexual harassment?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Roger Ailes</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which college football team holds the record for the longest winning streak?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Oklahoma (47 games)</Val>
+</String>
+</Cluster>
+</Array>
+Cluster>
 <Cluster>
 <Name></Name>
 <NumElts>2</NumElts>
