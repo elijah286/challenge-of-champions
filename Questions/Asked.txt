@@ -1,16 +1,20 @@
 <Array>
 <Name>Asked Questions and Answers</Name>
-<Dimsize>21</Dimsize>
+<Dimsize>1</Dimsize>
 <Cluster>
 <Name></Name>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>This code is supposed to load questions into maps for this game. Why doesn't it work?</Val>
+<Val>What is the output of running this code?</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>The output of the bundle by name node isn't wired</Val>
+<Val>/Users/champion/5</Val>
+</String>
+</Cluster>
+</Array>
+f the bundle by name node isn't wired</Val>
 </String>
 </Cluster>
 <Cluster>
