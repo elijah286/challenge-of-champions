@@ -1,6 +1,6 @@
 <Array>
 <Name>Asked Questions and Answers</Name>
-<Dimsize>12</Dimsize>
+<Dimsize>14</Dimsize>
 <Cluster>
 <Name></Name>
 <NumElts>2</NumElts>
@@ -148,35 +148,32 @@
 <Val>Oklahoma (47 games)</Val>
 </String>
 </Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is this coding pattern popularly referred to as?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Functional Global Variable</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the output of running this code?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>/Users/champion/5</Val>
+</String>
+</Cluster>
 </Array>
-Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Build Map</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Find First Error</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
+Elts>
 <String>
 <Name>String</Name>
 <Val>What is the data-type of this constant</Val>
