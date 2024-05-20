@@ -1,16 +1,22 @@
 <Array>
 <Name>Asked Questions and Answers</Name>
-<Dimsize>12</Dimsize>
+<Dimsize>0</Dimsize>
 <Cluster>
 <Name></Name>
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>What is the name of this?</Val>
+<Val></Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>In Place Element Structure</Val>
+<Val></Val>
+</String>
+</Cluster>
+</Array>
+tring>
+<Name>String</Name>
+<Val>"Macro"</Val>
 </String>
 </Cluster>
 <Cluster>
@@ -18,24 +24,16 @@
 <NumElts>2</NumElts>
 <String>
 <Name>String</Name>
-<Val>Which one of these is the default classic Waveform Chart</Val>
+<Val>There are 11 different control types on the front panel that you can drag another control into. Name 8 of them.</Val>
 </String>
 <String>
 <Name>String</Name>
-<Val>Left side</Val>
+<Val>Any 8 of the following 11:
+Array, Cluster, Radio Buttons Control, Tab Control, Data Log File Refnum, Control Refnum, Set, Map, Data Value Reference, Queue, Notifier</Val>
 </String>
 </Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Name these datatypes from top to bottom</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>1D array of doubles, 2d arrya of doubles and 3d array of doubles</Val>
-</String>
+</Array>
+/String>
 </Cluster>
 <Cluster>
 <Name></Name>
@@ -148,91 +146,93 @@
 <Val>Oklahoma (47 games)</Val>
 </String>
 </Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the naem of this palette?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Application Control</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>There are 11 different control types on the front panel that you can drag another control into. Name 8 of them.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Any 8 of the following 11:
+Array, Cluster, Radio Buttons Control, Tab Control, Data Log File Refnum, Control Refnum, Set, Map, Data Value Reference, Queue, Notifier</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Open Application Reference</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name the only Front Panel control whose value you can change with the Paintbrush tool.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Color Box</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the commercial product that this NI Week was demonstrating?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Saw Stop</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>If you leave the 'index' input of Delete From Array unwired, which element of the input array is deleted?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The last element</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Match Regular Expression</Val>
+</String>
+</Cluster>
 </Array>
-Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Build Map</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the name of this node?</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Find First Error</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>What is the data-type of this constant</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Queue refnum for an enum data type</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Name a structure has a blue 'halo' around it</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Timed Loop or Timed Sequence</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Name these datatypes from top to bottom</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>1D array of doubles, 2d arrya of doubles and 3d array of doubles</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>Find the primary problem with the logic of this code:</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Race Condition. The first 16 bytes of the file will be read by the left instance of Read Characters From File.vi. Offset will be set to 16, BUT the loop at the right may start and read 22 bytes from the default value of Offset rather than the expected 16.</Val>
-</String>
-</Cluster>
-<Cluster>
-<Name></Name>
-<NumElts>2</NumElts>
-<String>
-<Name>String</Name>
-<Val>There are 3 core features of LabVIEW that ship as Packed Project Libraries. Name 2 of them.</Val>
-</String>
-<String>
-<Name>String</Name>
-<Val>Any 2 of the following 3:
-Getting Started Window, Icon Editor, Control Property Pages</Val>
+ing Started Window, Icon Editor, Control Property Pages</Val>
 </String>
 </Cluster>
 <Cluster>
