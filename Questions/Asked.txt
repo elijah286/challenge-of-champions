@@ -1,0 +1,1326 @@
+<Array>
+<Name>Asked Questions and Answers</Name>
+<Dimsize>1</Dimsize>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>If you leave first 'index' input of Index Array unwired, which element of the input array is output?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The First Element</Val>
+</String>
+</Cluster>
+</Array>
+g</Name>
+<Val>What new hardware series is this Mr. Potato Head demo instroducing at NIWeek 2009?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>X Series</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does DFIR stand for?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Data flow intermediate representation</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>The "m" in ".vim" stands for "Malleable". What did it originally stand for?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"Macro"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Find the primary problem with the logic of this code:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Race Condition. The first 16 bytes of the file will be read by the left instance of Read Characters From File.vi. Offset will be set to 16, BUT the loop at the right may start and read 22 bytes from the default value of Offset rather than the expected 16.</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the Panel property that enables and disables redrawing of the front panel?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Defer Panel Updates</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>There are 3 specific front panel controls that ship with LabVIEW, but are only available on 32-bit LabVIEW for Windows. Name one of them.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Any 1 of the following 3:
+3D Line Graph
+3D Parametric Graph
+3D Surface Graph</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Call By Reference</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the output of running this code?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>/Users/champion/5</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name these datatypes from top to bottom</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1D array of doubles, 2d arrya of doubles and 3d array of doubles</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Open Application Reference</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name this former NI Executive</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mike Santori</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which function can you use to combine two 2D Picture Control values into a single picture?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Concatenate Strings</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>In Place Element Structure</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>DAQ Assistant</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What type of connector is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>D-SUB</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the highest number of SMU channels on a single NI SMU module?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>24</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What are the two most common types of ADCs used in C Series analog input modules?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>SAR and Delta Sigma</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>When was PXI founded as a standard?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1997</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>DAQ Assistant</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Nme 3 types of thermocouples. (letters)</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>B,C,E,J,K,N,R,S,T</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>True/False : 16-bit inputs are less accurate than 24-bit inputs</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>0</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Was the PXI standard founded in 1997, 1999 or 2003?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1997</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is this circuit? (common for strain measurements)</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Wheatstone Bridge</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Did the first CompactDAQ chassis release in 2002, 2004 or 2006?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>2006</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name the folder on disk where the scripted instance VIs for Channel Wires are stored.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>ExtraVILib</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>With a certain INI token, you can launch a debugging tool in LabVIEW by pressing Ctrl-Shift-D-N. Name that debugging tool.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ned</Val>
+</String>
+</Cluster>
+</Array>
+ster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the output of running this code?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>34</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>If you wire a TCP reference to the reference input of a Bluetooth Read function, what happens?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Bluetooth Read function turns into a TCP Read function</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the space station in the TV series "Babylon 5," serving as a diplomatic and military hub?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Babylon 5</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who directed the 1977 science fiction film "Close Encounters of the Third Kind"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Steven Spielberg</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the second-largest moon of Jupiter?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Callisto</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the second-brightest object in the night sky, after the Moon?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Venus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In the "Star Trek" series, what is the name of the half-Vulcan science officer on the USS Enterprise?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Spock</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the author of the science fiction novel "Neuromancer," which coined the term "cyberspace"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Gibson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In the "Alien" film series, what is the name of the alien species that serves as the primary antagonist?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Xenomorph</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the closest galaxy to the Milky Way?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Andromeda</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the largest moon of Neptune?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Triton</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the phenomenon where a small rocky body enters the Earth s atmosphere and burns up?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Meteor</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the world s most popular search engine?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Google</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was "LabVIEW" originally a pseudo-acronym for? Exact answers only!</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Laboratory Virtual Instrument Engineering Workbench</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does "USB" stand for when referring to a computer port?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Universal Serial Bus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the name of the first graphical web browser, which played a significant role in popularizing the World Wide Web?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mosaic</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was the name of the first successfully launched satellite by the Soviet Union in 1957?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sputnik</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which company created the popular video game "Minecraft"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mojang, later acquired by Microsoft</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>One Button Dialog</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is this coding pattern popularly referred to as?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Functional Global Variable</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>The "m" in ".vim" stands for "Malleable". What did it originally stand for?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>"Macro"</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What new hardware series is this Mr. Potato Head demo instroducing at NIWeek 2009?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>X Series</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the company who had just finished introducing their new LabVIEW-powered eye surgery device in this keynote?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Optimedica</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What was "LabVIEW" originally a pseudo-acronym for? Exact answers only!</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Laboratory Virtual Instrument Engineering Workbench</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who are these guys?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Dr. T and Jeff Kodosky</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Match Regular Expression</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Find the primary problem with the logic of this code:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Race Condition. The first 16 bytes of the file will be read by the left instance of Read Characters From File.vi. Offset will be set to 16, BUT the loop at the right may start and read 22 bytes from the default value of Offset rather than the expected 16.</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does the glyph on the bottom corner of this icon mean?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Call parent method</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Call By Reference</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the data-type of this constant</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Queue refnum for an enum data type</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"There s no place like home."</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Wizard of Oz</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Match Regular Expression</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name these datatypes from top to bottom</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1D array of doubles, 2d arrya of doubles and 3d array of doubles</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the output of running this code?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>/Users/champion/5</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Open Application Reference</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the default VI Server Port</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>3363</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the data-type of this constant</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Queue refnum for an enum data type</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the output of running this code?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>34</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Find First Error</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote the science fiction novel "I, Robot," which explores the ethical implications of artificial intelligence?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Isaac Asimov</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is the author of the science fiction novel "Neuromancer," which coined the term "cyberspace"?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Gibson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the alien race in the "Predator" film series known for their hunting prowess?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Predators</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In the "Star Trek" series, what is the name of the half-Vulcan science officer on the USS Enterprise?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Spock</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In the TV series "Dark Matter," what is the name of the spaceship crewed by the amnesiac crew members?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Raza</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>In the "Star Wars" universe, what is the name of the desert planet where Anakin Skywalker was discovered?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Tatooine</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who wrote the science fiction novel "Neuromancer," which is considered one of the pioneering works of cyberpunk fiction?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>William Gibson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name the folder on disk where the scripted instance VIs for Channel Wires are stored.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>ExtraVILib</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>With a certain INI token, you can launch a debugging tool in LabVIEW by pressing Ctrl-Shift-D-N. Name that debugging tool.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ned</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the output of running this code?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>/Users/champion/5</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name these datatypes from top to bottom</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>1D array of doubles, 2d arrya of doubles and 3d array of doubles</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Match Regular Expression</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"You had me at hello."</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Jerry Maguire</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Which of the following is *not* supported by the right-click plugins feature? 1. edit-time front panel right-click menus, 2. run-time front panel right-click menus, 3. edit-time block diagram right-click menus, 4. run-time block diagram right-click menus</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>run-time front panel right-click menus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does DFIR stand for?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Data flow intermediate representation</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Find the primary problem with the logic of this code:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Race Condition. The first 16 bytes of the file will be read by the left instance of Read Characters From File.vi. Offset will be set to 16, BUT the loop at the right may start and read 22 bytes from the default value of Offset rather than the expected 16.</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does the glyph on the bottom corner of this icon mean?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Call parent method</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this node?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Open Application Reference</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"Hasta la vista, baby."</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Terminator 2: Judgment Day</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the naem of this palette?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Application Control</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>There are 8 different build specification types available with a core LabVIEW install on Windows (no modules/toolkits). Name 6 of them.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Any 6 of the following 8:
+Shared Library (DLL), Application (EXE), Installer, Packed Library, Source Distribution, Zip File, .NET Interop Assembly, Package</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"You talking to me?"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Taxi Driver</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"You're gonna need a bigger boat."</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Jaws</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What Does Ctl+Shift+W do? And what fields does it show</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Opens the "All Windows" Dialog : title , type, app instance, path, file name</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Great Wall of China</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What does "USB" stand for when referring to a computer port?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Universal Serial Bus</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of the global system of interconnected computer networks that use the Internet protocol suite?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Internet</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the formula to calculate work done?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Work = Force × Distance</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What company pioneered the rotary engine in cars like the RX-7?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mazda</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Machu Picchu</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What company developed the vacuum tube computer known as ENIAC, one of the earliest electronic general-purpose computers?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>University of Pennsylvania</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Sydney Opera House</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who is this?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Scarlett Johansson</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the largest moon of Uranus?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Titania</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Who was the only president to serve more than two terms?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Franklin D. Roosevelt</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What common interface connects peripherals like keyboards and mice to computers?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>USB (Universal Serial Bus)</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>"I'm king of the world!"</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Titanic</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>With a certain INI token, you can launch a debugging tool in LabVIEW by pressing Ctrl-Shift-D-N. Name that debugging tool.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Ned</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name the folder on disk where the scripted instance VIs for Channel Wires are stored.</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>ExtraVILib</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name this place:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>The Pyramids of Giza</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Statue of Liberty</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name this place:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Mount Rushmore</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>What is the name of this landmark?</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Machu Picchu</Val>
+</String>
+</Cluster>
+<Cluster>
+<Name></Name>
+<NumElts>2</NumElts>
+<String>
+<Name>String</Name>
+<Val>Name this place:</Val>
+</String>
+<String>
+<Name>String</Name>
+<Val>Golden Gate Bridge</Val>
+</String>
+</Cluster>
+</Array>
