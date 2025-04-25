@@ -1,6 +1,6 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
-<Project Type="Project" LVVersion="21008000">
-	<Property Name="NI.LV.All.SaveVersion" Type="Str">21.0</Property>
+<Project Type="Project" LVVersion="23008000">
+	<Property Name="NI.LV.All.SaveVersion" Type="Str">23.0</Property>
 	<Property Name="NI.LV.All.SourceOnly" Type="Bool">true</Property>
 	<Property Name="NI.Project.Description" Type="Str"></Property>
 	<Item Name="My Computer" Type="My Computer">
@@ -24,7 +24,6 @@
 		<Item Name="MC Prompt.lvlib" Type="Library" URL="../MC Prompt/MC Prompt.lvlib"/>
 		<Item Name="NI_Read_XLSX_File_LibreMod3.vi" Type="VI" URL="../NI_Read_XLSX_File_LibreMod3.vi"/>
 		<Item Name="Question Display.lvlib" Type="Library" URL="../Question Display/Question Display.lvlib"/>
-		<Item Name="Questions.xlsx" Type="Document" URL="../Questions/Questions.xlsx"/>
 		<Item Name="Simulated Hardware.lvlib" Type="Library" URL="../Simulated HW/Simulated Hardware.lvlib"/>
 		<Item Name="Sounds.lvlib" Type="Library" URL="../Sounds/Sounds.lvlib"/>
 		<Item Name="Timer.lvlib" Type="Library" URL="../Timer/Timer.lvlib"/>
