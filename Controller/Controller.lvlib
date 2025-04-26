@@ -12,6 +12,7 @@
 		<Item Name="Load Contestant Panel Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Contestant Panel Msg/Load Contestant Panel Msg.lvclass"/>
 		<Item Name="Load Main Panel Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Main Panel Display Msg/Load Main Panel Display Msg.lvclass"/>
 		<Item Name="Load Questions from Disk Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Questions from Disk Msg/Load Questions from Disk Msg.lvclass"/>
+		<Item Name="Play Sound Msg.lvclass" Type="LVClass" URL="../Controller Messages/Play Sound Msg/Play Sound Msg.lvclass"/>
 		<Item Name="Question Prompt Display Msg.lvclass" Type="LVClass" URL="../Controller Messages/Question Prompt Display Msg/Question Prompt Display Msg.lvclass"/>
 		<Item Name="Reset All Grid Tiles Msg.lvclass" Type="LVClass" URL="../Controller Messages/Reset All Grid Tiles Msg/Reset All Grid Tiles Msg.lvclass"/>
 		<Item Name="Reset Contestant Lights Msg.lvclass" Type="LVClass" URL="../Controller Messages/Reset Contestant Lights Msg/Reset Contestant Lights Msg.lvclass"/>
