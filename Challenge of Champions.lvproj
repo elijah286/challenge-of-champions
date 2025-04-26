@@ -27,6 +27,7 @@
 		<Item Name="Simulated Hardware.lvlib" Type="Library" URL="../Simulated HW/Simulated Hardware.lvlib"/>
 		<Item Name="Sounds.lvlib" Type="Library" URL="../Sounds/Sounds.lvlib"/>
 		<Item Name="Timer.lvlib" Type="Library" URL="../Timer/Timer.lvlib"/>
+		<Item Name="Determine Winning Team.vi" Type="VI" URL="../Controller/Determine Winning Team.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="user.lib" Type="Folder">
 				<Item Name="Convert File Extension (Path)__ogtk.vi" Type="VI" URL="/&lt;userlib&gt;/_OpenG.lib/file/file.llb/Convert File Extension (Path)__ogtk.vi"/>

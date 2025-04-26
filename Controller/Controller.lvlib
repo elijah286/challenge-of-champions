@@ -7,6 +7,7 @@
 		<Item Name="Answer Received Msg.lvclass" Type="LVClass" URL="../Controller Messages/Answer Received Msg/Answer Received Msg.lvclass"/>
 		<Item Name="Buzzer Pressed Msg.lvclass" Type="LVClass" URL="../Controller Messages/Buzzer Pressed Msg/Buzzer Pressed Msg.lvclass"/>
 		<Item Name="Clear Buffer of Asked Questions Msg.lvclass" Type="LVClass" URL="../Controller Messages/Clear Buffer of Asked Questions Msg/Clear Buffer of Asked Questions Msg.lvclass"/>
+		<Item Name="Highlight Leader Msg.lvclass" Type="LVClass" URL="../Controller Messages/Highlight Leader Msg/Highlight Leader Msg.lvclass"/>
 		<Item Name="Launch Animation Actor Msg.lvclass" Type="LVClass" URL="../Controller Messages/Launch Animation Actor Msg/Launch Animation Actor Msg.lvclass"/>
 		<Item Name="Launch Contestant Actors Msg.lvclass" Type="LVClass" URL="../Controller Messages/Launch Contestant Actors Msg/Launch Contestant Actors Msg.lvclass"/>
 		<Item Name="Load Contestant Panel Msg.lvclass" Type="LVClass" URL="../Controller Messages/Load Contestant Panel Msg/Load Contestant Panel Msg.lvclass"/>
