@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  PAGES_URL: https://elijahkerry.github.io/challenge-of-champions
+  PAGES_URL: https://elijah286.github.io/challenge-of-champions
 
 permissions:
   contents: write

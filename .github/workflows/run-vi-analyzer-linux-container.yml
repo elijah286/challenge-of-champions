@@ -26,7 +26,7 @@ on:
 env:
   # Use the public NI Linux image — lighter, faster pull, no custom image needed
   LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-linux
-  PAGES_URL: https://elijahkerry.github.io/challenge-of-champions
+  PAGES_URL: https://elijah286.github.io/challenge-of-champions
 
 permissions:
   contents: write
