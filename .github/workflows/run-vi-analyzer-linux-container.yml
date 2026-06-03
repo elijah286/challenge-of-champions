@@ -40,10 +40,13 @@ jobs:
     steps:
       - name: Determine target SHA
         id: sha
-        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ -n "${{ github.event.inputs.commit_sha }}" ]; then
-            echo "sha=${{ github.event.inputs.commit_sha }}" >> "$GITHUB_OUTPUT"
+          INPUT="${{ github.event.inputs.commit_sha }}"
+          if [ -n "$INPUT" ]; then
+            FULL=$(gh api "repos/${{ github.repository }}/commits/$INPUT" --jq '.sha')
+            echo "sha=$FULL" >> "$GITHUB_OUTPUT"
           else
             echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
           fi

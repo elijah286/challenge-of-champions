@@ -36,10 +36,17 @@ jobs:
       - name: Determine SHAs
         id: shas
         shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          expand() {
+            local s="$1"
+            [ -z "$s" ] && echo "" && return
+            gh api "repos/${{ github.repository }}/commits/$s" --jq '.sha' 2>/dev/null || echo "$s"
+          }
           if [ -n "${{ github.event.inputs.head_sha }}" ]; then
-            HEAD="${{ github.event.inputs.head_sha }}"
-            BASE="${{ github.event.inputs.base_sha }}"
+            HEAD=$(expand "${{ github.event.inputs.head_sha }}")
+            BASE=$(expand "${{ github.event.inputs.base_sha }}")
           elif [ "${{ github.event_name }}" = "pull_request" ]; then
             HEAD="${{ github.event.pull_request.head.sha }}"
             BASE="${{ github.event.pull_request.base.sha }}"
