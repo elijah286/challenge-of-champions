@@ -40,7 +40,8 @@ START=$(date +%s)
     -OperationName RunVIAnalyzer \
     -LabVIEWPath "$LABVIEW_EXE" \
     -VIAnalyzerConfigFile "$CONFIG_FILE" \
-    -ExportFilePath "$RESULTS_XML" || EXIT_CODE=$?
+    -ExportFilePath "$RESULTS_XML" \
+    -Headless || EXIT_CODE=$?
 
 EXIT_CODE="${EXIT_CODE:-0}"
 END=$(date +%s)
