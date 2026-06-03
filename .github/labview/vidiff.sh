@@ -77,7 +77,7 @@ for REL_PATH in "${VI_FILES[@]}"; do
             -ReportType       html \
             -ReportPath       "${OUT_DIR}/index.html" \
             -LogToConsole     TRUE \
-            -Headless || { echo "  ERROR: CreateComparisonReport failed"; ((ERRORS++)); continue; }
+            -Headless || { echo "  ERROR: CreateComparisonReport failed"; ERRORS=$((ERRORS+1)); continue; }
 
     elif $HEAD_EXISTS; then
         TYPE="added"
@@ -89,7 +89,7 @@ for REL_PATH in "${VI_FILES[@]}"; do
             -OutputPath                   "${OUT_DIR}/index.html" \
             -o -c \
             -LogToConsole                 TRUE \
-            -Headless || { echo "  ERROR: PrintToSingleFileHtml (added) failed"; ((ERRORS++)); continue; }
+            -Headless || { echo "  ERROR: PrintToSingleFileHtml (added) failed"; ERRORS=$((ERRORS+1)); continue; }
 
     elif $BASE_EXISTS; then
         TYPE="deleted"
@@ -101,13 +101,13 @@ for REL_PATH in "${VI_FILES[@]}"; do
             -OutputPath                   "${OUT_DIR}/index.html" \
             -o -c \
             -LogToConsole                 TRUE \
-            -Headless || { echo "  ERROR: PrintToSingleFileHtml (deleted) failed"; ((ERRORS++)); continue; }
+            -Headless || { echo "  ERROR: PrintToSingleFileHtml (deleted) failed"; ERRORS=$((ERRORS+1)); continue; }
     else
         echo "  Skipping — not a valid LabVIEW binary"
         continue
     fi
 
-    ((PROCESSED++))
+    PROCESSED=$((PROCESSED+1))
 done
 
 echo ""
