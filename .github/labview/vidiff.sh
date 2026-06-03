@@ -21,7 +21,7 @@ LABVIEWCLI="LabVIEWCLI"
 LABVIEW_EXE=$(find /usr/local/natinst -name "labviewprofull" 2>/dev/null | head -1)
 if [ -z "$LABVIEW_EXE" ]; then echo "ERROR: labviewprofull not found" >&2; exit 1; fi
 echo "Using LabVIEW: $LABVIEW_EXE"
-PRINT_TO_HTML_OP="${HEAD_DIR}/.github/labview/PrintToSingleFileHtml"
+PRINT_TO_HTML_OP="${HEAD_DIR}/.github/labview"
 
 mkdir -p "$REPORT_DIR"
 
@@ -69,22 +69,15 @@ for REL_PATH in "${VI_FILES[@]}"; do
     TYPE=""
     if $BASE_EXISTS && $HEAD_EXISTS; then
         TYPE="modified"
-        COMP_XML="${OUT_DIR}/comparison.xml"
         "$LABVIEWCLI" \
             -OperationName    CreateComparisonReport \
             -LabVIEWPath      "$LABVIEW_EXE" \
-            -OldVIPath        "$BASE_PATH" \
-            -NewVIPath        "$HEAD_PATH" \
-            -ExportPath       "$COMP_XML" \
+            -VI1              "$BASE_PATH" \
+            -VI2              "$HEAD_PATH" \
+            -ReportType       html \
+            -ReportPath       "${OUT_DIR}/index.html" \
+            -LogToConsole     TRUE \
             -Headless || { echo "  ERROR: CreateComparisonReport failed"; ((ERRORS++)); continue; }
-
-        "$LABVIEWCLI" \
-            -OperationName                PrintToSingleFileHtml \
-            -AdditionalOperationDirectory "$PRINT_TO_HTML_OP" \
-            -LabVIEWPath                  "$LABVIEW_EXE" \
-            -VIPath                       "$COMP_XML" \
-            -ExportPath                   "${OUT_DIR}/index.html" \
-            -Headless || { echo "  ERROR: PrintToSingleFileHtml failed"; ((ERRORS++)); continue; }
 
     elif $HEAD_EXISTS; then
         TYPE="added"
@@ -92,8 +85,10 @@ for REL_PATH in "${VI_FILES[@]}"; do
             -OperationName                PrintToSingleFileHtml \
             -AdditionalOperationDirectory "$PRINT_TO_HTML_OP" \
             -LabVIEWPath                  "$LABVIEW_EXE" \
-            -VIPath                       "$HEAD_PATH" \
-            -ExportPath                   "${OUT_DIR}/index.html" \
+            -VI                           "$HEAD_PATH" \
+            -OutputPath                   "${OUT_DIR}/index.html" \
+            -o -c \
+            -LogToConsole                 TRUE \
             -Headless || { echo "  ERROR: PrintToSingleFileHtml (added) failed"; ((ERRORS++)); continue; }
 
     elif $BASE_EXISTS; then
@@ -102,8 +97,10 @@ for REL_PATH in "${VI_FILES[@]}"; do
             -OperationName                PrintToSingleFileHtml \
             -AdditionalOperationDirectory "$PRINT_TO_HTML_OP" \
             -LabVIEWPath                  "$LABVIEW_EXE" \
-            -VIPath                       "$BASE_PATH" \
-            -ExportPath                   "${OUT_DIR}/index.html" \
+            -VI                           "$BASE_PATH" \
+            -OutputPath                   "${OUT_DIR}/index.html" \
+            -o -c \
+            -LogToConsole                 TRUE \
             -Headless || { echo "  ERROR: PrintToSingleFileHtml (deleted) failed"; ((ERRORS++)); continue; }
     else
         echo "  Skipping — not a valid LabVIEW binary"
