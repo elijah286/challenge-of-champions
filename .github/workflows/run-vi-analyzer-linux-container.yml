@@ -1,0 +1,105 @@
+name: Run VI Analyzer — Linux Container
+
+on:
+  pull_request:
+    paths:
+      - '**.vi'
+      - '**.ctl'
+      - '**.lvproj'
+      - '**.lvlib'
+      - '**.lvclass'
+  push:
+    branches: [main]
+    paths:
+      - '**.vi'
+      - '**.ctl'
+      - '**.lvproj'
+      - '**.lvlib'
+      - '**.lvclass'
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to analyze (leave blank for current HEAD)'
+        required: false
+        default: ''
+
+env:
+  # Use the public NI Linux image — lighter, faster pull, no custom image needed
+  LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-linux
+  PAGES_URL: https://elijahkerry.github.io/challenge-of-champions
+
+permissions:
+  contents: write
+  pages: write
+  statuses: write
+
+jobs:
+  vi-analyzer-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Determine target SHA
+        id: sha
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.inputs.commit_sha }}" ]; then
+            echo "sha=${{ github.event.inputs.commit_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.sha.outputs.sha }}
+          fetch-depth: 0
+
+      - name: Restore CI scripts from main
+        if: github.event.inputs.commit_sha != ''
+        run: git checkout origin/main -- .github/labview .github/workflows
+
+      - name: Pull LabVIEW Linux container
+        run: docker pull ${{ env.LABVIEW_CONTAINER_IMAGE }}
+
+      - name: Run VI Analyzer inside Linux container
+        id: analyze
+        run: |
+          mkdir -p "${{ github.workspace }}/ci-out/vi-analyzer"
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            ${{ env.LABVIEW_CONTAINER_IMAGE }} \
+            bash /workspace/.github/labview/run-vi-analyzer.sh \
+              /workspace \
+              /workspace/ci-out/vi-analyzer
+        continue-on-error: true
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vi-analyzer-linux-report-${{ steps.sha.outputs.sha }}
+          path: ${{ github.workspace }}/ci-out/vi-analyzer/
+          if-no-files-found: warn
+
+      - name: Deploy report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/ci-out/vi-analyzer
+          destination_dir: vi-analyzer-linux/${{ steps.sha.outputs.sha }}
+          keep_files: true
+
+      - name: Post commit status
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT_URL="${{ env.PAGES_URL }}/vi-analyzer-linux/${{ steps.sha.outputs.sha }}/index.html"
+          STATE="${{ steps.analyze.outcome == 'success' && 'success' || 'failure' }}"
+          curl -s -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/statuses/${{ steps.sha.outputs.sha }}" \
+            -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"VI Analyzer (Linux) $STATE\",\"context\":\"CI / VI Analyzer (Linux)\"}"
+
+      - name: Fail if analysis failed
+        if: steps.analyze.outcome == 'failure'
+        run: exit 1

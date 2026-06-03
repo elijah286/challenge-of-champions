@@ -1,0 +1,114 @@
+name: Mass Compile — Windows Container
+
+on:
+  pull_request:
+    paths:
+      - '**.vi'
+      - '**.ctl'
+      - '**.lvproj'
+      - '**.lvlib'
+      - '**.lvclass'
+  push:
+    branches: [main]
+    paths:
+      - '**.vi'
+      - '**.ctl'
+      - '**.lvproj'
+      - '**.lvlib'
+      - '**.lvclass'
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Commit SHA to compile (leave blank for current HEAD)'
+        required: false
+        default: ''
+
+env:
+  LABVIEW_CONTAINER_IMAGE: ghcr.io/elijahkerry/challenge-of-champions-labview:2024
+  PAGES_URL: https://elijahkerry.github.io/challenge-of-champions
+
+permissions:
+  contents: write
+  pages: write
+  statuses: write
+
+jobs:
+  mass-compile:
+    runs-on: windows-2022   # windows-latest = Server 2025, broken Docker daemon
+
+    steps:
+      - name: Determine target SHA
+        id: sha
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.inputs.commit_sha }}" ]; then
+            echo "sha=${{ github.event.inputs.commit_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.sha.outputs.sha }}
+          fetch-depth: 0
+
+      # When re-running against a historical commit the CI scripts may not
+      # exist in that commit — restore them from main.
+      - name: Restore CI scripts from main
+        if: github.event.inputs.commit_sha != ''
+        shell: bash
+        run: git checkout origin/main -- .github/labview .github/workflows
+
+      - name: Pull LabVIEW container image
+        shell: powershell
+        run: docker pull $Env:LABVIEW_CONTAINER_IMAGE
+
+      - name: Run Mass Compile inside container
+        shell: powershell
+        run: |
+          docker run --rm `
+            -v "${{ github.workspace }}:C:\workspace" `
+            $Env:LABVIEW_CONTAINER_IMAGE `
+            powershell -NonInteractive -ExecutionPolicy Bypass `
+              -File "C:\workspace\.github\labview\masscompile.ps1" `
+              -WorkspaceRoot "C:\workspace" `
+              -ReportDir     "C:\workspace\ci-out\masscompile" `
+              -LabVIEWPath   "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
+        # Allow step to fail so we can still upload the report
+        continue-on-error: true
+        id: compile
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: masscompile-report-${{ steps.sha.outputs.sha }}
+          path: ${{ github.workspace }}/ci-out/masscompile/
+          if-no-files-found: warn
+
+      - name: Deploy report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/ci-out/masscompile
+          destination_dir: masscompile/${{ steps.sha.outputs.sha }}
+          keep_files: true
+
+      - name: Post commit status
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SHORT_SHA="${{ steps.sha.outputs.sha }}"
+          SHORT_SHA="${SHORT_SHA:0:7}"
+          REPORT_URL="${{ env.PAGES_URL }}/masscompile/${{ steps.sha.outputs.sha }}/index.html"
+          STATE="${{ steps.compile.outcome == 'success' && 'success' || 'failure' }}"
+          curl -s -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/statuses/${{ steps.sha.outputs.sha }}" \
+            -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"Mass Compile $STATE\",\"context\":\"CI / Mass Compile\"}"
+
+      - name: Fail the job if compile failed
+        if: steps.compile.outcome == 'failure'
+        run: exit 1

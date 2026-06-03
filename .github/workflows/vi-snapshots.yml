@@ -1,0 +1,91 @@
+name: VI Snapshots and VI Browser
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.vi'
+      - '**.ctl'
+      - '**.lvproj'
+      - '**.lvlib'
+      - '**.lvclass'
+  workflow_dispatch:
+
+env:
+  LABVIEW_CONTAINER_IMAGE: ghcr.io/elijahkerry/challenge-of-champions-labview:2024
+  PAGES_URL: https://elijahkerry.github.io/challenge-of-champions
+
+permissions:
+  contents: write
+  pages: write
+  statuses: write
+
+jobs:
+  export-snapshots:
+    runs-on: windows-2022   # windows-latest = Server 2025, broken Docker daemon
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Pull LabVIEW container image
+        shell: powershell
+        run: docker pull $Env:LABVIEW_CONTAINER_IMAGE
+
+      - name: Export VI snapshots inside container
+        shell: powershell
+        id: export
+        run: |
+          docker run --rm `
+            -v "${{ github.workspace }}:C:\workspace" `
+            $Env:LABVIEW_CONTAINER_IMAGE `
+            powershell -NonInteractive -ExecutionPolicy Bypass `
+              -File "C:\workspace\.github\labview\export-vi-snapshots.ps1" `
+              -WorkspaceRoot "C:\workspace" `
+              -OutputDir     "C:\workspace\ci-out\vi-snapshots\${{ github.sha }}" `
+              -LabVIEWPath   "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
+        continue-on-error: true
+
+      - name: Build gallery manifest
+        shell: bash
+        run: |
+          python3 .github/labview/build-gallery.py \
+            --snapshot-dir  "${{ github.workspace }}/ci-out/vi-snapshots/${{ github.sha }}" \
+            --workspace-dir "${{ github.workspace }}" \
+            --commit-sha    "${{ github.sha }}" \
+            --commit-msg    "${{ github.event.head_commit.message }}" \
+            --author        "${{ github.event.head_commit.author.name }}" \
+            --output-dir    "${{ github.workspace }}/ci-out/vi-snapshots"
+
+      - name: Copy VI Browser page
+        shell: bash
+        run: |
+          cp .github/pages/vi-browser.html    ci-out/vi-snapshots/index.html
+          cp .github/pages/vi-interactive.html ci-out/vi-snapshots/vi-interactive.html
+
+      - name: Deploy snapshots to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/ci-out/vi-snapshots
+          destination_dir: vi-snapshots
+          keep_files: true
+
+      - name: Post commit status
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT_URL="${{ env.PAGES_URL }}/vi-snapshots/index.html"
+          STATE="${{ steps.export.outcome == 'success' && 'success' || 'failure' }}"
+          curl -s -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}" \
+            -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"VI Snapshots $STATE\",\"context\":\"CI / VI Snapshots\"}"
+
+      - name: Fail if export failed
+        if: steps.export.outcome == 'failure'
+        run: exit 1

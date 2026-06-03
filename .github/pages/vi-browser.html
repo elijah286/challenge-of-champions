@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--
+  .github/pages/vi-browser.html
+  Deployed to: https://elijahkerry.github.io/challenge-of-champions/vi-snapshots/index.html
+
+  Reads manifest.json and commits.json from the same directory (vi-snapshots/)
+  on the gh-pages branch and renders a browseable gallery of VI snapshots.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>VI Browser — challenge-of-champions</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+         background:#0d1117;color:#e6edf3;display:flex;height:100vh;overflow:hidden}
+
+    /* ── Sidebar ── */
+    #sidebar{width:280px;min-width:220px;background:#161b22;border-right:1px solid #30363d;
+             display:flex;flex-direction:column;overflow:hidden}
+    #sidebar-header{padding:12px 14px;border-bottom:1px solid #30363d}
+    #sidebar-header h1{font-size:1em;color:#e6edf3;margin-bottom:8px}
+    #commit-select{width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;
+                   border-radius:6px;padding:5px 8px;font-size:.8em}
+    #search{width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;
+            border-radius:6px;padding:5px 8px;font-size:.8em;margin-top:6px}
+    #vi-list{flex:1;overflow-y:auto}
+    .group-header{padding:6px 12px;font-size:.72em;color:#8b949e;text-transform:uppercase;
+                  letter-spacing:.06em;border-bottom:1px solid #21262d;background:#161b22;
+                  position:sticky;top:0;z-index:1}
+    .vi-item{padding:6px 14px;font-size:.8em;cursor:pointer;color:#c9d1d9;
+             border-bottom:1px solid #21262d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .vi-item:hover{background:#1c2128;color:#e6edf3}
+    .vi-item.active{background:#1f6feb33;color:#58a6ff}
+
+    /* ── Main panel ── */
+    #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+    #toolbar{padding:8px 14px;border-bottom:1px solid #30363d;background:#161b22;
+             font-size:.82em;color:#8b949e;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    #vi-title{font-weight:600;color:#e6edf3}
+    #viewer{flex:1;overflow:hidden}
+    #viewer iframe{width:100%;height:100%;border:none;background:#fff}
+    #empty{flex:1;display:flex;align-items:center;justify-content:center;
+           flex-direction:column;color:#8b949e;gap:10px}
+    #empty svg{opacity:.3}
+  </style>
+</head>
+<body>
+
+<div id="sidebar">
+  <div id="sidebar-header">
+    <h1>VI Browser</h1>
+    <select id="commit-select"><option value="">Loading commits…</option></select>
+    <input id="search" type="search" placeholder="Filter VIs…">
+  </div>
+  <div id="vi-list"></div>
+</div>
+
+<div id="main">
+  <div id="toolbar">
+    <span id="vi-title">Select a VI from the sidebar</span>
+    <a id="open-link" href="#" target="_blank" style="color:#58a6ff;display:none">Open in new tab ↗</a>
+  </div>
+  <div id="empty">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+    </svg>
+    <span>Select a VI to view its front panel and block diagram</span>
+  </div>
+  <div id="viewer" style="display:none"><iframe id="vi-frame" title="VI Snapshot"></iframe></div>
+</div>
+
+<script>
+const BASE = window.location.pathname.replace(/\/?$/, '/');
+
+async function fetchJson(url) {
+  const r = await fetch(url, { cache: 'no-store' });
+  if (!r.ok) throw new Error(`${r.status} ${url}`);
+  return r.json();
+}
+
+let manifest = [];
+
+async function loadCommits() {
+  const commits = await fetchJson(BASE + 'commits.json').catch(() => []);
+  const sel = document.getElementById('commit-select');
+  sel.innerHTML = '';
+  if (!commits.length) {
+    sel.innerHTML = '<option value="">No snapshots yet</option>';
+    return;
+  }
+  for (const c of commits) {
+    const opt = document.createElement('option');
+    opt.value   = c.sha;
+    opt.textContent = `${c.short} — ${c.message.slice(0, 40)}`;
+    sel.appendChild(opt);
+  }
+  sel.addEventListener('change', () => loadManifest(sel.value));
+  loadManifest(commits[0].sha);
+}
+
+async function loadManifest(sha) {
+  manifest = await fetchJson(BASE + sha + '/manifest.json').catch(() => []);
+  renderList(document.getElementById('search').value);
+}
+
+function renderList(filter) {
+  const f = filter.toLowerCase();
+  const filtered = manifest.filter(v =>
+    !f || v.vi_name.toLowerCase().includes(f) || v.vi_rel.toLowerCase().includes(f)
+  );
+  const groups = {};
+  for (const v of filtered) {
+    (groups[v.group] = groups[v.group] || []).push(v);
+  }
+  const container = document.getElementById('vi-list');
+  container.innerHTML = '';
+  if (!filtered.length) {
+    container.innerHTML = '<div style="padding:16px;color:#8b949e;font-size:.8em">No VIs match the filter.</div>';
+    return;
+  }
+  for (const [group, vis] of Object.entries(groups)) {
+    const gh = document.createElement('div');
+    gh.className = 'group-header';
+    gh.textContent = group;
+    container.appendChild(gh);
+    for (const v of vis) {
+      const item = document.createElement('div');
+      item.className  = 'vi-item';
+      item.textContent = v.vi_name;
+      item.title       = v.vi_rel;
+      item.dataset.html = v.html;
+      item.dataset.name = v.vi_rel;
+      item.addEventListener('click', () => openVI(item));
+      container.appendChild(item);
+    }
+  }
+}
+
+function openVI(item) {
+  document.querySelectorAll('.vi-item').forEach(el => el.classList.remove('active'));
+  item.classList.add('active');
+  const sha      = document.getElementById('commit-select').value;
+  const htmlPath = `${BASE}${sha}/${item.dataset.html}`;
+  document.getElementById('vi-title').textContent = item.dataset.name;
+  const link = document.getElementById('open-link');
+  link.href  = htmlPath; link.style.display = 'inline';
+  document.getElementById('empty').style.display  = 'none';
+  document.getElementById('viewer').style.display = 'block';
+  document.getElementById('vi-frame').src = htmlPath;
+}
+
+document.getElementById('search').addEventListener('input', e => renderList(e.target.value));
+
+loadCommits().catch(err => {
+  document.getElementById('vi-list').innerHTML =
+    `<div style="padding:16px;color:#da3633;font-size:.8em">Error loading gallery:<br>${err.message}</div>`;
+});
+</script>
+</body>
+</html>

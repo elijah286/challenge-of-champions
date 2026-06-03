@@ -1,0 +1,173 @@
+name: CI Dashboard — GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/pages/index.html'
+      - '.github/workflows/dashboard-pages.yml'
+  schedule:
+    # Refresh every 15 minutes to pick up newly posted commit statuses
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+env:
+  PAGES_URL: https://elijahkerry.github.io/challenge-of-champions
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  build-dashboard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build CI dashboard
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PAGES_URL: ${{ env.PAGES_URL }}
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, sys, urllib.request, urllib.error
+
+          token    = os.environ['GH_TOKEN']
+          repo     = os.environ['REPO']
+          pages_url = os.environ['PAGES_URL']
+
+          def gh_get(path):
+              url = f"https://api.github.com/repos/{repo}/{path}"
+              req = urllib.request.Request(url, headers={
+                  'Authorization': f'token {token}',
+                  'Accept': 'application/vnd.github+json',
+                  'X-GitHub-Api-Version': '2022-11-28',
+              })
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      return json.load(r)
+              except urllib.error.HTTPError as e:
+                  print(f"  HTTP {e.code} for {path}", file=sys.stderr)
+                  return None
+
+          # ── Fetch last 60 commits on main ───────────────────────────────
+          commits_data = gh_get('commits?sha=main&per_page=60') or []
+
+          rows_html = []
+          for c in commits_data:
+              sha     = c['sha']
+              short   = sha[:7]
+              msg     = c['commit']['message'].splitlines()[0][:80]
+              author  = c['commit']['author']['name']
+              date    = c['commit']['author']['date']
+
+              # Check if all changed files are CI-only (.github/)
+              compare = gh_get(f'commits/{sha}') or {}
+              files   = [f['filename'] for f in (compare.get('files') or [])]
+              ci_only = files and all(f.startswith('.github/') for f in files)
+
+              # Fetch commit statuses
+              statuses_data = gh_get(f'commits/{sha}/statuses') or []
+              status_map = {}
+              for s in statuses_data:
+                  ctx = s['context']
+                  if ctx not in status_map:          # keep latest per context
+                      status_map[ctx] = s
+
+              def badge(ctx, label):
+                  s = status_map.get(ctx)
+                  if ci_only:
+                      return '<td style="text-align:center;color:#8b949e;font-size:.75em">—</td>'
+                  if not s:
+                      return '<td style="text-align:center;color:#8b949e;font-size:.75em">pending</td>'
+                  color  = {'success':'#2ea043','failure':'#da3633','pending':'#9a6700','error':'#da3633'}.get(s['state'],'#555')
+                  emoji  = {'success':'✅','failure':'❌','pending':'⏳','error':'⚠️'}.get(s['state'],'?')
+                  url    = s.get('target_url','')
+                  link   = f'<a href="{url}" style="color:inherit">{emoji} {label}</a>' if url else f'{emoji} {label}'
+                  return f'<td style="text-align:center"><span style="background:{color};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">{link}</span></td>'
+
+              mc_badge  = badge('CI / Mass Compile',      'compile')
+              via_badge = badge('CI / VI Analyzer',       'analyze')
+              diff_badge= badge('CI / VIDiff (windows)',  'diff')
+              snap_badge= badge('CI / VI Snapshots',      'snapshots')
+
+              rows_html.append(f"""
+              <tr>
+                <td style="padding:8px;font-family:monospace;font-size:.85em">
+                  <a href="https://github.com/{repo}/commit/{sha}" style="color:#58a6ff">{short}</a>
+                </td>
+                <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{msg}">{msg}</td>
+                <td style="padding:8px;font-size:.82em;color:#8b949e">{author}</td>
+                <td style="padding:8px;font-size:.75em;color:#8b949e">{date[:10]}</td>
+                {mc_badge}
+                {via_badge}
+                {diff_badge}
+                {snap_badge}
+              </tr>""")
+
+          rows = '\n'.join(rows_html)
+          now  = __import__('datetime').datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')
+
+          html = f"""<!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <meta http-equiv="refresh" content="900">
+            <title>CI Dashboard — challenge-of-champions</title>
+            <style>
+              *{{box-sizing:border-box}}
+              body{{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3}}
+              h1{{font-size:1.4em;margin:0 0 4px}}
+              .sub{{color:#8b949e;font-size:.85em;margin-bottom:20px}}
+              table{{border-collapse:collapse;width:100%;background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden}}
+              th{{text-align:left;padding:10px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-size:.8em;white-space:nowrap}}
+              td{{border-bottom:1px solid #21262d;vertical-align:middle}}
+              tr:last-child td{{border-bottom:none}}
+              tr:hover{{background:#1c2128}}
+              a{{color:#58a6ff;text-decoration:none}}a:hover{{text-decoration:underline}}
+              .nav{{margin-bottom:16px;font-size:.9em}}
+              .nav a{{margin-right:16px;color:#58a6ff}}
+            </style>
+          </head>
+          <body>
+            <h1>CI Dashboard — challenge-of-champions</h1>
+            <div class="sub">Last updated: {now} &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
+            <div class="nav">
+              <a href="{pages_url}/vi-snapshots/">VI Browser</a>
+              <a href="https://github.com/{repo}">Repository</a>
+              <a href="https://github.com/{repo}/actions">Actions</a>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Commit</th><th>Message</th><th>Author</th><th>Date</th>
+                  <th style="text-align:center">Mass Compile</th>
+                  <th style="text-align:center">VI Analyzer</th>
+                  <th style="text-align:center">VIDiff</th>
+                  <th style="text-align:center">Snapshots</th>
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </table>
+          </body>
+          </html>"""
+
+          os.makedirs('ci-out/dashboard', exist_ok=True)
+          with open('ci-out/dashboard/index.html', 'w', encoding='utf-8') as f:
+              # Dedent the heredoc indentation
+              import textwrap
+              f.write(textwrap.dedent(html))
+          print(f"Dashboard built with {len(commits_data)} commits.")
+          PYEOF
+
+      - name: Deploy dashboard to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ci-out/dashboard
+          destination_dir: .
+          keep_files: true

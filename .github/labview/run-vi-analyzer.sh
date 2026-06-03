@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# =============================================================================
+# run-vi-analyzer.sh — Runs LabVIEW VI Analyzer in a Linux container
+# =============================================================================
+# Usage (inside container, workspace mounted at /workspace):
+#   bash /workspace/.github/labview/run-vi-analyzer.sh \
+#       /workspace                          # WorkspaceRoot
+#       /report                             # ReportDir
+# =============================================================================
+set -euo pipefail
+
+WORKSPACE_ROOT="${1:-/workspace}"
+REPORT_DIR="${2:-/report}"
+CONFIG_TEMPLATE="${WORKSPACE_ROOT}/.github/labview/via-configs/via-config-default.viancfg"
+
+# LabVIEWCLI path inside the NI Linux container
+LABVIEWCLI="/usr/local/natinst/LabVIEW-2024-64/LabVIEWCLI"
+LABVIEW_EXE="/usr/local/natinst/LabVIEW-2024-64/LabVIEW"
+
+mkdir -p "$REPORT_DIR"
+
+CONFIG_FILE="$REPORT_DIR/via-config.viancfg"
+RESULTS_XML="$REPORT_DIR/via-results.xml"
+HTML_OUT="$REPORT_DIR/index.html"
+
+echo "=== VI Analyzer (Linux) ==="
+echo "  Workspace  : $WORKSPACE_ROOT"
+echo "  Config src : $CONFIG_TEMPLATE"
+
+# Patch __WORKSPACE_PATH__ placeholder
+sed "s|__WORKSPACE_PATH__|${WORKSPACE_ROOT}|g" "$CONFIG_TEMPLATE" > "$CONFIG_FILE"
+echo "  Config out : $CONFIG_FILE"
+
+START=$(date +%s)
+
+"$LABVIEWCLI" \
+    -OperationName RunVIAnalyzer \
+    -LabVIEWPath "$LABVIEW_EXE" \
+    -VIAnalyzerConfigFile "$CONFIG_FILE" \
+    -ExportFilePath "$RESULTS_XML" || EXIT_CODE=$?
+
+EXIT_CODE="${EXIT_CODE:-0}"
+END=$(date +%s)
+DURATION=$(( END - START ))
+
+echo ""
+echo "=== VI Analyzer finished (exit=$EXIT_CODE duration=${DURATION}s) ==="
+
+# Generate minimal HTML wrapper around the XML results
+XML_CONTENT="$(cat "$RESULTS_XML" 2>/dev/null || echo '(no results file)')"
+# Escape for HTML
+XML_HTML="$(echo "$XML_CONTENT" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')"
+REPORT_TS="$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+if [ "$EXIT_CODE" -eq 0 ]; then
+    STATUS="PASSED"; BADGE_COLOR="#2ea043"
+else
+    STATUS="FAILED"; BADGE_COLOR="#da3633"
+fi
+
+cat > "$HTML_OUT" <<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>VI Analyzer — challenge-of-champions</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3}
+    .card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:20px;margin-bottom:16px}
+    h1{margin:0 0 12px;font-size:1.3em}
+    .badge{display:inline-block;padding:3px 10px;border-radius:4px;font-weight:700;font-size:.85em;color:#fff;background:${BADGE_COLOR}}
+    .meta{margin-top:10px;font-size:.82em;color:#8b949e}
+    pre{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:14px;font-size:.75em;white-space:pre-wrap;overflow-y:auto;max-height:65vh;margin:0}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>VI Analyzer — challenge-of-champions</h1>
+    <span class="badge">${STATUS}</span>
+    <div class="meta">Date: ${REPORT_TS} &nbsp;|&nbsp; Duration: ${DURATION}s</div>
+  </div>
+  <pre>${XML_HTML}</pre>
+</body>
+</html>
+HTML
+
+echo "HTML report → $HTML_OUT"
+exit "$EXIT_CODE"
