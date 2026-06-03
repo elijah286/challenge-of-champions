@@ -39,8 +39,8 @@ START=$(date +%s)
 "$LABVIEWCLI" \
     -OperationName RunVIAnalyzer \
     -LabVIEWPath "$LABVIEW_EXE" \
-    -VIAnalyzerConfigFile "$CONFIG_FILE" \
-    -ExportFilePath "$RESULTS_XML" \
+    -ConfigPath "$CONFIG_FILE" \
+    -ReportPath "$RESULTS_XML" \
     -Headless || EXIT_CODE=$?
 
 EXIT_CODE="${EXIT_CODE:-0}"
