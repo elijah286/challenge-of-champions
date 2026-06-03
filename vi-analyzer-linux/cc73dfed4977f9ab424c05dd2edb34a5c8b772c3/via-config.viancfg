@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  VI Analyzer configuration for challenge-of-champions
+  /workspace is replaced at runtime by the PowerShell/bash CI scripts
+  with the absolute container path (C:\workspace on Windows, /workspace on Linux)
+-->
+<VIAnalyzerConfiguration>
+  <Version>1</Version>
+  <ItemsToAnalyze>
+    <Item>
+      <Path>/workspace</Path>
+      <Removed>FALSE</Removed>
+    </Item>
+  </ItemsToAnalyze>
+  <TestsToRun>
+    <Test>
+      <Name>Broken VI</Name>
+      <Enabled>TRUE</Enabled>
+    </Test>
+    <Test>
+      <Name>Separate Compiled Code</Name>
+      <Enabled>TRUE</Enabled>
+    </Test>
+    <Test>
+      <Name>Platform Portability</Name>
+      <Enabled>TRUE</Enabled>
+    </Test>
+    <Test>
+      <Name>Toolkit Usage</Name>
+      <Enabled>TRUE</Enabled>
+    </Test>
+    <Test>
+      <Name>Error Cluster Wired</Name>
+      <Enabled>TRUE</Enabled>
+    </Test>
+  </TestsToRun>
+  <ExportFormat>HTML</ExportFormat>
+</VIAnalyzerConfiguration>
