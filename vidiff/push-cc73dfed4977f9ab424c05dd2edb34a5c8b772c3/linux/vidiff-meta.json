@@ -3,5 +3,5 @@
   "base_sha":  "39d1c2a93007b3769824d981f223e7e225e17862",
   "pr_number": "",
   "platform":  "linux",
-  "outcome":   "success"
+  "outcome":   "failure"
 }
