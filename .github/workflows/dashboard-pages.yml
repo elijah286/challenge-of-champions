@@ -77,8 +77,8 @@ jobs:
                   if ctx not in status_map:          # keep latest per context
                       status_map[ctx] = s
 
-              def badge(ctx, label):
-                  s = status_map.get(ctx)
+              def badge(ctx, label, fallback=None):
+                  s = status_map.get(ctx) or (status_map.get(fallback) if fallback else None)
                   if ci_only:
                       return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
                   if not s:
@@ -90,8 +90,8 @@ jobs:
                   return f'<td style="text-align:center"><span style="background:{color};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">{link}</span></td>'
 
               mc_badge  = badge('CI / Mass Compile',      'compile')
-              via_badge = badge('CI / VI Analyzer',       'analyze')
-              diff_badge= badge('CI / VIDiff (windows)',  'diff')
+              via_badge = badge('CI / VI Analyzer',       'analyze',  'CI / VI Analyzer (Linux)')
+              diff_badge= badge('CI / VIDiff (windows)',  'diff',     'CI / VIDiff (linux)')
               snap_badge= badge('CI / VI Snapshots',      'snapshots')
 
               rows_html.append(f"""
