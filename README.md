@@ -1,5 +1,8 @@
 # challenge-of-champions
 
+[![CI Dashboard](https://img.shields.io/badge/CI-Dashboard-blue?logo=github)](https://elijah286.github.io/challenge-of-champions/)
+[![VI Browser](https://img.shields.io/badge/VI-Browser-informational?logo=github)](https://elijah286.github.io/challenge-of-champions/vi-snapshots/)
+
 This software was developed by Elijah Kerry for the 2024 NI Connect Challenge of the Champions.
 
 Installation 

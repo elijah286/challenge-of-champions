@@ -80,9 +80,9 @@ jobs:
               def badge(ctx, label):
                   s = status_map.get(ctx)
                   if ci_only:
-                      return '<td style="text-align:center;color:#8b949e;font-size:.75em">—</td>'
+                      return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
                   if not s:
-                      return '<td style="text-align:center;color:#8b949e;font-size:.75em">pending</td>'
+                      return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">pending</td>'
                   color  = {'success':'#2ea043','failure':'#da3633','pending':'#9a6700','error':'#da3633'}.get(s['state'],'#555')
                   emoji  = {'success':'✅','failure':'❌','pending':'⏳','error':'⚠️'}.get(s['state'],'?')
                   url    = s.get('target_url','')
@@ -97,11 +97,11 @@ jobs:
               rows_html.append(f"""
               <tr>
                 <td style="padding:8px;font-family:monospace;font-size:.85em">
-                  <a href="https://github.com/{repo}/commit/{sha}" style="color:#58a6ff">{short}</a>
+                  <a href="https://github.com/{repo}/commit/{sha}" style="color:var(--link)">{short}</a>
                 </td>
                 <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{msg}">{msg}</td>
-                <td style="padding:8px;font-size:.82em;color:#8b949e">{author}</td>
-                <td style="padding:8px;font-size:.75em;color:#8b949e">{date[:10]}</td>
+                <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">{author}</td>
+                <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">{date[:10]}</td>
                 {mc_badge}
                 {via_badge}
                 {diff_badge}
@@ -119,18 +119,30 @@ jobs:
             <meta http-equiv="refresh" content="900">
             <title>CI Dashboard — challenge-of-champions</title>
             <style>
+              :root{{
+                --bg:#0d1117;--surface:#161b22;--border:#30363d;
+                --fg:#e6edf3;--fg-muted:#8b949e;--row-border:#21262d;
+                --hover:#1c2128;--link:#58a6ff;
+              }}
+              @media(prefers-color-scheme:light){{
+                :root{{
+                  --bg:#ffffff;--surface:#f6f8fa;--border:#d0d7de;
+                  --fg:#1f2328;--fg-muted:#57606a;--row-border:#eaeef2;
+                  --hover:#f3f4f6;--link:#0969da;
+                }}
+              }}
               *{{box-sizing:border-box}}
-              body{{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3}}
+              body{{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--fg)}}
               h1{{font-size:1.4em;margin:0 0 4px}}
-              .sub{{color:#8b949e;font-size:.85em;margin-bottom:20px}}
-              table{{border-collapse:collapse;width:100%;background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden}}
-              th{{text-align:left;padding:10px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-size:.8em;white-space:nowrap}}
-              td{{border-bottom:1px solid #21262d;vertical-align:middle}}
+              .sub{{color:var(--fg-muted);font-size:.85em;margin-bottom:20px}}
+              table{{border-collapse:collapse;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}}
+              th{{text-align:left;padding:10px 8px;border-bottom:1px solid var(--border);color:var(--fg-muted);font-size:.8em;white-space:nowrap}}
+              td{{border-bottom:1px solid var(--row-border);vertical-align:middle}}
               tr:last-child td{{border-bottom:none}}
-              tr:hover{{background:#1c2128}}
-              a{{color:#58a6ff;text-decoration:none}}a:hover{{text-decoration:underline}}
+              tr:hover{{background:var(--hover)}}
+              a{{color:var(--link);text-decoration:none}}a:hover{{text-decoration:underline}}
               .nav{{margin-bottom:16px;font-size:.9em}}
-              .nav a{{margin-right:16px;color:#58a6ff}}
+              .nav a{{margin-right:16px;color:var(--link)}}
             </style>
           </head>
           <body>
