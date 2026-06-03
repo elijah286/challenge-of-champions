@@ -95,7 +95,7 @@ jobs:
           else
             DEST="push-${SHA}"
           fi
-          echo "url=${{ env.PAGES_URL }}/vidiff/${DEST}/${PLATFORM}/index.html" >> "$GITHUB_OUTPUT"
+          echo "url=${{ env.PAGES_URL }}/vidiff/${DEST}/${PLATFORM}/vidiff/index.html" >> "$GITHUB_OUTPUT"
 
       - name: Post commit status
         if: steps.artifact.outputs.result != 'null'
