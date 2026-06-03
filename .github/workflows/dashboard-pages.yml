@@ -82,7 +82,7 @@ jobs:
                   if ci_only:
                       return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
                   if not s:
-                      return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">pending</td>'
+                      return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
                   color  = {'success':'#2ea043','failure':'#da3633','pending':'#9a6700','error':'#da3633'}.get(s['state'],'#555')
                   emoji  = {'success':'✅','failure':'❌','pending':'⏳','error':'⚠️'}.get(s['state'],'?')
                   url    = s.get('target_url','')
