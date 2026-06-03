@@ -47,9 +47,9 @@ function Test-IsLabVIEWFile([string]$Path) {
     try {
         $bytes = [System.IO.File]::ReadAllBytes($Path)
         if ($bytes.Length -lt 4) { return $false }
-        # LVIN = VI, LVCC = CTL/class
+        # LabVIEW files use the Mac resource fork format starting with RSRC
         $magic = [System.Text.Encoding]::ASCII.GetString($bytes[0..3])
-        return ($magic -eq 'LVIN' -or $magic -eq 'LVCC')
+        return ($magic -eq 'RSRC')
     } catch { return $false }
 }
 

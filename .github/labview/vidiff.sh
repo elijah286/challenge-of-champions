@@ -27,7 +27,7 @@ is_labview_file() {
     [ -f "$f" ] || return 1
     local magic
     magic=$(head -c 4 "$f" 2>/dev/null || true)
-    [[ "$magic" == "LVIN" || "$magic" == "LVCC" ]]
+    [[ "$magic" == "RSRC" ]]
 }
 
 # ── Parse changed files ──────────────────────────────────────────────────────
@@ -45,6 +45,7 @@ fi
 
 PROCESSED=0; ERRORS=0
 MANIFEST="[]"
+PROCESSED_PATHS=()
 
 for REL_PATH in "${VI_FILES[@]}"; do
     BASE_PATH="${BASE_DIR}/${REL_PATH}"
