@@ -13,9 +13,12 @@ WORKSPACE_ROOT="${1:-/workspace}"
 REPORT_DIR="${2:-/report}"
 CONFIG_TEMPLATE="${WORKSPACE_ROOT}/.github/labview/via-configs/via-config-default.viancfg"
 
-# LabVIEWCLI path inside the NI Linux container
-LABVIEWCLI="/usr/local/natinst/LabVIEW-2024-64/LabVIEWCLI"
-LABVIEW_EXE="/usr/local/natinst/LabVIEW-2024-64/LabVIEW"
+# LabVIEWCLI is on PATH in the NI Linux container
+LABVIEWCLI="LabVIEWCLI"
+# Discover labviewprofull dynamically (year varies by image tag)
+LABVIEW_EXE=$(find /usr/local/natinst -name "labviewprofull" 2>/dev/null | head -1)
+if [ -z "$LABVIEW_EXE" ]; then echo "ERROR: labviewprofull not found in /usr/local/natinst" >&2; exit 1; fi
+echo "Using LabVIEW: $LABVIEW_EXE"
 
 mkdir -p "$REPORT_DIR"
 

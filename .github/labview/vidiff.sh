@@ -15,8 +15,12 @@ BASE_DIR="${1:-/workspace-base}"
 HEAD_DIR="${2:-/workspace}"
 REPORT_DIR="${3:-/report}"
 
-LABVIEW_EXE="/usr/local/natinst/LabVIEW-2024-64/LabVIEW"
-LABVIEWCLI="/usr/local/natinst/LabVIEW-2024-64/LabVIEWCLI"
+# LabVIEWCLI is on PATH in the NI Linux container
+LABVIEWCLI="LabVIEWCLI"
+# Discover labviewprofull dynamically (year varies by image tag)
+LABVIEW_EXE=$(find /usr/local/natinst -name "labviewprofull" 2>/dev/null | head -1)
+if [ -z "$LABVIEW_EXE" ]; then echo "ERROR: labviewprofull not found" >&2; exit 1; fi
+echo "Using LabVIEW: $LABVIEW_EXE"
 PRINT_TO_HTML_OP="${HEAD_DIR}/.github/labview/PrintToSingleFileHtml"
 
 mkdir -p "$REPORT_DIR"
