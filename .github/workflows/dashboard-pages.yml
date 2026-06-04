@@ -6,9 +6,16 @@ on:
     paths:
       - '.github/pages/index.html'
       - '.github/workflows/dashboard-pages.yml'
-  schedule:
-    # Refresh every 15 minutes to pick up newly posted commit statuses
-    - cron: '*/15 * * * *'
+  workflow_run:
+    workflows:
+      - "Mass Compile — Windows Container"
+      - "Run VI Analyzer — Windows Container"
+      - "Run VI Analyzer — Linux Container"
+      - "VIDiff Report — Windows Container"
+      - "VIDiff Report — Linux Container"
+      - "VI Snapshots and VI Browser"
+      - "VIDiff Deploy — Pages + PR Comment"
+    types: [completed]
   workflow_dispatch:
 
 env:
