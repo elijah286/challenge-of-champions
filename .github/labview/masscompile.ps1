@@ -26,12 +26,12 @@ function Resolve-LabVIEWPath([string]$PreferredPath) {
     return $PreferredPath
   }
 
-  $candidates = Get-ChildItem 'C:\Program Files\National Instruments' -Directory -Filter 'LabVIEW *' -ErrorAction SilentlyContinue |
+  $candidates = @(Get-ChildItem 'C:\Program Files\National Instruments' -Directory -Filter 'LabVIEW *' -ErrorAction SilentlyContinue |
     Sort-Object Name -Descending |
     ForEach-Object { Join-Path $_.FullName 'LabVIEW.exe' } |
-    Where-Object { Test-Path $_ }
+    Where-Object { Test-Path $_ })
 
-  if ($candidates -and $candidates.Count -gt 0) {
+  if ($candidates.Count -gt 0) {
     return $candidates[0]
   }
 
@@ -80,7 +80,10 @@ function Encode-Html([string]$s) {
     $s -replace '&','&amp;' -replace '<','&lt;' -replace '>','&gt;'
 }
 
-$LogHtml  = Encode-Html ($LogText ?? '(no output captured)')
+if ([string]::IsNullOrEmpty($LogText)) {
+  $LogText = '(no output captured)'
+}
+$LogHtml  = Encode-Html $LogText
 $ReportTs = (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss UTC')
 
 $Html = @"
