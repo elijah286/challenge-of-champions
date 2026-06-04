@@ -97,10 +97,13 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull LabVIEW container image
+        id: pull
         shell: powershell
         run: docker pull $Env:LABVIEW_CONTAINER_IMAGE
+        continue-on-error: true
 
       - name: Run Mass Compile inside container
+        if: steps.pull.outcome == 'success'
         shell: powershell
         run: |
           docker run --rm `
@@ -115,7 +118,18 @@ jobs:
         continue-on-error: true
         id: compile
 
+      - name: Check report directory
+        id: report
+        shell: bash
+        run: |
+          if [ -d "${{ github.workspace }}/ci-out/masscompile" ] && [ "$(ls -A "${{ github.workspace }}/ci-out/masscompile")" ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Upload report artifact
+        if: steps.report.outputs.exists == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: masscompile-report-${{ steps.sha.outputs.sha }}
@@ -123,6 +137,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Deploy report to GitHub Pages
+        if: steps.report.outputs.exists == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -131,14 +146,23 @@ jobs:
           keep_files: true
 
       - name: Post commit status
+        if: always()
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           SHORT_SHA="${{ steps.sha.outputs.sha }}"
           SHORT_SHA="${SHORT_SHA:0:7}"
-          REPORT_URL="${{ env.PAGES_URL }}/masscompile/${{ steps.sha.outputs.sha }}/index.html"
-          STATE="${{ steps.compile.outcome == 'success' && 'success' || 'failure' }}"
+          if [ "${{ steps.report.outputs.exists }}" = "true" ]; then
+            REPORT_URL="${{ env.PAGES_URL }}/masscompile/${{ steps.sha.outputs.sha }}/index.html"
+          else
+            REPORT_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          if [ "${{ steps.pull.outcome }}" = "success" ] && [ "${{ steps.compile.outcome }}" = "success" ]; then
+            STATE="success"
+          else
+            STATE="failure"
+          fi
           curl -s -X POST \
             -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
@@ -146,5 +170,5 @@ jobs:
             -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"Mass Compile $STATE\",\"context\":\"CI / Mass Compile\"}"
 
       - name: Fail the job if compile failed
-        if: steps.compile.outcome == 'failure'
+        if: always() && (steps.pull.outcome != 'success' || steps.compile.outcome != 'success')
         run: exit 1
