@@ -30,7 +30,8 @@ RUN $nipkg = 'C:\Program Files\National Instruments\NI Package Manager\nipkg.exe
     Write-Host "Adding nipkg feed: $Env:NIPM_FEED_URL"; \
     & $nipkg feed-add --name=ni-labview-2024 $Env:NIPM_FEED_URL; \
     Write-Host "Installing $Env:VIA_SUPPORT_PACKAGE ..."; \
-    & $nipkg install --accept-eulas --no-progress $Env:VIA_SUPPORT_PACKAGE; \
+    & $nipkg install --accept-eulas $Env:VIA_SUPPORT_PACKAGE; \
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
     Write-Host 'VI Analyzer support installed.'
 
 # ---------------------------------------------------------------------------- #
@@ -55,9 +56,9 @@ RUN $vipcFiles = @(Get-ChildItem 'C:\vipm' -Filter '*.vipc' -ErrorAction Silentl
             Write-Error 'ERROR: .vipc files found in C:\vipm but install-vipc.ps1 is missing. Create .github/labview/vipm/install-vipc.ps1.'; \
             exit 1 \
         }; \
-        Write-Host "Applying $($vipcFiles.Count) VIPC file(s) via install-vipc.ps1 ..."; \
+        Write-Host ("Applying {0} VIPC files via install-vipc.ps1 ..." -f $vipcFiles.Count); \
         & $installScript; \
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } \
     } else { \
-        Write-Host 'No .vipc files found — skipping VIPM installation.' \
+        Write-Host 'No .vipc files found - skipping VIPM installation.' \
     }
