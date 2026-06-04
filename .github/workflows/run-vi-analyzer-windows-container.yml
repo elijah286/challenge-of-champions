@@ -24,7 +24,7 @@ on:
         default: ''
 
 env:
-  LABVIEW_CONTAINER_IMAGE: ghcr.io/${{ github.repository_owner }}/challenge-of-champions-labview:2024
+  LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
   PAGES_URL: https://elijah286.github.io/challenge-of-champions
 
 permissions:

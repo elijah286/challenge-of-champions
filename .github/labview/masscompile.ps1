@@ -21,6 +21,24 @@ param(
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
 
+function Resolve-LabVIEWPath([string]$PreferredPath) {
+  if ($PreferredPath -and (Test-Path $PreferredPath)) {
+    return $PreferredPath
+  }
+
+  $candidates = Get-ChildItem 'C:\Program Files\National Instruments' -Directory -Filter 'LabVIEW *' -ErrorAction SilentlyContinue |
+    Sort-Object Name -Descending |
+    ForEach-Object { Join-Path $_.FullName 'LabVIEW.exe' } |
+    Where-Object { Test-Path $_ }
+
+  if ($candidates -and $candidates.Count -gt 0) {
+    return $candidates[0]
+  }
+
+  throw "LabVIEW.exe not found. Checked preferred path '$PreferredPath' and C:\Program Files\National Instruments\LabVIEW *"
+}
+
+$LabVIEWPath = Resolve-LabVIEWPath $LabVIEWPath
 $CliExe  = Join-Path (Split-Path $LabVIEWPath) 'LabVIEWCLI.exe'
 $LogFile = Join-Path $ReportDir 'masscompile.log'
 $HtmlOut = Join-Path $ReportDir 'index.html'
