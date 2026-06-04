@@ -32,7 +32,49 @@ echo "  Config src : $CONFIG_TEMPLATE"
 
 # Patch __WORKSPACE_PATH__ placeholder
 sed "s|__WORKSPACE_PATH__|${WORKSPACE_ROOT}|g" "$CONFIG_TEMPLATE" > "$CONFIG_FILE"
+
+# Build TestConfigData from installed VI Analyzer test LLBs so Linux runs the full suite.
+LABVIEW_ROOT="$(dirname "$LABVIEW_EXE")"
+TEST_ROOT="$LABVIEW_ROOT/resource/dialog/VI Analyzer/tests"
+TEST_ENTRIES_FILE="$REPORT_DIR/via-tests.xml"
+TEST_COUNT=0
+
+if [ -d "$TEST_ROOT" ]; then
+  : > "$TEST_ENTRIES_FILE"
+  while IFS= read -r llb; do
+    rel_path="${llb#${LABVIEW_ROOT}/}"
+    test_name="$(basename "$llb" .llb)"
+    cat >> "$TEST_ENTRIES_FILE" <<EOF
+		<Test>
+			<Name>"$test_name"</Name>
+			<Ranking>1</Ranking>
+			<MaxFailures>5</MaxFailures>
+			<BasePath>"$LABVIEW_ROOT"</BasePath>
+			<RelativePath>"$rel_path"</RelativePath>
+			<Selected>TRUE</Selected>
+			<Controls>
+			</Controls>
+		</Test>
+EOF
+    TEST_COUNT=$((TEST_COUNT+1))
+  done < <(find "$TEST_ROOT" -type f -name '*.llb' | sort)
+
+  if [ "$TEST_COUNT" -gt 0 ]; then
+    awk -v tests_file="$TEST_ENTRIES_FILE" '
+      /<TestConfigData>/ {
+        print
+        while ((getline line < tests_file) > 0) print line
+        close(tests_file)
+        next
+      }
+      { print }
+    ' "$CONFIG_FILE" > "$CONFIG_FILE.tmp"
+    mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+  fi
+fi
+
 echo "  Config out : $CONFIG_FILE"
+echo "  VIA tests  : $TEST_COUNT discovered at $TEST_ROOT"
 
 START=$(date +%s)
 
