@@ -97,7 +97,10 @@ async function loadCommits() {
     sel.appendChild(opt);
   }
   sel.addEventListener('change', () => loadManifest(sel.value));
-  loadManifest(commits[0].sha);
+  const initSha = new URLSearchParams(window.location.search).get('sha');
+  const startSha = (initSha && commits.find(c => c.sha === initSha)) ? initSha : commits[0].sha;
+  sel.value = startSha;
+  loadManifest(startSha);
 }
 
 async function loadManifest(sha) {

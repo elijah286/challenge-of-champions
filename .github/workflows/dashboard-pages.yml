@@ -107,7 +107,7 @@ jobs:
                 <td style="padding:8px;font-family:monospace;font-size:.85em">
                   <a href="https://github.com/{repo}/commit/{sha}" style="color:var(--link)">{short}</a>
                 </td>
-                <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{msg}">{msg}</td>
+                <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{msg}"><a href="{pages_url}/vi-snapshots/?sha={sha}" style="color:var(--fg)">{msg}</a></td>
                 <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">{author}</td>
                 <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">{date[:10]}</td>
                 {mc_badge}
