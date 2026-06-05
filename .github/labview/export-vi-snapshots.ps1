@@ -22,14 +22,53 @@
 param(
     [string]$WorkspaceRoot = 'C:\workspace',
     [string]$OutputDir     = 'C:\workspace\ci-out\vi-snapshots',
-    [string]$LabVIEWPath   = 'C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe'
+    [string]$LabVIEWPath   = ''
 )
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
 
-$CliExe        = Join-Path (Split-Path $LabVIEWPath) 'LabVIEWCLI.exe'
+$ResolvedLabVIEWPath = $null
+$CliExe              = $null
 $PrintToHtmlOp = Join-Path $WorkspaceRoot '.github\labview\PrintToSingleFileHtml'
+
+function Resolve-LabVIEWPath([string]$PreferredPath) {
+    if ($PreferredPath -and (Test-Path $PreferredPath)) {
+        return $PreferredPath
+    }
+    $candidates = Get-ChildItem 'C:\Program Files\National Instruments' -Directory -Filter 'LabVIEW *' -ErrorAction SilentlyContinue |
+        Sort-Object Name -Descending |
+        ForEach-Object { Join-Path $_.FullName 'LabVIEW.exe' } |
+        Where-Object { Test-Path $_ }
+    if ($candidates -and $candidates.Count -gt 0) {
+        return $candidates[0]
+    }
+    throw 'Could not locate LabVIEW.exe. Pass -LabVIEWPath explicitly.'
+}
+
+function Resolve-LabVIEWCLI([string]$ResolvedLVPath) {
+    $lvDir = Split-Path $ResolvedLVPath -Parent
+    $near  = Join-Path $lvDir 'LabVIEWCLI.exe'
+    if (Test-Path $near) {
+        return $near
+    }
+
+    $sharedCli = 'C:\Program Files\National Instruments\Shared\LabVIEW CLI\LabVIEWCLI.exe'
+    if (Test-Path $sharedCli) {
+        return $sharedCli
+    }
+
+    $found = Get-ChildItem 'C:\Program Files\National Instruments' -Recurse -Filter 'LabVIEWCLI.exe' -ErrorAction SilentlyContinue |
+        Select-Object -First 1 -ExpandProperty FullName
+    if ($found) {
+        return $found
+    }
+
+    throw 'Could not locate LabVIEWCLI.exe.'
+}
+
+$ResolvedLabVIEWPath = Resolve-LabVIEWPath -PreferredPath $LabVIEWPath
+$CliExe              = Resolve-LabVIEWCLI -ResolvedLVPath $ResolvedLabVIEWPath
 
 # Verify the custom operation VIs are present
 if (-not (Test-Path $PrintToHtmlOp)) {
@@ -65,6 +104,8 @@ $allFiles = Get-ChildItem -Path $WorkspaceRoot -Recurse -Include '*.vi','*.ctl' 
 Write-Host "=== VI Snapshot Export ==="
 Write-Host "  Found $($allFiles.Count) VI/CTL files"
 Write-Host "  Output: $OutputDir"
+Write-Host "  LabVIEW: $ResolvedLabVIEWPath"
+Write-Host "  LabVIEWCLI: $CliExe"
 Write-Host ""
 
 $Exported = 0; $Skipped = 0; $Errors = 0
@@ -87,7 +128,7 @@ foreach ($vi in $allFiles) {
         & $CliExe `
             -OperationName                PrintToSingleFileHtml `
             -AdditionalOperationDirectory $PrintToHtmlOp `
-            -LabVIEWPath                  $LabVIEWPath `
+            -LabVIEWPath                  $ResolvedLabVIEWPath `
             -VIPath                       $vi.FullName `
             -ExportPath                   $HtmlOut
         if ($LASTEXITCODE -ne 0) { throw "Exit code $LASTEXITCODE" }

@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 env:
-  LABVIEW_CONTAINER_IMAGE: ghcr.io/elijahkerry/challenge-of-champions-labview:2024
+  LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
   PAGES_URL: https://elijah286.github.io/challenge-of-champions
 
 permissions:
@@ -77,8 +77,7 @@ jobs:
             powershell -NonInteractive -ExecutionPolicy Bypass `
               -File "C:\workspace\.github\labview\export-vi-snapshots.ps1" `
               -WorkspaceRoot "C:\workspace" `
-              -OutputDir     "C:\workspace\ci-out\vi-snapshots\${{ github.sha }}" `
-              -LabVIEWPath   "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
+              -OutputDir     "C:\workspace\ci-out\vi-snapshots\${{ github.sha }}"
         continue-on-error: true
 
       - name: Build gallery manifest
