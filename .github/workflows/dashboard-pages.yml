@@ -75,6 +75,7 @@ jobs:
               compare = gh_get(f'commits/{sha}') or {}
               files   = [f['filename'] for f in (compare.get('files') or [])]
               ci_only = files and all(f.startswith('.github/') for f in files)
+              ci_flag = 'true' if ci_only else 'false'
 
               # Fetch commit statuses
               statuses_data = gh_get(f'commits/{sha}/statuses') or []
@@ -102,7 +103,7 @@ jobs:
               snap_badge= badge('CI / VI Snapshots',      'snapshots')
 
               rows_html.append(f"""
-              <tr>
+              <tr data-ci-only="{ci_flag}">
                 <td style="padding:8px;font-family:monospace;font-size:.85em">
                   <a href="https://github.com/{repo}/commit/{sha}" style="color:var(--link)">{short}</a>
                 </td>
@@ -150,6 +151,8 @@ jobs:
               a{{color:var(--link);text-decoration:none}}a:hover{{text-decoration:underline}}
               .nav{{margin-bottom:16px;font-size:.9em}}
               .nav a{{margin-right:16px;color:var(--link)}}
+              .controls{{margin:0 0 12px;display:flex;align-items:center;gap:8px;color:var(--fg-muted);font-size:.85em}}
+              .controls input{{margin:0;accent-color:var(--link)}}
             </style>
           </head>
           <body>
@@ -160,6 +163,10 @@ jobs:
               <a href="https://github.com/{repo}">Repository</a>
               <a href="https://github.com/{repo}/actions">Actions</a>
             </div>
+            <label class="controls" for="show-ci-only">
+              <input type="checkbox" id="show-ci-only">
+              Show revisions that only modify CI pipeline files (.github/*)
+            </label>
             <table>
               <thead>
                 <tr>
@@ -172,6 +179,21 @@ jobs:
               </thead>
               <tbody>{rows}</tbody>
             </table>
+            <script>
+              (() => {{
+                const checkbox = document.getElementById('show-ci-only');
+                const rows = document.querySelectorAll('tbody tr[data-ci-only]');
+                const applyFilter = () => {{
+                  const showCiOnly = checkbox.checked;
+                  rows.forEach((row) => {{
+                    const isCiOnly = row.getAttribute('data-ci-only') === 'true';
+                    row.style.display = (!isCiOnly || showCiOnly) ? '' : 'none';
+                  }});
+                }};
+                checkbox.addEventListener('change', applyFilter);
+                applyFilter();
+              }})();
+            </script>
           </body>
           </html>"""
 
