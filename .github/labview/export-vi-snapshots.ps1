@@ -143,5 +143,13 @@ foreach ($vi in $allFiles) {
 Write-Host ""
 Write-Host "=== Export complete: $Exported exported, $Skipped skipped, $Errors errors ==="
 
-if ($Errors -gt 0) { exit 1 }
+if ($Exported -eq 0) {
+    Write-Error 'No VI snapshots were exported.'
+    exit 1
+}
+
+if ($Errors -gt 0) {
+    Write-Warning 'Some snapshots failed to export, but at least one snapshot was generated.'
+}
+
 exit 0
