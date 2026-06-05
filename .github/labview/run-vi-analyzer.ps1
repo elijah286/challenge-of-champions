@@ -41,8 +41,25 @@ function Resolve-LabVIEWPath([string]$PreferredPath) {
     throw "LabVIEW.exe not found. Checked preferred path '$PreferredPath' and C:\Program Files\National Instruments\LabVIEW *"
 }
 
+function Resolve-LabVIEWCLI([string]$LabVIEWExePath) {
+    $cliCmd = Get-Command LabVIEWCLI.exe -ErrorAction SilentlyContinue
+    if ($null -eq $cliCmd) {
+        $cliCmd = Get-Command LabVIEWCLI -ErrorAction SilentlyContinue
+    }
+    if ($null -ne $cliCmd -and $cliCmd.Source) {
+        return $cliCmd.Source
+    }
+
+    $candidate = Join-Path (Split-Path $LabVIEWExePath) 'LabVIEWCLI.exe'
+    if (Test-Path $candidate) {
+        return $candidate
+    }
+
+    throw "LabVIEWCLI not found on PATH and not found beside LabVIEW.exe ('$candidate')."
+}
+
 $LabVIEWPath = Resolve-LabVIEWPath $LabVIEWPath
-$CliExe     = Join-Path (Split-Path $LabVIEWPath) 'LabVIEWCLI.exe'
+$CliExe     = Resolve-LabVIEWCLI $LabVIEWPath
 $ConfigFile = Join-Path $ReportDir 'via-config.viancfg'
 $ResultsXml = Join-Path $ReportDir 'via-results.xml'
 $HtmlOut    = Join-Path $ReportDir 'index.html'
