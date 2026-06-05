@@ -12,37 +12,65 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>VI Browser — challenge-of-champions</title>
   <style>
+    :root{
+      --bg:#0d1117;
+      --fg:#e6edf3;
+      --fg-muted:#8b949e;
+      --border:#30363d;
+      --sidebar:#161b22;
+      --sidebar-hover:#1c2128;
+      --sidebar-active:#1f6feb33;
+      --item:#c9d1d9;
+      --link:#58a6ff;
+      --viewer-bg:#ffffff;
+      --error:#da3633;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#ffffff;
+        --fg:#1f2328;
+        --fg-muted:#57606a;
+        --border:#d0d7de;
+        --sidebar:#f6f8fa;
+        --sidebar-hover:#eef2f6;
+        --sidebar-active:#0969da22;
+        --item:#1f2328;
+        --link:#0969da;
+        --viewer-bg:#ffffff;
+        --error:#cf222e;
+      }
+    }
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-         background:#0d1117;color:#e6edf3;display:flex;height:100vh;overflow:hidden}
+         background:var(--bg);color:var(--fg);display:flex;height:100vh;overflow:hidden}
 
     /* ── Sidebar ── */
-    #sidebar{width:280px;min-width:220px;background:#161b22;border-right:1px solid #30363d;
+    #sidebar{width:280px;min-width:220px;background:var(--sidebar);border-right:1px solid var(--border);
              display:flex;flex-direction:column;overflow:hidden}
-    #sidebar-header{padding:12px 14px;border-bottom:1px solid #30363d}
-    #sidebar-header h1{font-size:1em;color:#e6edf3;margin-bottom:8px}
-    #commit-select{width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;
+    #sidebar-header{padding:12px 14px;border-bottom:1px solid var(--border)}
+    #sidebar-header h1{font-size:1em;color:var(--fg);margin-bottom:8px}
+    #commit-select{width:100%;background:var(--bg);color:var(--fg);border:1px solid var(--border);
                    border-radius:6px;padding:5px 8px;font-size:.8em}
-    #search{width:100%;background:#0d1117;color:#e6edf3;border:1px solid #30363d;
+    #search{width:100%;background:var(--bg);color:var(--fg);border:1px solid var(--border);
             border-radius:6px;padding:5px 8px;font-size:.8em;margin-top:6px}
     #vi-list{flex:1;overflow-y:auto}
-    .group-header{padding:6px 12px;font-size:.72em;color:#8b949e;text-transform:uppercase;
-                  letter-spacing:.06em;border-bottom:1px solid #21262d;background:#161b22;
+    .group-header{padding:6px 12px;font-size:.72em;color:var(--fg-muted);text-transform:uppercase;
+                  letter-spacing:.06em;border-bottom:1px solid var(--border);background:var(--sidebar);
                   position:sticky;top:0;z-index:1}
-    .vi-item{padding:6px 14px;font-size:.8em;cursor:pointer;color:#c9d1d9;
-             border-bottom:1px solid #21262d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .vi-item:hover{background:#1c2128;color:#e6edf3}
-    .vi-item.active{background:#1f6feb33;color:#58a6ff}
+    .vi-item{padding:6px 14px;font-size:.8em;cursor:pointer;color:var(--item);
+             border-bottom:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .vi-item:hover{background:var(--sidebar-hover);color:var(--fg)}
+    .vi-item.active{background:var(--sidebar-active);color:var(--link)}
 
     /* ── Main panel ── */
     #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-    #toolbar{padding:8px 14px;border-bottom:1px solid #30363d;background:#161b22;
-             font-size:.82em;color:#8b949e;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    #vi-title{font-weight:600;color:#e6edf3}
+    #toolbar{padding:8px 14px;border-bottom:1px solid var(--border);background:var(--sidebar);
+             font-size:.82em;color:var(--fg-muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    #vi-title{font-weight:600;color:var(--fg)}
     #viewer{flex:1;overflow:hidden}
-    #viewer iframe{width:100%;height:100%;border:none;background:#fff}
+    #viewer iframe{width:100%;height:100%;border:none;background:var(--viewer-bg)}
     #empty{flex:1;display:flex;align-items:center;justify-content:center;
-           flex-direction:column;color:#8b949e;gap:10px}
+           flex-direction:column;color:var(--fg-muted);gap:10px}
     #empty svg{opacity:.3}
   </style>
 </head>
@@ -60,7 +88,7 @@
 <div id="main">
   <div id="toolbar">
     <span id="vi-title">Select a VI from the sidebar</span>
-    <a id="open-link" href="#" target="_blank" style="color:#58a6ff;display:none">Open in new tab ↗</a>
+    <a id="open-link" href="#" target="_blank" style="color:var(--link);display:none">Open in new tab ↗</a>
   </div>
   <div id="empty">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -120,7 +148,7 @@ function renderList(filter) {
   const container = document.getElementById('vi-list');
   container.innerHTML = '';
   if (!filtered.length) {
-    container.innerHTML = '<div style="padding:16px;color:#8b949e;font-size:.8em">No VIs match the filter.</div>';
+    container.innerHTML = '<div style="padding:16px;color:var(--fg-muted);font-size:.8em">No VIs match the filter.</div>';
     return;
   }
   for (const [group, vis] of Object.entries(groups)) {
@@ -158,7 +186,7 @@ document.getElementById('search').addEventListener('input', e => renderList(e.ta
 
 loadCommits().catch(err => {
   document.getElementById('vi-list').innerHTML =
-    `<div style="padding:16px;color:#da3633;font-size:.8em">Error loading gallery:<br>${err.message}</div>`;
+    `<div style="padding:16px;color:var(--error);font-size:.8em">Error loading gallery:<br>${err.message}</div>`;
 });
 </script>
 </body>
