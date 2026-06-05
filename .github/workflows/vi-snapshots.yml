@@ -13,6 +13,10 @@ on:
       - '.github/pages/vi-interactive.html'
   workflow_dispatch:
 
+concurrency:
+  group: vi-snapshots-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
   PAGES_URL: https://elijah286.github.io/challenge-of-champions
