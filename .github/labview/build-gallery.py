@@ -166,7 +166,7 @@ def main() -> None:
         json.dumps(manifest, indent=2, ensure_ascii=False),
         encoding='utf-8',
     )
-    print(f"  manifest.json → {manifest_file}")
+    print(f"  manifest.json -> {manifest_file}")
 
     commits_file = output_dir / 'commits.json'
     commits = update_commits_json(
@@ -180,7 +180,7 @@ def main() -> None:
         json.dumps(commits, indent=2, ensure_ascii=False),
         encoding='utf-8',
     )
-    print(f"  commits.json  → {commits_file} ({len(commits)} entries)")
+    print(f"  commits.json  -> {commits_file} ({len(commits)} entries)")
 
 
 if __name__ == '__main__':
