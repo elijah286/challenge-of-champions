@@ -93,7 +93,7 @@ function Test-IsLabVIEWFile([string]$Path) {
         $bytes = [System.IO.File]::ReadAllBytes($Path)
         if ($bytes.Length -lt 4) { return $false }
         $magic = [System.Text.Encoding]::ASCII.GetString($bytes[0..3])
-        return ($magic -eq 'LVIN' -or $magic -eq 'LVCC')
+        return ($magic -eq 'RSRC' -or $magic -eq 'LVIN' -or $magic -eq 'LVCC')
     } catch { return $false }
 }
 
