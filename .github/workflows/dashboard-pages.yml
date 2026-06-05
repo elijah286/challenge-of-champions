@@ -203,14 +203,14 @@ jobs:
               import textwrap
               f.write(textwrap.dedent(html))
 
-            # Ensure VI Browser route exists so dashboard commit links do not 404.
-            os.makedirs('ci-out/dashboard/vi-snapshots', exist_ok=True)
-            for src, dst in [
+          # Ensure VI Browser route exists so dashboard commit links do not 404.
+          os.makedirs('ci-out/dashboard/vi-snapshots', exist_ok=True)
+          for src, dst in [
               ('.github/pages/vi-browser.html', 'ci-out/dashboard/vi-snapshots/index.html'),
               ('.github/pages/vi-interactive.html', 'ci-out/dashboard/vi-snapshots/vi-interactive.html'),
-            ]:
+          ]:
               with open(src, 'r', encoding='utf-8') as sf, open(dst, 'w', encoding='utf-8') as df:
-                df.write(sf.read())
+                  df.write(sf.read())
           print(f"Dashboard built with {len(commits_data)} commits.")
           PYEOF
 
