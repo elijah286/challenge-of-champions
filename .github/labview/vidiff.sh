@@ -39,6 +39,28 @@ is_labview_file() {
     [[ "$magic" == "LVIN" || "$magic" == "LVCC" ]]
 }
 
+# ── Browser-compatibility fix for comparison reports ─────────────────────────
+# CreateComparisonReport lays out the head-side diagram image with
+#   position: relative; top: calc(-100% - 23px)
+# inside an `aspect-ratio` box so an interactive sub-VI hotspot layer can sit on
+# top of it. Safari does not resolve the percentage `top` against an
+# aspect-ratio-derived height, so the image drops below its box and overlaps the
+# change-description text underneath it. Inject a <style> that renders the image
+# in normal flow and overlays the hotspot layer with absolute positioning (which
+# needs no percentage-height resolution) — this fixes Safari/Firefox while
+# keeping the hover tooltips aligned to the image in every browser.
+OVERLAY_FIX_CSS='td.diff-image>div[style*="aspect-ratio"]{aspect-ratio:auto!important;height:auto!important;max-width:100%!important;position:relative!important}td.diff-image>div[style*="aspect-ratio"]>div{height:auto!important}td.diff-image>div[style*="aspect-ratio"]>div>div{position:absolute!important;inset:0!important;height:auto!important}td.diff-image img.difference-image{position:static!important;top:auto!important}'
+
+inject_overlay_fix() {
+    local html="$1"
+    [ -f "$html" ] || return 0
+    grep -q 'vidiff-overlay-fix' "$html" && return 0
+    # Insert right before </head>; the override uses !important so it wins
+    # regardless of source order. `|` is the sed delimiter so the / in the tags
+    # and selectors needs no escaping.
+    sed -i "s|</head>|<style id=\"vidiff-overlay-fix\">${OVERLAY_FIX_CSS}</style></head>|" "$html"
+}
+
 # ── Parse changed files ──────────────────────────────────────────────────────
 IFS=$'\n' read -r -d '' -a FILES <<< "${CHANGED_FILES:-}" || true
 VI_FILES=()
@@ -81,6 +103,7 @@ for REL_PATH in "${VI_FILES[@]}"; do
             -ReportPath       "${OUT_DIR}/index.html" \
             -LogToConsole     TRUE \
             -Headless || { echo "  ERROR: CreateComparisonReport failed"; ERRORS=$((ERRORS+1)); continue; }
+        inject_overlay_fix "${OUT_DIR}/index.html"
 
     elif $HEAD_EXISTS; then
         TYPE="added"

@@ -79,6 +79,31 @@ function Test-IsLabVIEWFile([string]$Path) {
     } catch { return $false }
 }
 
+# ── Browser-compatibility fix for comparison reports ─────────────────────────
+# CreateComparisonReport lays out the head-side diagram image with
+#   position: relative; top: calc(-100% - 23px)
+# inside an `aspect-ratio` box so an interactive sub-VI hotspot layer can sit on
+# top of it. Safari does not resolve the percentage `top` against an
+# aspect-ratio-derived height, so the image drops below its box and overlaps the
+# change-description text underneath it. Inject a <style> that renders the image
+# in normal flow and overlays the hotspot layer with absolute positioning (which
+# needs no percentage-height resolution) — this fixes Safari/Firefox while
+# keeping the hover tooltips aligned to the image in every browser.
+function Add-OverlayFix([string]$HtmlPath) {
+    if (-not (Test-Path $HtmlPath)) { return }
+    $html = [System.IO.File]::ReadAllText($HtmlPath)
+    if ($html.Contains('vidiff-overlay-fix')) { return }
+    $css = 'td.diff-image>div[style*="aspect-ratio"]{aspect-ratio:auto!important;height:auto!important;max-width:100%!important;position:relative!important}td.diff-image>div[style*="aspect-ratio"]>div{height:auto!important}td.diff-image>div[style*="aspect-ratio"]>div>div{position:absolute!important;inset:0!important;height:auto!important}td.diff-image img.difference-image{position:static!important;top:auto!important}'
+    $style = '<style id="vidiff-overlay-fix">' + $css + '</style>'
+    if ($html.Contains('</head>')) {
+        # </head> follows the stylesheet <link>, so the override lands after it.
+        $html = $html.Replace('</head>', $style + '</head>')
+    } else {
+        $html = $style + $html
+    }
+    [System.IO.File]::WriteAllText($HtmlPath, $html, [System.Text.UTF8Encoding]::new($false))
+}
+
 # ── Parse changed-file list ──────────────────────────────────────────────────
 if ($ChangedFiles -eq '') {
     $ChangedFiles = $Env:CHANGED_FILES
@@ -129,6 +154,7 @@ foreach ($RelPath in $Files) {
                 -LabVIEWPath   $LabVIEWPath `
                 -Headless
             if ($LASTEXITCODE -ne 0) { throw "CreateComparisonReport failed (exit $LASTEXITCODE)" }
+            Add-OverlayFix $HtmlOut
             $Results.Add(@{File=$RelPath; Type='modified'; Html="$SafeName/index.html"})
 
         } elseif ($HeadExists -and $HeadIsVI) {
