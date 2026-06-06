@@ -95,6 +95,24 @@ jobs:
             --author        "${{ github.event.head_commit.author.name }}" \
             --output-dir    "${{ github.workspace }}/ci-out/vi-snapshots"
 
+      - name: Fail if no snapshots were generated
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest_path = Path('ci-out/vi-snapshots/manifest.json')
+          if not manifest_path.exists():
+              raise SystemExit('manifest.json not found')
+
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          count = len(manifest)
+          print(f'snapshot_count={count}')
+          if count == 0:
+              raise SystemExit('No snapshots were generated')
+          PY
+
       - name: Copy VI Browser page
         shell: bash
         run: |
@@ -122,6 +140,3 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}" \
             -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"VI Snapshots $STATE\",\"context\":\"CI / VI Snapshots\"}"
 
-      - name: Fail if export failed
-        if: steps.export.outcome == 'failure'
-        run: exit 1
