@@ -6,5 +6,229 @@
     "author": "elijah286",
     "date": "2026-06-06T09:06:14-05:00",
     "vi_count": 222
+  },
+  {
+    "sha": "a0ce4b430fdaa0d44f28f9130cd6b8f259b8349a",
+    "short": "a0ce4b4",
+    "message": "ci: add complete LabVIEW CI/CD pipeline",
+    "author": "elijah286",
+    "date": "2026-06-03T02:42:39-05:00",
+    "vi_count": 222
+  },
+  {
+    "sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712",
+    "short": "0d83d34",
+    "message": "minor improvements",
+    "author": "Elijah Kerry",
+    "date": "2025-04-26T21:03:14-05:00",
+    "vi_count": 222
+  },
+  {
+    "sha": "fed86b42317e8d798cd98d7a312c8d8c49a96b4b",
+    "short": "fed86b4",
+    "message": "Added ability to highlight winner",
+    "author": "Elijah Kerry",
+    "date": "2025-04-26T18:21:25-05:00",
+    "vi_count": 222
+  },
+  {
+    "sha": "cc73dfed4977f9ab424c05dd2edb34a5c8b772c3",
+    "short": "cc73dfe",
+    "message": "fixed sound",
+    "author": "Elijah Kerry",
+    "date": "2025-04-25T19:18:23-05:00",
+    "vi_count": 218
+  },
+  {
+    "sha": "39d1c2a93007b3769824d981f223e7e225e17862",
+    "short": "39d1c2a",
+    "message": "NI Connect 2025 Prep",
+    "author": "Elijah Kerry",
+    "date": "2025-04-25T13:13:11-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "68ba17030ab2828447f558453eece7e1adbad49c",
+    "short": "68ba170",
+    "message": "Improvements to instructions and simulated daq display",
+    "author": "Elijah Kerry",
+    "date": "2024-06-10T23:20:06-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "9ad479c4fbe954727c37792e39a7d0163fc8242d",
+    "short": "9ad479c",
+    "message": "Fixed scoring bug",
+    "author": "Elijah Kerry",
+    "date": "2024-05-22T15:45:21-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "070a44c9b06351d1ddff3f844dead25140a49c7c",
+    "short": "070a44c",
+    "message": "Merge branch 'main' of https://github.com/elijah286/challenge-of-champions",
+    "author": "Elijah Kerry",
+    "date": "2024-05-19T22:10:03-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "1ae15b21fb486eee1a559d5f6854a0fcbcba44a6",
+    "short": "1ae15b2",
+    "message": "Bug Fixes",
+    "author": "Elijah Kerry",
+    "date": "2024-05-19T22:08:34-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "cc939cda81377d35fd17a587744f459cb3e20121",
+    "short": "cc939cd",
+    "message": "Saved for 2021",
+    "author": "Elijah Kerry",
+    "date": "2024-05-19T15:32:08-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "ade2f01f0b980e24b46acf78c9c250d465801070",
+    "short": "ade2f01",
+    "message": "Icon Update",
+    "author": "Elijah Kerry",
+    "date": "2024-05-17T12:22:21-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c",
+    "short": "a12cdb3",
+    "message": "DAQ physical channel can be changed while running",
+    "author": "Elijah Kerry",
+    "date": "2024-05-17T12:19:33-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "eff9a664410ee93984150561edac9e2552837e22",
+    "short": "eff9a66",
+    "message": "Squashed commit of the following:",
+    "author": "Elijah Kerry",
+    "date": "2024-05-17T12:07:57-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "dbf0fa5447b21e38f7d818ccb8f1947119b8bd96",
+    "short": "dbf0fa5",
+    "message": "Fixed UI layout issues",
+    "author": "Elijah Kerry",
+    "date": "2024-05-17T11:59:29-05:00",
+    "vi_count": 213
+  },
+  {
+    "sha": "8a5f4004be4425fdc87f8ca425e85f364948d655",
+    "short": "8a5f400",
+    "message": "Animation working for hype mode",
+    "author": "Elijah Kerry",
+    "date": "2024-05-15T15:19:08-05:00",
+    "vi_count": 216
+  },
+  {
+    "sha": "8c690e533a6dd70b6d86e5bdfa520053c9401cc0",
+    "short": "8c690e5",
+    "message": "Added instructions to the screen and fixed another bug in the DAQ task",
+    "author": "Elijah Kerry",
+    "date": "2024-05-14T18:35:52-05:00",
+    "vi_count": 202
+  },
+  {
+    "sha": "ddc17dbc03688b1510da32de1adb0c41ec1cb27a",
+    "short": "ddc17db",
+    "message": "Fixed a bug with DAQ task",
+    "author": "Elijah Kerry",
+    "date": "2024-05-14T10:32:22-05:00",
+    "vi_count": 201
+  },
+  {
+    "sha": "7d43bc8921f11fd29072b8b34913dd1281a881a8",
+    "short": "7d43bc8",
+    "message": "Better DAQ",
+    "author": "Elijah Kerry",
+    "date": "2024-05-14T09:03:45-05:00",
+    "vi_count": 197
+  },
+  {
+    "sha": "5c6c0a76492473182eb589175e15f0c9d770d4e6",
+    "short": "5c6c0a7",
+    "message": "First Beta Version",
+    "author": "Elijah Kerry",
+    "date": "2024-05-08T11:35:14-05:00",
+    "vi_count": 169
+  },
+  {
+    "sha": "55852b9622b6ae0aea2b8571d53b4370a424e70b",
+    "short": "55852b9",
+    "message": "Image functionality",
+    "author": "Elijah Kerry",
+    "date": "2024-05-07T00:30:38-05:00",
+    "vi_count": 137
+  },
+  {
+    "sha": "6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74",
+    "short": "6bd0bbf",
+    "message": "Major progress",
+    "author": "Elijah Kerry",
+    "date": "2024-05-06T23:52:56-05:00",
+    "vi_count": 137
+  },
+  {
+    "sha": "fc96dc5da1fe74e09a9749417476cc7b455e9aca",
+    "short": "fc96dc5",
+    "message": "Added timer functionality and image display",
+    "author": "elijah286",
+    "date": "2024-04-30T23:14:45-05:00",
+    "vi_count": 125
+  },
+  {
+    "sha": "a231e7f207bc9f97955a3f51a3d120f55e157f24",
+    "short": "a231e7f",
+    "message": "Made increment and decrement scores work",
+    "author": "elijah286",
+    "date": "2024-04-29T23:00:14-05:00",
+    "vi_count": 103
+  },
+  {
+    "sha": "342171d5a674a151f121fe282eff2634ca0672ae",
+    "short": "342171d",
+    "message": "Questions working with simulated DAQ",
+    "author": "elijah286",
+    "date": "2024-04-27T01:41:42-05:00",
+    "vi_count": 99
+  },
+  {
+    "sha": "ef956c3e70e3c2e601099a53192b46c520969659",
+    "short": "ef956c3",
+    "message": "Layout of main screen is working",
+    "author": "elijah286",
+    "date": "2024-04-23T16:14:04-05:00",
+    "vi_count": 48
+  },
+  {
+    "sha": "ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629",
+    "short": "ca4d8f5",
+    "message": "Working on UI and Actor Architecture",
+    "author": "elijah286",
+    "date": "2024-04-22T23:01:23-05:00",
+    "vi_count": 43
+  },
+  {
+    "sha": "0bd74709c51730b09aca38c7e425fac356d53bad",
+    "short": "0bd7470",
+    "message": "Moved the grid into actor core",
+    "author": "elijah286",
+    "date": "2024-04-21T21:41:00-05:00",
+    "vi_count": 6
+  },
+  {
+    "sha": "3610ea9666189150b9ff3cb6872e3912c72ea053",
+    "short": "3610ea9",
+    "message": "Submitting files for the first time",
+    "author": "elijah286",
+    "date": "2024-04-21T21:22:54-05:00",
+    "vi_count": 5
   }
 ]
