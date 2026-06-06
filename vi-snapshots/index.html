@@ -100,7 +100,12 @@
 </div>
 
 <script>
-const BASE = window.location.pathname.replace(/\/?$/, '/');
+// Resolve the directory this page lives in. Stripping the trailing path segment
+// yields the same base whether the page is opened as ".../vi-snapshots/" or as
+// ".../vi-snapshots/index.html" (the dashboard deep-links use index.html?sha=).
+// The previous regex appended a slash to "index.html", which 404'd commits.json
+// and showed "No snapshots yet".
+const BASE = window.location.pathname.replace(/[^/]*$/, '');
 
 async function fetchJson(url) {
   const r = await fetch(url, { cache: 'no-store' });
