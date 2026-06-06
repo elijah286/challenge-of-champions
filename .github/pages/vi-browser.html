@@ -146,9 +146,11 @@ let manifest = [];
 let treeRoot = null;             // hierarchical tree built from each VI's vi_rel path
 const expanded = new Set();      // folder paths currently expanded (persists across commits)
 let activeHtml = null;           // html of the currently-open VI (drives row highlight)
-let changeMap = {};              // vi_rel -> { type, url } from the commit's VIDiff changes.json
+let changeMap = {};              // vi_rel -> { type, url, isDiff } for VIs changed in this commit
 let changedFolders = new Set();  // folder paths that contain >=1 changed VI (for the folder dot)
 let changedOnly = new URLSearchParams(location.search).get('changed') === '1'; // down-filter to changed VIs
+let commitList = [];             // commits.json (newest first); used to find the previous revision
+const manifestCache = new Map(); // sha -> manifest (so diffing against the previous commit is cheap)
 
 const ICON = {
   chevron: '<svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor"><path d="M6 4l4 4-4 4z"/></svg>',
@@ -199,6 +201,7 @@ function nodeHasVisible(node, f) {
 
 async function loadCommits() {
   const commits = await fetchJson(BASE + 'commits.json').catch(() => []);
+  commitList = commits;
   const sel = document.getElementById('commit-select');
   sel.innerHTML = '';
   if (!commits.length) {
@@ -218,8 +221,17 @@ async function loadCommits() {
   loadManifest(startSha);
 }
 
+// Fetch (and cache) the manifest for any commit — used both for the active view and
+// for diffing the active commit against the previous one.
+async function getManifest(sha) {
+  if (manifestCache.has(sha)) return manifestCache.get(sha);
+  const m = await fetchJson(BASE + sha + '/manifest.json').catch(() => []);
+  manifestCache.set(sha, m);
+  return m;
+}
+
 async function loadManifest(sha) {
-  manifest = await fetchJson(BASE + sha + '/manifest.json').catch(() => []);
+  manifest = await getManifest(sha);
   treeRoot = buildTree(manifest);
   activeHtml = null;
   await loadChanges(sha);
@@ -227,24 +239,54 @@ async function loadManifest(sha) {
   renderList(document.getElementById('search').value);
 }
 
-// Show/enable the "Changed VIs only" toggle when this commit has VIDiff data, and
-// keep its checkbox + count in sync. Hidden (and disabled) when there are no changes.
+// Always show the "Changed VIs only" toggle so the feature is discoverable. The
+// count reflects how many VIs changed in this revision; when zero, the toggle is
+// disabled with a hint instead of being hidden.
 function updateChangedToggle() {
   const count = Object.keys(changeMap).length;
   const wrap  = document.getElementById('changed-toggle');
-  document.getElementById('changed-count').textContent = count ? `(${count})` : '';
-  wrap.style.display = count ? 'inline-flex' : 'none';
+  const box   = document.getElementById('changed-only');
+  document.getElementById('changed-count').textContent = count ? `(${count})` : '(0)';
+  wrap.style.display = 'inline-flex';
+  wrap.title = count ? '' : 'This revision did not change any VIs.';
+  wrap.style.opacity = count ? '1' : '.5';
+  box.disabled = !count;
   if (!count) changedOnly = false;
-  document.getElementById('changed-only').checked = changedOnly;
+  box.checked = changedOnly;
 }
 
-// Pull the VIDiff change set for this commit so the tree can flag changed VIs and
-// deep-link to their diff reports. The diff reports live as a sibling of
-// vi-snapshots/ on Pages:  <root>/vidiff/push-<sha>/<platform>/vidiff/changes.json
-// Missing data (a commit without a VIDiff run) degrades gracefully to no badges.
+// Determine which VIs changed in this revision by comparing its content-addressed
+// snapshot manifest to the previous commit's (blob SHA == VI content identity).
+// This works for every commit in the dropdown, independent of whether a VIDiff run
+// exists. When a VIDiff side-by-side report IS available for a changed VI, the entry
+// links to it; otherwise it links to that VI's snapshot.
 async function loadChanges(sha) {
   changeMap = {};
   changedFolders = new Set();
+
+  // 1) Blob diff against the previous (older) revision in the dropdown.
+  const idx = commitList.findIndex(c => c.sha === sha);
+  const prev = idx >= 0 && idx + 1 < commitList.length ? commitList[idx + 1] : null;
+  const prevBlob = new Map();
+  if (prev) {
+    for (const v of await getManifest(prev.sha)) prevBlob.set(v.vi_rel, v.blob);
+  }
+  for (const v of manifest) {
+    let type = null;
+    if (!prev) { type = null; }                       // no baseline -> treat as unchanged
+    else if (!prevBlob.has(v.vi_rel)) type = 'added';
+    else if (prevBlob.get(v.vi_rel) !== v.blob) type = 'modified';
+    if (type) {
+      changeMap[v.vi_rel] = { type, url: BASE + v.html, isDiff: false };
+      const parts = v.vi_rel.split('/'); parts.pop();
+      let acc = '';
+      for (const p of parts) { acc = acc ? acc + '/' + p : p; changedFolders.add(acc); }
+    }
+  }
+
+  // 2) Enrich changed VIs with their VIDiff side-by-side report, where a run
+  //    published changes.json. Manifest-diff stays authoritative for *which* VIs
+  //    changed; changes.json only upgrades a flagged VI's link to its diff report.
   const root = BASE.replace(/vi-snapshots\/$/, '');
   for (const platform of ['linux', 'windows']) {
     const dir = `${root}vidiff/push-${sha}/${platform}/vidiff/`;
@@ -252,13 +294,12 @@ async function loadChanges(sha) {
     try { data = await fetchJson(dir + 'changes.json'); } catch (e) { continue; }
     if (data && Array.isArray(data.files) && data.files.length) {
       for (const f of data.files) {
-        if (!f.file) continue;
-        changeMap[f.file] = { type: f.type, url: dir + f.report };
-        const parts = f.file.split('/'); parts.pop();
-        let acc = '';
-        for (const p of parts) { acc = acc ? acc + '/' + p : p; changedFolders.add(acc); }
+        if (f.file && changeMap[f.file]) {
+          changeMap[f.file].url = dir + f.report;
+          changeMap[f.file].isDiff = true;
+        }
       }
-      return;   // first platform that has data wins
+      break;   // first platform that has data wins
     }
   }
 }
@@ -308,11 +349,12 @@ function renderTree(node, depth, f, frag) {
     if (chg) {
       const badge = document.createElement('span');
       badge.className = 'chg ' + chg.type;
-      badge.textContent = chg.type === 'modified' ? 'diff' : chg.type;
-      badge.title = chg.type === 'modified'
-        ? 'View side-by-side diff report'
-        : `VI ${chg.type} in this revision — view report`;
-      badge.addEventListener('click', (e) => { e.stopPropagation(); openDiff(chg.url, v.vi_rel, chg.type, row); });
+      // "diff" only when a true side-by-side report exists; otherwise just the type.
+      badge.textContent = (chg.type === 'modified' && chg.isDiff) ? 'diff' : chg.type;
+      badge.title = chg.isDiff
+        ? `View side-by-side diff report (${chg.type})`
+        : `VI ${chg.type} in this revision`;
+      badge.addEventListener('click', (e) => { e.stopPropagation(); openDiff(chg.url, v.vi_rel, chg.type, row, chg.isDiff); });
       row.appendChild(badge);
     }
     frag.appendChild(row);
@@ -351,14 +393,15 @@ function showInFrame(url, title) {
   document.getElementById('vi-frame').src = url;
 }
 
-// Configure the toolbar "View diff report" link for the given VI (or hide it).
+// Configure the toolbar "View diff report" link. Shown only when a true side-by-side
+// VIDiff report exists for this VI; the snapshot itself is already in the viewer.
 function setDiffLink(viRel) {
   const chg = changeMap[viRel];
   const diffLink = document.getElementById('diff-link');
-  if (chg) {
-    diffLink.textContent = (chg.type === 'modified' ? 'View diff report' : `View ${chg.type} report`) + ' \u2192';
+  if (chg && chg.isDiff) {
+    diffLink.textContent = 'View diff report \u2192';
     diffLink.href = chg.url;
-    diffLink.onclick = (e) => { e.preventDefault(); showInFrame(chg.url, `${viRel} \u2014 ${chg.type === 'modified' ? 'diff' : chg.type}`); };
+    diffLink.onclick = (e) => { e.preventDefault(); showInFrame(chg.url, `${viRel} \u2014 diff`); };
     diffLink.style.display = 'inline';
   } else {
     diffLink.style.display = 'none';
@@ -374,13 +417,14 @@ function openVI(row) {
   showInFrame(`${BASE}${row.dataset.html}`, row.dataset.name);
 }
 
-// Open a VIDiff report (side-by-side for modified VIs; single-version snapshot for
-// added/deleted), triggered from a tree badge or the toolbar link.
-function openDiff(url, viRel, type, row) {
+// Open a changed VI from a tree badge: its side-by-side diff report when one exists,
+// otherwise the VI's snapshot. Marks the row active and syncs the toolbar link.
+function openDiff(url, viRel, type, row, isDiff) {
   setActiveRow(row || null);
   activeHtml = row ? row.dataset.html : null;
   setDiffLink(viRel);
-  showInFrame(url, `${viRel} \u2014 ${type === 'modified' ? 'diff' : type}`);
+  const suffix = isDiff ? (type === 'modified' ? 'diff' : type) : type;
+  showInFrame(url, `${viRel} \u2014 ${suffix}`);
 }
 
 document.getElementById('search').addEventListener('input', e => renderList(e.target.value));
