@@ -30,7 +30,9 @@ $ProgressPreference    = 'SilentlyContinue'
 
 $ResolvedLabVIEWPath = $null
 $CliExe              = $null
-$PrintToHtmlOp = Join-Path $WorkspaceRoot '.github\labview\PrintToSingleFileHtml'
+# AdditionalOperationDirectory is searched recursively for the operation class,
+# so point it at .github\labview (the parent of the PrintToSingleFileHtml folder).
+$PrintToHtmlOp = Join-Path $WorkspaceRoot '.github\labview'
 
 function Resolve-LabVIEWPath([string]$PreferredPath) {
     if ($PreferredPath -and (Test-Path $PreferredPath)) {
@@ -73,8 +75,9 @@ $ResolvedLabVIEWPath = Resolve-LabVIEWPath -PreferredPath $LabVIEWPath
 $CliExe              = Resolve-LabVIEWCLI -ResolvedLVPath $ResolvedLabVIEWPath
 
 # Verify the custom operation VIs are present
-if (-not (Test-Path $PrintToHtmlOp)) {
-    Write-Error "PrintToSingleFileHtml operation directory not found: $PrintToHtmlOp`nCopy the VIs from https://github.com/ni/labview-for-containers/tree/main/examples/cicd-examples/helper-scripts/vidiff/PrintToSingleFileHtml/"
+$PrintToHtmlClass = Join-Path $PrintToHtmlOp 'PrintToSingleFileHtml'
+if (-not (Test-Path $PrintToHtmlClass)) {
+    Write-Error "PrintToSingleFileHtml operation directory not found: $PrintToHtmlClass`nCopy the VIs from https://github.com/ni/labview-for-containers/tree/main/examples/cicd-examples/helper-scripts/vidiff/PrintToSingleFileHtml/"
     exit 1
 }
 
@@ -127,12 +130,17 @@ foreach ($vi in $allFiles) {
     New-Item -ItemType Directory -Force -Path $HtmlDir | Out-Null
 
     try {
+        # -Headless is REQUIRED for LabVIEW 2026+ inside Windows containers, otherwise
+        # LabVIEWCLI cannot establish a VI Server connection (error -350000).
         & $CliExe `
             -OperationName                PrintToSingleFileHtml `
-            -AdditionalOperationDirectory $PrintToHtmlOp `
             -LabVIEWPath                  $ResolvedLabVIEWPath `
-            -VIPath                       $vi.FullName `
-            -ExportPath                   $HtmlOut
+            -AdditionalOperationDirectory $PrintToHtmlOp `
+            -LogToConsole                 TRUE `
+            -VI                           $vi.FullName `
+            -OutputPath                   $HtmlOut `
+            -o -c `
+            -Headless
         if ($LASTEXITCODE -ne 0) { throw "Exit code $LASTEXITCODE" }
         Write-Host "  OK: $RelPath -> $SafeName.html"
         $Exported++

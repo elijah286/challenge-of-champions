@@ -80,11 +80,15 @@ Write-Host ""
 
 $Start = Get-Date
 
+# NOTE: -Headless is REQUIRED for LabVIEW 2026+ inside Windows containers, otherwise
+# LabVIEWCLI cannot establish a VI Server connection (error -350000).
 & $CliExe `
-    -OperationName       RunVIAnalyzer `
-    -LabVIEWPath         $LabVIEWPath `
-    -VIAnalyzerConfigFile $ConfigFile `
-    -ExportFilePath      $ResultsXml
+    -LogToConsole  TRUE `
+    -OperationName RunVIAnalyzer `
+    -ConfigPath    $ConfigFile `
+    -ReportPath    $ResultsXml `
+    -LabVIEWPath   $LabVIEWPath `
+    -Headless
 
 $ExitCode = $LASTEXITCODE
 $Duration = [math]::Round(((Get-Date) - $Start).TotalSeconds, 1)

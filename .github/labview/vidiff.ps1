@@ -36,8 +36,34 @@ param(
 $ErrorActionPreference = 'Stop'
 $ProgressPreference    = 'SilentlyContinue'
 
-$CliExe          = Join-Path (Split-Path $LabVIEWPath) 'LabVIEWCLI.exe'
-$PrintToHtmlOp   = Join-Path $HeadDir '.github\labview\PrintToSingleFileHtml'
+function Resolve-LabVIEWPath([string]$PreferredPath) {
+    if ($PreferredPath -and (Test-Path $PreferredPath)) {
+        return $PreferredPath
+    }
+    $candidates = @(Get-ChildItem 'C:\Program Files\National Instruments' -Directory -Filter 'LabVIEW *' -ErrorAction SilentlyContinue |
+        Sort-Object Name -Descending |
+        ForEach-Object { Join-Path $_.FullName 'LabVIEW.exe' } |
+        Where-Object { Test-Path $_ })
+    if ($candidates.Count -gt 0) {
+        return $candidates[0]
+    }
+    throw "LabVIEW.exe not found. Checked preferred path '$PreferredPath' and C:\Program Files\National Instruments\LabVIEW *"
+}
+
+function Resolve-LabVIEWCLI([string]$LabVIEWExePath) {
+    $cliCmd = Get-Command LabVIEWCLI.exe -ErrorAction SilentlyContinue
+    if ($null -eq $cliCmd) { $cliCmd = Get-Command LabVIEWCLI -ErrorAction SilentlyContinue }
+    if ($null -ne $cliCmd -and $cliCmd.Source) { return $cliCmd.Source }
+    $candidate = Join-Path (Split-Path $LabVIEWExePath) 'LabVIEWCLI.exe'
+    if (Test-Path $candidate) { return $candidate }
+    throw "LabVIEWCLI not found on PATH and not found beside LabVIEW.exe ('$candidate')."
+}
+
+$LabVIEWPath = Resolve-LabVIEWPath $LabVIEWPath
+$CliExe      = Resolve-LabVIEWCLI $LabVIEWPath
+# AdditionalOperationDirectory is searched recursively for the operation class,
+# so point it at .github\labview (the parent of the PrintToSingleFileHtml folder).
+$PrintToHtmlOp   = Join-Path $HeadDir '.github\labview'
 
 New-Item -ItemType Directory -Force -Path $ReportDir | Out-Null
 
@@ -85,25 +111,19 @@ foreach ($RelPath in $Files) {
 
     try {
         if ($BaseExists -and $BaseIsVI -and $HeadExists -and $HeadIsVI) {
-            # Modified — full comparison
-            $CompXml = Join-Path $OutDir 'comparison.xml'
-            & $CliExe `
-                -OperationName    CreateComparisonReport `
-                -LabVIEWPath      $LabVIEWPath `
-                -OldVIPath        $BasePath `
-                -NewVIPath        $HeadPath `
-                -ExportPath       $CompXml
-            if ($LASTEXITCODE -ne 0) { throw "CreateComparisonReport failed (exit $LASTEXITCODE)" }
-
+            # Modified — single-step HTML comparison report.
+            # -Headless is REQUIRED for LabVIEW 2026+ inside Windows containers.
             $HtmlOut = Join-Path $OutDir 'index.html'
             & $CliExe `
-                -OperationName                PrintToSingleFileHtml `
-                -AdditionalOperationDirectory $PrintToHtmlOp `
-                -LabVIEWPath                  $LabVIEWPath `
-                -VIPath                       $CompXml `
-                -ExportPath                   $HtmlOut
-            if ($LASTEXITCODE -ne 0) { throw "PrintToSingleFileHtml failed (exit $LASTEXITCODE)" }
-
+                -LogToConsole  TRUE `
+                -OperationName CreateComparisonReport `
+                -VI1           $BasePath `
+                -VI2           $HeadPath `
+                -ReportType    html `
+                -ReportPath    $HtmlOut `
+                -LabVIEWPath   $LabVIEWPath `
+                -Headless
+            if ($LASTEXITCODE -ne 0) { throw "CreateComparisonReport failed (exit $LASTEXITCODE)" }
             $Results.Add(@{File=$RelPath; Type='modified'; Html="$SafeName/index.html"})
 
         } elseif ($HeadExists -and $HeadIsVI) {
@@ -111,10 +131,13 @@ foreach ($RelPath in $Files) {
             $HtmlOut = Join-Path $OutDir 'index.html'
             & $CliExe `
                 -OperationName                PrintToSingleFileHtml `
-                -AdditionalOperationDirectory $PrintToHtmlOp `
                 -LabVIEWPath                  $LabVIEWPath `
-                -VIPath                       $HeadPath `
-                -ExportPath                   $HtmlOut
+                -AdditionalOperationDirectory $PrintToHtmlOp `
+                -LogToConsole                 TRUE `
+                -VI                           $HeadPath `
+                -OutputPath                   $HtmlOut `
+                -o -c `
+                -Headless
             if ($LASTEXITCODE -ne 0) { throw "PrintToSingleFileHtml (added) failed (exit $LASTEXITCODE)" }
             $Results.Add(@{File=$RelPath; Type='added'; Html="$SafeName/index.html"})
 
@@ -123,10 +146,13 @@ foreach ($RelPath in $Files) {
             $HtmlOut = Join-Path $OutDir 'index.html'
             & $CliExe `
                 -OperationName                PrintToSingleFileHtml `
-                -AdditionalOperationDirectory $PrintToHtmlOp `
                 -LabVIEWPath                  $LabVIEWPath `
-                -VIPath                       $BasePath `
-                -ExportPath                   $HtmlOut
+                -AdditionalOperationDirectory $PrintToHtmlOp `
+                -LogToConsole                 TRUE `
+                -VI                           $BasePath `
+                -OutputPath                   $HtmlOut `
+                -o -c `
+                -Headless
             if ($LASTEXITCODE -ne 0) { throw "PrintToSingleFileHtml (deleted) failed (exit $LASTEXITCODE)" }
             $Results.Add(@{File=$RelPath; Type='deleted'; Html="$SafeName/index.html"})
 

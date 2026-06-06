@@ -22,7 +22,9 @@ on:
         default: ''
 
 env:
-  LABVIEW_CONTAINER_IMAGE: ghcr.io/elijahkerry/challenge-of-champions-labview:2024
+  # Base NI image already includes everything VIDiff needs (CreateComparisonReport /
+  # PrintToSingleFileHtml). The custom GHCR image build is not required here.
+  LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
 
 permissions:
   contents: read

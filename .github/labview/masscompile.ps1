@@ -70,11 +70,15 @@ Write-Host ""
 
 $Start = Get-Date
 
-# Run MassCompile and tee output to log
+# Run MassCompile and tee output to log.
+# NOTE: -Headless is REQUIRED for LabVIEW 2026+ inside Windows containers, otherwise
+# LabVIEWCLI cannot establish a VI Server connection (error -350000).
 & $CliExe `
-    -OperationName MassCompile `
-    -LabVIEWPath   $LabVIEWPath `
-    -Target        $WorkspaceRoot `
+    -LogToConsole       TRUE `
+    -OperationName      MassCompile `
+    -DirectoryToCompile $WorkspaceRoot `
+    -LabVIEWPath        $LabVIEWPath `
+    -Headless `
     2>&1 | Tee-Object -FilePath $LogFile
 
 $ExitCode = $LASTEXITCODE
