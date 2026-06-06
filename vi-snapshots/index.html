@@ -87,6 +87,15 @@
     #toolbar{padding:8px 14px;border-bottom:1px solid var(--border);background:var(--sidebar);
              font-size:.82em;color:var(--fg-muted);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
     #vi-title{font-weight:600;color:var(--fg)}
+    /* Linux/Windows diff-report switch (shown when a VI has reports on both) */
+    #plat-toggle{display:none;align-items:center;border:1px solid var(--border);border-radius:7px;
+                 overflow:hidden;font-size:.92em}
+    #plat-toggle button{border:none;background:var(--bg);color:var(--fg-muted);cursor:pointer;
+                        padding:3px 10px;font:inherit;font-weight:600}
+    #plat-toggle button:hover:not(.active){background:var(--sidebar-hover);color:var(--fg)}
+    #plat-toggle button.active{background:var(--link);color:#fff}
+    #plat-toggle button:disabled{opacity:.4;cursor:default}
+    #plat-toggle .sep{width:1px;background:var(--border)}
     #viewer{flex:1;overflow:hidden;position:relative}
     #viewer iframe{width:100%;height:100%;border:none;background:var(--viewer-bg)}
     #viewer-loading{position:absolute;inset:0;z-index:3;display:none;align-items:center;
@@ -127,6 +136,11 @@
   <div id="toolbar">
     <span id="vi-title">Select a VI from the sidebar</span>
     <a id="diff-link" href="#" style="color:var(--link);font-weight:600;display:none">View diff report &rarr;</a>
+    <span id="plat-toggle" title="Swap the diff report between the Linux and Windows container renders">
+      <button type="button" data-plat="linux">Linux</button>
+      <span class="sep"></span>
+      <button type="button" data-plat="windows">Windows</button>
+    </span>
     <a id="open-link" href="#" target="_blank" style="color:var(--link);display:none">Open in new tab ↗</a>
     <span id="viewer-hint">Drag to pan &middot; <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+scroll to zoom &middot; <kbd>◀</kbd><kbd>▶</kbd> to step cases</span>
   </div>
@@ -165,6 +179,13 @@ let changedFolders = new Set();  // folder paths that contain >=1 changed VI (fo
 let changedOnly = new URLSearchParams(location.search).get('changed') === '1'; // down-filter to changed VIs
 let commitList = [];             // commits.json (newest first); used to find the previous revision
 const manifestCache = new Map(); // sha -> manifest (so diffing against the previous commit is cheap)
+// Diff reports are rendered by both the Linux and Windows containers; this is the
+// platform currently shown. The user can swap to compare container output. The
+// choice persists across VIs/commits via the URL (?plat=) and this variable.
+let diffPlatform = (new URLSearchParams(location.search).get('plat') === 'windows') ? 'windows' : 'linux';
+let commitPlatforms = new Set(); // which platforms published a report for the active commit
+let currentDiffVi = null;        // vi_rel of the diff currently shown (so the toggle can reload it)
+let currentDiffRow = null;       // the tree row backing the current view (for re-activation)
 
 const ICON = {
   chevron: '<svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor"><path d="M6 4l4 4-4 4z"/></svg>',
@@ -298,24 +319,39 @@ async function loadChanges(sha) {
     }
   }
 
-  // 2) Enrich changed VIs with their VIDiff side-by-side report, where a run
-  //    published changes.json. Manifest-diff stays authoritative for *which* VIs
-  //    changed; changes.json only upgrades a flagged VI's link to its diff report.
+  // 2) Enrich changed VIs with their VIDiff side-by-side reports. Each VI may have
+  //    a report from BOTH containers; we record per-platform URLs so the user can
+  //    toggle Linux <-> Windows. Manifest-diff stays authoritative for *which* VIs
+  //    changed; changes.json only adds report links to a flagged VI.
   const root = BASE.replace(/vi-snapshots\/$/, '');
+  commitPlatforms = new Set();
   for (const platform of ['linux', 'windows']) {
     const dir = `${root}vidiff/push-${sha}/${platform}/vidiff/`;
     let data = null;
     try { data = await fetchJson(dir + 'changes.json'); } catch (e) { continue; }
     if (data && Array.isArray(data.files) && data.files.length) {
+      commitPlatforms.add(platform);
       for (const f of data.files) {
         if (f.file && changeMap[f.file]) {
-          changeMap[f.file].url = dir + f.report;
-          changeMap[f.file].isDiff = true;
+          const chg = changeMap[f.file];
+          (chg.reports || (chg.reports = {}))[platform] = dir + f.report;
+          chg.isDiff = true;
         }
       }
-      break;   // first platform that has data wins
     }
   }
+}
+
+// Resolve the diff-report URL for a VI, preferring the selected platform but
+// falling back to the other one if only it rendered this VI. Returns {url, platform}
+// or null when no side-by-side report exists (caller shows the snapshot instead).
+function diffReportFor(viRel) {
+  const chg = changeMap[viRel];
+  if (!chg || !chg.reports) return null;
+  if (chg.reports[diffPlatform]) return { url: chg.reports[diffPlatform], platform: diffPlatform };
+  const other = diffPlatform === 'linux' ? 'windows' : 'linux';
+  if (chg.reports[other]) return { url: chg.reports[other], platform: other };
+  return null;
 }
 
 // Render a tree node's folders (then files) into the fragment. When a filter is
@@ -368,7 +404,7 @@ function renderTree(node, depth, f, frag) {
       badge.title = chg.isDiff
         ? `View side-by-side diff report (${chg.type})`
         : `VI ${chg.type} in this revision`;
-      badge.addEventListener('click', (e) => { e.stopPropagation(); openDiff(chg.url, v.vi_rel, chg.type, row, chg.isDiff); });
+      badge.addEventListener('click', (e) => { e.stopPropagation(); openDiff(v.vi_rel, chg.type, row); });
       row.appendChild(badge);
     }
     frag.appendChild(row);
@@ -646,37 +682,66 @@ function buildStepper(doc, h3, frames) {
 }
 
 // Configure the toolbar "View diff report" link. Shown only when a true side-by-side
-// VIDiff report exists for this VI; the snapshot itself is already in the viewer.
+// VIDiff report exists for this VI (on the selected or the other platform).
 function setDiffLink(viRel) {
   const chg = changeMap[viRel];
   const diffLink = document.getElementById('diff-link');
-  if (chg && chg.isDiff) {
+  const rep = diffReportFor(viRel);
+  if (chg && rep) {
     diffLink.textContent = 'View diff report \u2192';
-    diffLink.href = chg.url;
-    diffLink.onclick = (e) => { e.preventDefault(); showInFrame(chg.url, `${viRel} \u2014 diff`); };
+    diffLink.href = rep.url;
+    diffLink.onclick = (e) => { e.preventDefault(); openDiff(viRel, chg.type, currentDiffRow); };
     diffLink.style.display = 'inline';
   } else {
     diffLink.style.display = 'none';
   }
 }
 
+// Show the Linux/Windows switch when this VI has a diff report and the commit
+// published reports on both containers; disable a button if its platform lacks
+// this particular VI's report. Lets the user compare container output side by side.
+function setPlatformToggle(viRel) {
+  const wrap = document.getElementById('plat-toggle');
+  const chg = changeMap[viRel];
+  const haveBoth = commitPlatforms.has('linux') && commitPlatforms.has('windows');
+  if (!chg || !chg.reports || !haveBoth) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'inline-flex';
+  const shown = diffReportFor(viRel);
+  for (const btn of wrap.querySelectorAll('button')) {
+    const p = btn.dataset.plat;
+    btn.disabled = !chg.reports[p];
+    btn.classList.toggle('active', !!shown && p === shown.platform);
+  }
+}
+
 function openVI(row) {
   setActiveRow(row);
+  currentDiffRow = row;
+  currentDiffVi = null;
   activeHtml = row.dataset.html;
   // Snapshots are content-addressed and shared across commits, so the manifest's
   // `html` is relative to the vi-snapshots base (e.g. "by-blob/ab/<blob>.html").
   setDiffLink(row.dataset.name);
+  document.getElementById('plat-toggle').style.display = 'none';
   showInFrame(`${BASE}${row.dataset.html}`, row.dataset.name);
 }
 
-// Open a changed VI from a tree badge: its side-by-side diff report when one exists,
-// otherwise the VI's snapshot. Marks the row active and syncs the toolbar link.
-function openDiff(url, viRel, type, row, isDiff) {
+// Open a changed VI's side-by-side diff report (from the selected container), or
+// its snapshot when no diff report exists. Wires the toolbar link + platform switch.
+function openDiff(viRel, type, row) {
   setActiveRow(row || null);
+  currentDiffRow = row || null;
+  currentDiffVi = viRel;
   activeHtml = row ? row.dataset.html : null;
   setDiffLink(viRel);
-  const suffix = isDiff ? (type === 'modified' ? 'diff' : type) : type;
-  showInFrame(url, `${viRel} \u2014 ${suffix}`);
+  setPlatformToggle(viRel);
+  const rep = diffReportFor(viRel);
+  if (rep) {
+    showInFrame(rep.url, `${viRel} \u2014 ${type === 'modified' ? 'diff' : type} \u00b7 ${rep.platform}`);
+  } else {
+    const chg = changeMap[viRel];
+    showInFrame(chg ? chg.url : `${BASE}`, `${viRel} \u2014 ${type}`);
+  }
 }
 
 document.getElementById('search').addEventListener('input', e => renderList(e.target.value));
@@ -691,6 +756,19 @@ document.getElementById('expand-all').addEventListener('click', () => {
 document.getElementById('collapse-all').addEventListener('click', () => {
   expanded.clear();
   renderList(document.getElementById('search').value);
+});
+// Linux/Windows diff switch: change the selected container and reload the open diff.
+document.querySelectorAll('#plat-toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.disabled || btn.dataset.plat === diffPlatform) return;
+    diffPlatform = btn.dataset.plat;
+    try {
+      const u = new URL(location.href);
+      u.searchParams.set('plat', diffPlatform);
+      history.replaceState(null, '', u);
+    } catch (e) { /* non-fatal */ }
+    if (currentDiffVi) openDiff(currentDiffVi, (changeMap[currentDiffVi] || {}).type || 'modified', currentDiffRow);
+  });
 });
 
 loadCommits().catch(err => {
