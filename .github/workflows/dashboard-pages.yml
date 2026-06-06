@@ -112,7 +112,7 @@ jobs:
                           pass
                   return chosen
 
-              def badge(label, *contexts):
+              def badge(label, *contexts, url_override=None):
                   s = pick_status(*contexts)
                   if ci_only:
                       return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
@@ -120,13 +120,16 @@ jobs:
                       return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
                   color  = {'success':'#2ea043','failure':'#da3633','pending':'#9a6700','error':'#da3633'}.get(s['state'],'#555')
                   emoji  = {'success':'✅','failure':'❌','pending':'⏳','error':'⚠️'}.get(s['state'],'?')
-                  url    = s.get('target_url','')
+                  url    = url_override or s.get('target_url','')
                   link   = f'<a href="{url}" style="color:inherit">{emoji} {label}</a>' if url else f'{emoji} {label}'
                   return f'<td style="text-align:center"><span style="background:{color};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">{link}</span></td>'
 
               mc_badge  = badge('compile',   'CI / Mass Compile')
               via_badge = badge('analyze',   'CI / VI Analyzer', 'CI / VI Analyzer (Linux)')
-              diff_badge= badge('diff',      'CI / VIDiff (windows)', 'CI / VIDiff (linux)')
+              # The diff badge opens the unified VI Browser filtered to this commit's
+              # changed VIs (each links to its diff report), rather than a separate table.
+              diff_badge= badge('diff',      'CI / VIDiff (windows)', 'CI / VIDiff (linux)',
+                                 url_override=f'{pages_url}/vi-snapshots/index.html?sha={sha}&changed=1')
               snap_badge= badge('snapshots', 'CI / VI Snapshots')
 
               rows_html.append(f"""

@@ -91,11 +91,14 @@ jobs:
           PR="${{ steps.meta.outputs.pr_number }}"
           PLATFORM="${{ steps.meta.outputs.platform }}"
           if [ -n "$PR" ]; then
-            DEST="pr-${PR}"
+            # PR head snapshots aren't published to the VI Browser, so link the
+            # standalone diff report table for PRs.
+            echo "url=${{ env.PAGES_URL }}/vidiff/pr-${PR}/${PLATFORM}/vidiff/index.html" >> "$GITHUB_OUTPUT"
           else
-            DEST="push-${SHA}"
+            # For pushes (what the dashboard shows), open the unified VI Browser
+            # filtered to this commit's changed VIs; each links to its diff report.
+            echo "url=${{ env.PAGES_URL }}/vi-snapshots/index.html?sha=${SHA}&changed=1" >> "$GITHUB_OUTPUT"
           fi
-          echo "url=${{ env.PAGES_URL }}/vidiff/${DEST}/${PLATFORM}/vidiff/index.html" >> "$GITHUB_OUTPUT"
 
       - name: Post commit status
         if: steps.artifact.outputs.result != 'null'
