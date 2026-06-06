@@ -56,10 +56,18 @@ param(
     [string]$ExistingByBlobDir = '',
     [string]$Image             = 'nationalinstruments/labview:latest-windows',
     [int]   $MaxCommits        = 0,
+    [int]   $MaxVIs            = 0,
     [int]   $TimeBudgetMinutes = 300
 )
 
-$ErrorActionPreference = 'Stop'
+# NOTE: 'Continue' (not 'Stop') is deliberate. This orchestrator drives native
+# commands (git, docker) that legitimately write progress to stderr — e.g.
+# `git worktree add` prints "Preparing worktree (detached HEAD ...)". Under
+# Windows PowerShell 5.1 with $ErrorActionPreference='Stop', that informational
+# stderr is turned into a terminating NativeCommandError (even with 2>$null),
+# which previously aborted the whole run. Every native call below judges success
+# explicitly via $LASTEXITCODE (or an explicit `throw`), so 'Continue' is safe.
+$ErrorActionPreference = 'Continue'
 $ProgressPreference    = 'SilentlyContinue'
 
 # ── Paths ────────────────────────────────────────────────────────────────────
@@ -156,6 +164,12 @@ try {
         $vimap    = Get-VimapForSha $sha
         $worklist = @($vimap | Where-Object { -not $Rendered.Contains($_.Blob) })
 
+        # Smoke-test cap: limit how many NEW VIs to render (0 = no limit). Lets a
+        # validation run exercise the full pipeline quickly without rendering all VIs.
+        if ($MaxVIs -gt 0 -and $worklist.Count -gt $MaxVIs) {
+            Write-Host "MaxVIs=$MaxVIs: capping worklist from $($worklist.Count) for $($sha.Substring(0,7))."
+            $worklist = @($worklist[0..($MaxVIs - 1)])
+        }
         if ($worklist.Count -gt 0 -and (Get-Date) -gt $deadline) {
             Write-Host "Time budget reached - stopping before $($sha.Substring(0,7)). Re-run backfill to resume."
             break
@@ -225,3 +239,9 @@ Copy-Item (Join-Path $PagesDir 'vi-interactive.html') (Join-Path $OutDir 'vi-int
 
 Write-Host ""
 Write-Host "=== Snapshots done: $processed commit(s) processed, $totalRendered VI(s) rendered this run ==="
+
+# Reaching here means the orchestrator ran to completion. Return success explicitly:
+# under $ErrorActionPreference='Continue' a benign non-zero $LASTEXITCODE from a
+# native cleanup call could otherwise mark the step as failed. The workflow's
+# "Verify gallery output" step independently gates on real output (commits.json + by-blob).
+exit 0

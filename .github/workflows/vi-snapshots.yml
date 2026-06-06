@@ -25,6 +25,10 @@ on:
         description: "backfill: cap to most recent N VI-touching commits (0 = all)"
         required: false
         default: '0'
+      max_vis:
+        description: "smoke test: cap NEW VIs rendered per commit (0 = all)"
+        required: false
+        default: '0'
       time_budget_minutes:
         description: "backfill: stop launching new renders after N minutes (resume next run)"
         required: false
@@ -104,6 +108,7 @@ jobs:
             -ExistingByBlobDir '${{ github.workspace }}\_pages\vi-snapshots\by-blob' `
             -Image             "$Env:LABVIEW_CONTAINER_IMAGE" `
             -MaxCommits        ${{ github.event.inputs.max_commits || '0' }} `
+            -MaxVIs            ${{ github.event.inputs.max_vis || '0' }} `
             -TimeBudgetMinutes ${{ github.event.inputs.time_budget_minutes || '300' }}
         continue-on-error: true
 
