@@ -76,6 +76,11 @@
     .chg.modified{background:#9a6700}.chg.added{background:#1a7f37}.chg.deleted{background:#cf222e}
     .chg:hover{filter:brightness(1.15)}
     .chg-dot{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:#9a6700;opacity:.85}
+    /* "Changed only" toggle (shown only when the commit has VIDiff data) */
+    .changed-toggle{display:none;align-items:center;gap:6px;margin-top:8px;font-size:.74em;
+                    color:var(--fg-muted);cursor:pointer;user-select:none}
+    .changed-toggle input{margin:0;accent-color:var(--link)}
+    .changed-toggle .count{color:var(--fg-muted);font-weight:600}
 
     /* ── Main panel ── */
     #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -100,6 +105,10 @@
       <button id="expand-all" type="button">Expand all</button>
       <button id="collapse-all" type="button">Collapse all</button>
     </div>
+    <label class="changed-toggle" id="changed-toggle" for="changed-only">
+      <input type="checkbox" id="changed-only">
+      Changed VIs only <span class="count" id="changed-count"></span>
+    </label>
   </div>
   <div id="vi-list"></div>
 </div>
@@ -107,6 +116,7 @@
 <div id="main">
   <div id="toolbar">
     <span id="vi-title">Select a VI from the sidebar</span>
+    <a id="diff-link" href="#" style="color:var(--link);font-weight:600;display:none">View diff report &rarr;</a>
     <a id="open-link" href="#" target="_blank" style="color:var(--link);display:none">Open in new tab ↗</a>
   </div>
   <div id="empty">
@@ -138,6 +148,7 @@ const expanded = new Set();      // folder paths currently expanded (persists ac
 let activeHtml = null;           // html of the currently-open VI (drives row highlight)
 let changeMap = {};              // vi_rel -> { type, url } from the commit's VIDiff changes.json
 let changedFolders = new Set();  // folder paths that contain >=1 changed VI (for the folder dot)
+let changedOnly = new URLSearchParams(location.search).get('changed') === '1'; // down-filter to changed VIs
 
 const ICON = {
   chevron: '<svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor"><path d="M6 4l4 4-4 4z"/></svg>',
@@ -171,12 +182,18 @@ function allFolderPaths(node, out = []) {
   return out;
 }
 
-// True if the folder (or any descendant) contains a VI matching the filter.
-function nodeMatches(node, f) {
-  for (const v of node.files)
-    if (v.vi_name.toLowerCase().includes(f) || v.vi_rel.toLowerCase().includes(f)) return true;
-  for (const child of node.dirs.values())
-    if (nodeMatches(child, f)) return true;
+// A VI passes the active filters when it matches the text query AND, if the
+// "Changed VIs only" toggle is on, has a VIDiff change entry for this commit.
+function fileVisible(v, f) {
+  if (changedOnly && !changeMap[v.vi_rel]) return false;
+  if (f && !(v.vi_name.toLowerCase().includes(f) || v.vi_rel.toLowerCase().includes(f))) return false;
+  return true;
+}
+
+// True if the folder (or any descendant) contains a VI that passes the filters.
+function nodeHasVisible(node, f) {
+  for (const v of node.files) if (fileVisible(v, f)) return true;
+  for (const child of node.dirs.values()) if (nodeHasVisible(child, f)) return true;
   return false;
 }
 
@@ -206,7 +223,19 @@ async function loadManifest(sha) {
   treeRoot = buildTree(manifest);
   activeHtml = null;
   await loadChanges(sha);
+  updateChangedToggle();
   renderList(document.getElementById('search').value);
+}
+
+// Show/enable the "Changed VIs only" toggle when this commit has VIDiff data, and
+// keep its checkbox + count in sync. Hidden (and disabled) when there are no changes.
+function updateChangedToggle() {
+  const count = Object.keys(changeMap).length;
+  const wrap  = document.getElementById('changed-toggle');
+  document.getElementById('changed-count').textContent = count ? `(${count})` : '';
+  wrap.style.display = count ? 'inline-flex' : 'none';
+  if (!count) changedOnly = false;
+  document.getElementById('changed-only').checked = changedOnly;
 }
 
 // Pull the VIDiff change set for this commit so the tree can flag changed VIs and
@@ -241,8 +270,10 @@ function renderTree(node, depth, f, frag) {
   const dirNames = [...node.dirs.keys()].sort((a, b) => a.localeCompare(b, undefined, { sensitivity:'base' }));
   for (const name of dirNames) {
     const child = node.dirs.get(name);
-    if (f && !nodeMatches(child, f)) continue;
-    const open = f ? true : expanded.has(child.path);
+    if (!nodeHasVisible(child, f)) continue;
+    // Auto-expand while any filter (text or changed-only) is narrowing the tree.
+    const forceOpen = !!f || changedOnly;
+    const open = forceOpen ? true : expanded.has(child.path);
     const row = document.createElement('div');
     row.className = 'tree-row folder' + (open ? ' open' : '');
     row.style.paddingLeft = pad;
@@ -261,7 +292,7 @@ function renderTree(node, depth, f, frag) {
   }
   const files = node.files.slice().sort((a, b) => a.vi_name.localeCompare(b.vi_name, undefined, { sensitivity:'base' }));
   for (const v of files) {
-    if (f && !(v.vi_name.toLowerCase().includes(f) || v.vi_rel.toLowerCase().includes(f))) continue;
+    if (!fileVisible(v, f)) continue;
     const row = document.createElement('div');
     row.className = 'tree-row file' + (v.html === activeHtml ? ' active' : '');
     row.style.paddingLeft = pad;
@@ -281,7 +312,7 @@ function renderTree(node, depth, f, frag) {
       badge.title = chg.type === 'modified'
         ? 'View side-by-side diff report'
         : `VI ${chg.type} in this revision — view report`;
-      badge.addEventListener('click', (e) => { e.stopPropagation(); openDiff(chg.url, v.vi_rel, chg.type); });
+      badge.addEventListener('click', (e) => { e.stopPropagation(); openDiff(chg.url, v.vi_rel, chg.type, row); });
       row.appendChild(badge);
     }
     frag.appendChild(row);
@@ -299,42 +330,64 @@ function renderList(filter) {
   const frag = document.createDocumentFragment();
   renderTree(treeRoot, 0, f, frag);
   if (!frag.childNodes.length) {
-    container.innerHTML = '<div class="sidebar-note">No VIs match the filter.</div>';
+    const msg = changedOnly ? 'No changed VIs in this revision.' : 'No VIs match the filter.';
+    container.innerHTML = `<div class="sidebar-note">${msg}</div>`;
     return;
   }
   container.appendChild(frag);
 }
 
-function openVI(row) {
+function setActiveRow(row) {
   document.querySelectorAll('.tree-row.file.active').forEach(el => el.classList.remove('active'));
-  row.classList.add('active');
-  activeHtml = row.dataset.html;
-  // Snapshots are content-addressed and shared across commits, so the manifest's
-  // `html` is relative to the vi-snapshots base (e.g. "by-blob/ab/<blob>.html").
-  const htmlPath = `${BASE}${row.dataset.html}`;
-  document.getElementById('vi-title').textContent = row.dataset.name;
-  const link = document.getElementById('open-link');
-  link.href = htmlPath; link.style.display = 'inline';
-  document.getElementById('empty').style.display  = 'none';
-  document.getElementById('viewer').style.display = 'block';
-  document.getElementById('vi-frame').src = htmlPath;
+  if (row) row.classList.add('active');
 }
 
-// Open a VIDiff report (side-by-side for modified VIs; single-version snapshot for
-// added/deleted) for a changed VI, triggered from its tree badge.
-function openDiff(url, viRel, type) {
-  document.querySelectorAll('.tree-row.file.active').forEach(el => el.classList.remove('active'));
-  activeHtml = null;
-  const label = type === 'modified' ? 'diff' : type;
-  document.getElementById('vi-title').textContent = `${viRel} — ${label}`;
-  const link = document.getElementById('open-link');
-  link.href = url; link.style.display = 'inline';
+function showInFrame(url, title) {
+  document.getElementById('vi-title').textContent = title;
+  const open = document.getElementById('open-link');
+  open.href = url; open.style.display = 'inline';
   document.getElementById('empty').style.display  = 'none';
   document.getElementById('viewer').style.display = 'block';
   document.getElementById('vi-frame').src = url;
 }
 
+// Configure the toolbar "View diff report" link for the given VI (or hide it).
+function setDiffLink(viRel) {
+  const chg = changeMap[viRel];
+  const diffLink = document.getElementById('diff-link');
+  if (chg) {
+    diffLink.textContent = (chg.type === 'modified' ? 'View diff report' : `View ${chg.type} report`) + ' \u2192';
+    diffLink.href = chg.url;
+    diffLink.onclick = (e) => { e.preventDefault(); showInFrame(chg.url, `${viRel} \u2014 ${chg.type === 'modified' ? 'diff' : chg.type}`); };
+    diffLink.style.display = 'inline';
+  } else {
+    diffLink.style.display = 'none';
+  }
+}
+
+function openVI(row) {
+  setActiveRow(row);
+  activeHtml = row.dataset.html;
+  // Snapshots are content-addressed and shared across commits, so the manifest's
+  // `html` is relative to the vi-snapshots base (e.g. "by-blob/ab/<blob>.html").
+  setDiffLink(row.dataset.name);
+  showInFrame(`${BASE}${row.dataset.html}`, row.dataset.name);
+}
+
+// Open a VIDiff report (side-by-side for modified VIs; single-version snapshot for
+// added/deleted), triggered from a tree badge or the toolbar link.
+function openDiff(url, viRel, type, row) {
+  setActiveRow(row || null);
+  activeHtml = row ? row.dataset.html : null;
+  setDiffLink(viRel);
+  showInFrame(url, `${viRel} \u2014 ${type === 'modified' ? 'diff' : type}`);
+}
+
 document.getElementById('search').addEventListener('input', e => renderList(e.target.value));
+document.getElementById('changed-only').addEventListener('change', e => {
+  changedOnly = e.target.checked;
+  renderList(document.getElementById('search').value);
+});
 document.getElementById('expand-all').addEventListener('click', () => {
   if (treeRoot) allFolderPaths(treeRoot).forEach(p => expanded.add(p));
   renderList(document.getElementById('search').value);
