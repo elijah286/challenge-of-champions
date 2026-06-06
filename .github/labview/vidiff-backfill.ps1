@@ -25,7 +25,9 @@ param(
     [string]$OutRoot           = '',
     [string]$Image             = 'nationalinstruments/labview:latest-windows',
     [int]   $MaxCommits        = 0,
-    [string]$ExistingDir       = '',
+    # File listing already-deployed Windows report paths (one per line, e.g.
+    # 'vidiff/push-<sha>/windows/vidiff/changes.json'). Used to skip done commits.
+    [string]$SkipListPath      = '',
     [int]   $TimeBudgetMinutes = 300
 )
 
@@ -49,6 +51,15 @@ if ($MaxCommits -gt 0 -and $Commits.Count -gt $MaxCommits) {
     $Commits = $Commits[($Commits.Count - $MaxCommits)..($Commits.Count - 1)]
 }
 Write-Host "VI-touching commits to consider: $($Commits.Count)"
+
+# Set of already-done head SHAs (from the deployed report list) for incremental skip.
+$Done = New-Object System.Collections.Generic.HashSet[string]
+if ($SkipListPath -ne '' -and (Test-Path $SkipListPath)) {
+    foreach ($line in (Get-Content $SkipListPath)) {
+        if ($line -match 'push-([0-9a-f]+)/windows') { [void]$Done.Add($Matches[1]) }
+    }
+    Write-Host "Already-done Windows commits: $($Done.Count)"
+}
 
 # ── Start the long-lived container ───────────────────────────────────────────
 & docker pull $Image | Out-Null
@@ -81,7 +92,7 @@ try {
         $short = $sha.Substring(0, 7)
 
         # Resume: skip commits whose Windows report is already deployed.
-        if ($ExistingDir -ne '' -and (Test-Path (Join-Path $ExistingDir "push-$sha\windows\vidiff\changes.json"))) {
+        if ($Done.Contains($sha)) {
             $skipped++; $prev = $sha; continue
         }
 

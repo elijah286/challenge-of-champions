@@ -34,19 +34,32 @@ jobs:
     timeout-minutes: 350
 
     steps:
+      - name: Enable long paths (Windows MAX_PATH workaround)
+        shell: powershell
+        run: |
+          git config --system core.longpaths true
+          New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' `
+            -Name 'LongPathsEnabled' -Value 1 -PropertyType DWORD -Force | Out-Null
+
       - name: Checkout repository (full history)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Checkout deployed VIDiff (gh-pages) for incremental skip
-        uses: actions/checkout@v4
-        continue-on-error: true
-        with:
-          ref: gh-pages
-          path: _pages
-          sparse-checkout: vidiff
-          sparse-checkout-cone-mode: false
+      # The deployed gh-pages vidiff/ tree contains very long Linux report paths
+      # that blow past Windows MAX_PATH if checked out. Instead, fetch the list of
+      # already-done Windows reports via the API (no filesystem) for incremental skip.
+      - name: List already-done Windows reports (for incremental skip)
+        id: done
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p _skip
+          gh api "repos/${{ github.repository }}/git/trees/gh-pages?recursive=1" \
+            --jq '.tree[].path | select(test("^vidiff/push-[0-9a-f]+/windows/vidiff/changes.json$"))' \
+            > _skip/done.txt 2>/dev/null || true
+          echo "Already-done Windows reports: $(wc -l < _skip/done.txt | tr -d ' ')"
 
       - name: Ensure Docker daemon is running
         shell: powershell
@@ -65,22 +78,23 @@ jobs:
             -OutRoot           '${{ github.workspace }}\ci-out\vidiff-backfill' `
             -Image             "$Env:LABVIEW_CONTAINER_IMAGE" `
             -MaxCommits        ${{ github.event.inputs.max_commits || '0' }} `
-            -ExistingDir       '${{ github.workspace }}\_pages\vidiff' `
+            -SkipListPath      '${{ github.workspace }}\_skip\done.txt' `
             -TimeBudgetMinutes ${{ github.event.inputs.time_budget_minutes || '300' }}
         continue-on-error: true
 
       - name: Verify backfill output
         id: verify
-        shell: bash
+        shell: powershell
         run: |
-          if [ -n "$(find ci-out/vidiff-backfill -name changes.json 2>/dev/null | head -1)" ]; then
-            echo "ok=true" >> "$GITHUB_OUTPUT"
-            echo "Generated reports:"
-            find ci-out/vidiff-backfill -name changes.json | sed 's|/windows/vidiff/changes.json||;s|.*/push-|  push-|'
-          else
-            echo "ok=false" >> "$GITHUB_OUTPUT"
-            echo "No new reports generated (all commits may already be done)."
-          fi
+          $found = Get-ChildItem -Path 'ci-out\vidiff-backfill' -Recurse -Filter 'changes.json' -ErrorAction SilentlyContinue
+          if ($found) {
+            "ok=true" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding ascii -Append
+            Write-Host "Generated $($found.Count) report(s):"
+            $found | ForEach-Object { Write-Host "  $($_.FullName)" }
+          } else {
+            "ok=false" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding ascii -Append
+            Write-Host "No new reports generated (all commits may already be done)."
+          }
 
       - name: Deploy VIDiff reports to GitHub Pages
         if: steps.verify.outputs.ok == 'true'
