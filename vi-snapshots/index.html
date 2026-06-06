@@ -53,14 +53,23 @@
                    border-radius:6px;padding:5px 8px;font-size:.8em}
     #search{width:100%;background:var(--bg);color:var(--fg);border:1px solid var(--border);
             border-radius:6px;padding:5px 8px;font-size:.8em;margin-top:6px}
-    #vi-list{flex:1;overflow-y:auto}
-    .group-header{padding:6px 12px;font-size:.72em;color:var(--fg-muted);text-transform:uppercase;
-                  letter-spacing:.06em;border-bottom:1px solid var(--border);background:var(--sidebar);
-                  position:sticky;top:0;z-index:1}
-    .vi-item{padding:6px 14px;font-size:.8em;cursor:pointer;color:var(--item);
-             border-bottom:1px solid var(--border);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .vi-item:hover{background:var(--sidebar-hover);color:var(--fg)}
-    .vi-item.active{background:var(--sidebar-active);color:var(--link)}
+    #vi-list{flex:1;overflow-y:auto;padding:4px 0}
+    .tree-controls{display:flex;gap:14px;margin-top:8px}
+    .tree-controls button{background:none;border:none;padding:0;font:inherit;font-size:.72em;
+                          color:var(--link);cursor:pointer}
+    .tree-controls button:hover{text-decoration:underline}
+    .tree-row{display:flex;align-items:center;gap:6px;padding:4px 12px 4px 10px;font-size:.8em;
+              cursor:pointer;color:var(--item);white-space:nowrap;overflow:hidden;user-select:none}
+    .tree-row:hover{background:var(--sidebar-hover);color:var(--fg)}
+    .tree-row .twisty{flex:0 0 12px;width:12px;height:12px;display:inline-flex;align-items:center;
+                      justify-content:center;color:var(--fg-muted);transition:transform .12s ease}
+    .tree-row.folder.open>.twisty{transform:rotate(90deg)}
+    .tree-row .icon{flex:0 0 16px;display:inline-flex;align-items:center;justify-content:center;color:var(--fg-muted)}
+    .tree-row .label{overflow:hidden;text-overflow:ellipsis}
+    .tree-row.folder>.label{font-weight:500;color:var(--fg)}
+    .tree-row.file.active{background:var(--sidebar-active);color:var(--link)}
+    .tree-row.file.active .icon{color:var(--link)}
+    .sidebar-note{padding:16px;color:var(--fg-muted);font-size:.8em}
 
     /* ── Main panel ── */
     #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -81,6 +90,10 @@
     <h1>VI Browser</h1>
     <select id="commit-select"><option value="">Loading commits…</option></select>
     <input id="search" type="search" placeholder="Filter VIs…">
+    <div class="tree-controls">
+      <button id="expand-all" type="button">Expand all</button>
+      <button id="collapse-all" type="button">Collapse all</button>
+    </div>
   </div>
   <div id="vi-list"></div>
 </div>
@@ -114,6 +127,50 @@ async function fetchJson(url) {
 }
 
 let manifest = [];
+let treeRoot = null;             // hierarchical tree built from each VI's vi_rel path
+const expanded = new Set();      // folder paths currently expanded (persists across commits)
+let activeHtml = null;           // html of the currently-open VI (drives row highlight)
+
+const ICON = {
+  chevron: '<svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor"><path d="M6 4l4 4-4 4z"/></svg>',
+  folder:  '<svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><path d="M1.5 4A1.5 1.5 0 013 2.5h2.8L7.3 4H13A1.5 1.5 0 0114.5 5.5v6A1.5 1.5 0 0113 13H3a1.5 1.5 0 01-1.5-1.5z"/></svg>',
+  vi:      '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3.2" y="2.2" width="9.6" height="11.6" rx="1.5"/><path d="M5.6 6h4.8M5.6 8.4h4.8M5.6 10.8h3"/></svg>',
+};
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+
+// Build a folder tree from the flat manifest using each VI's on-disk relative path.
+function buildTree(items) {
+  const root = { name:'', path:'', dirs:new Map(), files:[] };
+  for (const v of items) {
+    const parts = v.vi_rel.split('/');
+    parts.pop();                       // drop the file name; the rest are folders
+    let node = root, acc = '';
+    for (const p of parts) {
+      acc = acc ? acc + '/' + p : p;
+      if (!node.dirs.has(p)) node.dirs.set(p, { name:p, path:acc, dirs:new Map(), files:[] });
+      node = node.dirs.get(p);
+    }
+    node.files.push(v);
+  }
+  return root;
+}
+
+function allFolderPaths(node, out = []) {
+  for (const child of node.dirs.values()) { out.push(child.path); allFolderPaths(child, out); }
+  return out;
+}
+
+// True if the folder (or any descendant) contains a VI matching the filter.
+function nodeMatches(node, f) {
+  for (const v of node.files)
+    if (v.vi_name.toLowerCase().includes(f) || v.vi_rel.toLowerCase().includes(f)) return true;
+  for (const child of node.dirs.values())
+    if (nodeMatches(child, f)) return true;
+  return false;
+}
 
 async function loadCommits() {
   const commits = await fetchJson(BASE + 'commits.json').catch(() => []);
@@ -138,57 +195,94 @@ async function loadCommits() {
 
 async function loadManifest(sha) {
   manifest = await fetchJson(BASE + sha + '/manifest.json').catch(() => []);
+  treeRoot = buildTree(manifest);
+  activeHtml = null;
   renderList(document.getElementById('search').value);
 }
 
-function renderList(filter) {
-  const f = filter.toLowerCase();
-  const filtered = manifest.filter(v =>
-    !f || v.vi_name.toLowerCase().includes(f) || v.vi_rel.toLowerCase().includes(f)
-  );
-  const groups = {};
-  for (const v of filtered) {
-    (groups[v.group] = groups[v.group] || []).push(v);
+// Render a tree node's folders (then files) into the fragment. When a filter is
+// active, non-matching branches are pruned and matching ones are force-expanded.
+function renderTree(node, depth, f, frag) {
+  const pad = (10 + depth * 14) + 'px';
+  const dirNames = [...node.dirs.keys()].sort((a, b) => a.localeCompare(b, undefined, { sensitivity:'base' }));
+  for (const name of dirNames) {
+    const child = node.dirs.get(name);
+    if (f && !nodeMatches(child, f)) continue;
+    const open = f ? true : expanded.has(child.path);
+    const row = document.createElement('div');
+    row.className = 'tree-row folder' + (open ? ' open' : '');
+    row.style.paddingLeft = pad;
+    row.title = child.path;
+    row.innerHTML =
+      `<span class="twisty">${ICON.chevron}</span>` +
+      `<span class="icon">${ICON.folder}</span>` +
+      `<span class="label">${escapeHtml(name)}</span>`;
+    row.addEventListener('click', () => {
+      if (expanded.has(child.path)) expanded.delete(child.path); else expanded.add(child.path);
+      renderList(document.getElementById('search').value);
+    });
+    frag.appendChild(row);
+    if (open) renderTree(child, depth + 1, f, frag);
   }
-  const container = document.getElementById('vi-list');
-  container.innerHTML = '';
-  if (!filtered.length) {
-    container.innerHTML = '<div style="padding:16px;color:var(--fg-muted);font-size:.8em">No VIs match the filter.</div>';
-    return;
-  }
-  for (const [group, vis] of Object.entries(groups)) {
-    const gh = document.createElement('div');
-    gh.className = 'group-header';
-    gh.textContent = group;
-    container.appendChild(gh);
-    for (const v of vis) {
-      const item = document.createElement('div');
-      item.className  = 'vi-item';
-      item.textContent = v.vi_name;
-      item.title       = v.vi_rel;
-      item.dataset.html = v.html;
-      item.dataset.name = v.vi_rel;
-      item.addEventListener('click', () => openVI(item));
-      container.appendChild(item);
-    }
+  const files = node.files.slice().sort((a, b) => a.vi_name.localeCompare(b.vi_name, undefined, { sensitivity:'base' }));
+  for (const v of files) {
+    if (f && !(v.vi_name.toLowerCase().includes(f) || v.vi_rel.toLowerCase().includes(f))) continue;
+    const row = document.createElement('div');
+    row.className = 'tree-row file' + (v.html === activeHtml ? ' active' : '');
+    row.style.paddingLeft = pad;
+    row.title = v.vi_rel;
+    row.dataset.html = v.html;
+    row.dataset.name = v.vi_rel;
+    row.innerHTML =
+      `<span class="twisty"></span>` +
+      `<span class="icon">${ICON.vi}</span>` +
+      `<span class="label">${escapeHtml(v.vi_name)}</span>`;
+    row.addEventListener('click', () => openVI(row));
+    frag.appendChild(row);
   }
 }
 
-function openVI(item) {
-  document.querySelectorAll('.vi-item').forEach(el => el.classList.remove('active'));
-  item.classList.add('active');
+function renderList(filter) {
+  const f = (filter || '').trim().toLowerCase();
+  const container = document.getElementById('vi-list');
+  container.innerHTML = '';
+  if (!treeRoot || !manifest.length) {
+    container.innerHTML = '<div class="sidebar-note">No VIs in this revision.</div>';
+    return;
+  }
+  const frag = document.createDocumentFragment();
+  renderTree(treeRoot, 0, f, frag);
+  if (!frag.childNodes.length) {
+    container.innerHTML = '<div class="sidebar-note">No VIs match the filter.</div>';
+    return;
+  }
+  container.appendChild(frag);
+}
+
+function openVI(row) {
+  document.querySelectorAll('.tree-row.file.active').forEach(el => el.classList.remove('active'));
+  row.classList.add('active');
+  activeHtml = row.dataset.html;
   // Snapshots are content-addressed and shared across commits, so the manifest's
   // `html` is relative to the vi-snapshots base (e.g. "by-blob/ab/<blob>.html").
-  const htmlPath = `${BASE}${item.dataset.html}`;
-  document.getElementById('vi-title').textContent = item.dataset.name;
+  const htmlPath = `${BASE}${row.dataset.html}`;
+  document.getElementById('vi-title').textContent = row.dataset.name;
   const link = document.getElementById('open-link');
-  link.href  = htmlPath; link.style.display = 'inline';
+  link.href = htmlPath; link.style.display = 'inline';
   document.getElementById('empty').style.display  = 'none';
   document.getElementById('viewer').style.display = 'block';
   document.getElementById('vi-frame').src = htmlPath;
 }
 
 document.getElementById('search').addEventListener('input', e => renderList(e.target.value));
+document.getElementById('expand-all').addEventListener('click', () => {
+  if (treeRoot) allFolderPaths(treeRoot).forEach(p => expanded.add(p));
+  renderList(document.getElementById('search').value);
+});
+document.getElementById('collapse-all').addEventListener('click', () => {
+  expanded.clear();
+  renderList(document.getElementById('search').value);
+});
 
 loadCommits().catch(err => {
   document.getElementById('vi-list').innerHTML =
