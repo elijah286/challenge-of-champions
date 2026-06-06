@@ -86,7 +86,7 @@ if ($ChangedFiles -eq '') {
 $Files = $ChangedFiles -split "`n" | Where-Object { $_ -match '\.(vi|ctl)$' }
 
 if ($Files.Count -eq 0) {
-    Write-Host 'No .vi/.ctl files changed — nothing to diff.'
+    Write-Host 'No .vi/.ctl files changed - nothing to diff.'
     exit 0
 }
 
@@ -112,7 +112,7 @@ foreach ($RelPath in $Files) {
     $BaseIsVI   = Test-IsLabVIEWFile $BasePath
     $HeadIsVI   = Test-IsLabVIEWFile $HeadPath
 
-    Write-Host "── $RelPath (base=$BaseExists/$BaseIsVI head=$HeadExists/$HeadIsVI)"
+    Write-Host "-- $RelPath (base=$BaseExists/$BaseIsVI head=$HeadExists/$HeadIsVI)"
 
     try {
         if ($BaseExists -and $BaseIsVI -and $HeadExists -and $HeadIsVI) {
@@ -162,7 +162,7 @@ foreach ($RelPath in $Files) {
             $Results.Add(@{File=$RelPath; Type='deleted'; Html="$SafeName/index.html"})
 
         } else {
-            Write-Host "  Skipping '$RelPath' — not a valid LabVIEW binary"
+            Write-Host "  Skipping '$RelPath' - not a valid LabVIEW binary"
             continue
         }
         $Processed++
@@ -210,7 +210,7 @@ $IndexHtml = @"
 "@
 
 [System.IO.File]::WriteAllText((Join-Path $ReportDir 'index.html'), $IndexHtml, [System.Text.UTF8Encoding]::new($false))
-Write-Host "Index → $(Join-Path $ReportDir 'index.html')"
+Write-Host "Index -> $(Join-Path $ReportDir 'index.html')"
 
 if ($Errors -gt 0) { exit 1 }
 exit 0

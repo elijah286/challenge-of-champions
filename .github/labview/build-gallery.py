@@ -55,7 +55,8 @@ def read_vimap(vimap_path: Path) -> list[tuple[str, str]]:
     entries: list[tuple[str, str]] = []
     if not vimap_path.exists():
         return entries
-    for raw in vimap_path.read_text(encoding="utf-8").splitlines():
+    # utf-8-sig tolerates a BOM (PowerShell may add one) as well as plain UTF-8.
+    for raw in vimap_path.read_text(encoding="utf-8-sig").splitlines():
         line = raw.strip()
         if not line:
             continue

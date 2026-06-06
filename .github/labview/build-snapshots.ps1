@@ -125,7 +125,7 @@ else {
         $Commits = $Commits[($Commits.Count - $MaxCommits)..($Commits.Count - 1)]
     }
 }
-Write-Host "Mode=$Mode — processing $($Commits.Count) commit(s)."
+Write-Host "Mode=$Mode - processing $($Commits.Count) commit(s)."
 
 # ── Start the long-lived container ───────────────────────────────────────────
 & docker pull $Image | Out-Null
@@ -157,7 +157,7 @@ try {
         $worklist = @($vimap | Where-Object { -not $Rendered.Contains($_.Blob) })
 
         if ($worklist.Count -gt 0 -and (Get-Date) -gt $deadline) {
-            Write-Host "Time budget reached — stopping before $($sha.Substring(0,7)). Re-run backfill to resume."
+            Write-Host "Time budget reached - stopping before $($sha.Substring(0,7)). Re-run backfill to resume."
             break
         }
 
@@ -165,14 +165,16 @@ try {
         $wtHost = Join-Path $WorkTreesHost $sha
         if (Test-Path $wtHost) { & git -C $WorkspaceRoot worktree remove --force $wtHost 2>$null | Out-Null }
         & git -C $WorkspaceRoot worktree add --detach $wtHost $sha 2>$null | Out-Null
-        if ($LASTEXITCODE -ne 0) { Write-Warning "worktree add failed for $sha — skipping."; continue }
+        if ($LASTEXITCODE -ne 0) { Write-Warning "worktree add failed for $sha - skipping."; continue }
 
         try {
             # Write full vimap + worklist (consumed by build-gallery.py / render-snapshots.ps1).
+            # Use UTF-8 without BOM so the TSV parses cleanly on both sides.
             $vimapFile    = Join-Path $OutDir   "vimap-$sha.tsv"
             $worklistFile = Join-Path $OutDir   "worklist-$sha.tsv"
-            ($vimap    | ForEach-Object { "$($_.Blob)`t$($_.Rel)" }) | Set-Content -Path $vimapFile    -Encoding utf8
-            ($worklist | ForEach-Object { "$($_.Blob)`t$($_.Rel)" }) | Set-Content -Path $worklistFile -Encoding utf8
+            $utf8NoBom    = New-Object System.Text.UTF8Encoding($false)
+            [System.IO.File]::WriteAllLines($vimapFile,    @($vimap    | ForEach-Object { "$($_.Blob)`t$($_.Rel)" }), $utf8NoBom)
+            [System.IO.File]::WriteAllLines($worklistFile, @($worklist | ForEach-Object { "$($_.Blob)`t$($_.Rel)" }), $utf8NoBom)
 
             if ($worklist.Count -gt 0) {
                 Write-Host "[$($sha.Substring(0,7))] rendering $($worklist.Count) new VI(s) of $($vimap.Count)..."
@@ -187,7 +189,7 @@ try {
                 $totalRendered += $worklist.Count
             }
             else {
-                Write-Host "[$($sha.Substring(0,7))] all $($vimap.Count) VI(s) already rendered — manifest only."
+                Write-Host "[$($sha.Substring(0,7))] all $($vimap.Count) VI(s) already rendered - manifest only."
             }
 
             # Build this commit's manifest + update commits.json.

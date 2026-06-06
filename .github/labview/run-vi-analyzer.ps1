@@ -157,6 +157,6 @@ $Html = @"
 "@
 
 [System.IO.File]::WriteAllText($HtmlOut, $Html, [System.Text.UTF8Encoding]::new($false))
-Write-Host "HTML report → $HtmlOut"
+Write-Host "HTML report -> $HtmlOut"
 
 exit $ExitCode

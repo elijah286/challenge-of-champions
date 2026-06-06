@@ -97,7 +97,7 @@ Write-Host "  Ops       : $OpsDir"
 Write-Host "  Out       : $OutByBlobDir"
 
 if (-not (Test-Path $WorkListPath)) {
-    Write-Host "  Worklist is empty — nothing to render."
+    Write-Host "  Worklist is empty - nothing to render."
     exit 0
 }
 
