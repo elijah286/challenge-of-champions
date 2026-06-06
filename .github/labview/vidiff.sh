@@ -14,6 +14,10 @@ set -euo pipefail
 BASE_DIR="${1:-/workspace-base}"
 HEAD_DIR="${2:-/workspace}"
 REPORT_DIR="${3:-/report}"
+# Directory containing the PrintToSingleFileHtml operation. Defaults to the head
+# checkout, but the backfill orchestrator passes a stable ops mount because old
+# commits' worktrees predate the CI scripts.
+OPS_DIR="${4:-${HEAD_DIR}/.github/labview}"
 
 # LabVIEWCLI is on PATH in the NI Linux container
 LABVIEWCLI="LabVIEWCLI"
@@ -21,7 +25,7 @@ LABVIEWCLI="LabVIEWCLI"
 LABVIEW_EXE=$(find /usr/local/natinst -name "labviewprofull" 2>/dev/null | head -1)
 if [ -z "$LABVIEW_EXE" ]; then echo "ERROR: labviewprofull not found" >&2; exit 1; fi
 echo "Using LabVIEW: $LABVIEW_EXE"
-PRINT_TO_HTML_OP="${HEAD_DIR}/.github/labview"
+PRINT_TO_HTML_OP="$OPS_DIR"
 
 mkdir -p "$REPORT_DIR"
 
