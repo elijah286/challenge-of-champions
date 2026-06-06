@@ -30,7 +30,14 @@ param(
     [string]$HeadDir      = 'C:\workspace',
     [string]$ChangedFiles = '',   # passed as env or piped
     [string]$ReportDir    = 'C:\report',
-    [string]$LabVIEWPath  = 'C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe'
+    [string]$LabVIEWPath  = 'C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe',
+    # Directory containing the PrintToSingleFileHtml operation. Defaults to the head
+    # checkout, but the backfill orchestrator passes a stable ops mount because old
+    # commits' worktrees predate the CI scripts.
+    [string]$OpsDir       = '',
+    # Optional file with the newline-separated changed-file list (more robust than a
+    # multiline env var across docker exec). Takes precedence over -ChangedFiles/env.
+    [string]$ChangedFilesPath = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -63,7 +70,7 @@ $LabVIEWPath = Resolve-LabVIEWPath $LabVIEWPath
 $CliExe      = Resolve-LabVIEWCLI $LabVIEWPath
 # AdditionalOperationDirectory is searched recursively for the operation class,
 # so point it at .github\labview (the parent of the PrintToSingleFileHtml folder).
-$PrintToHtmlOp   = Join-Path $HeadDir '.github\labview'
+$PrintToHtmlOp   = if ($OpsDir -ne '') { $OpsDir } else { Join-Path $HeadDir '.github\labview' }
 
 New-Item -ItemType Directory -Force -Path $ReportDir | Out-Null
 
@@ -105,6 +112,9 @@ function Add-OverlayFix([string]$HtmlPath) {
 }
 
 # ── Parse changed-file list ──────────────────────────────────────────────────
+if ($ChangedFilesPath -ne '' -and (Test-Path $ChangedFilesPath)) {
+    $ChangedFiles = Get-Content $ChangedFilesPath -Raw
+}
 if ($ChangedFiles -eq '') {
     $ChangedFiles = $Env:CHANGED_FILES
 }
@@ -226,7 +236,7 @@ $IndexHtml = @"
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>VIDiff — challenge-of-champions</title>
+  <title>VIDiff - challenge-of-champions</title>
   <style>
     :root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--fg:#e6edf3;--fg-muted:#8b949e;--link:#58a6ff;--row:#21262d;--hover:#1c2128}
     @media(prefers-color-scheme:light){:root{--bg:#fff;--surface:#f6f8fa;--border:#d0d7de;--fg:#1f2328;--fg-muted:#57606a;--link:#0969da;--row:#eaeef2;--hover:#f3f4f6}}
@@ -247,7 +257,7 @@ $IndexHtml = @"
   </style>
 </head>
 <body>
-  <h1>VIDiff — challenge-of-champions</h1>
+  <h1>VIDiff - challenge-of-champions</h1>
   <div class="sub">$Processed file(s) compared &nbsp;|&nbsp; $Errors error(s)</div>
   <table>
     <thead><tr><th>Change</th><th>VI</th><th>Report</th></tr></thead>
