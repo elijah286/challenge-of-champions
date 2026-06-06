@@ -49,8 +49,7 @@ if [ "${#VI_FILES[@]}" -eq 0 ]; then
 fi
 
 PROCESSED=0; ERRORS=0
-MANIFEST="[]"
-PROCESSED_PATHS=()
+PROCESSED_ENTRIES=()   # "TYPE|SAFE_NAME|REL_PATH" per successfully-processed file
 
 for REL_PATH in "${VI_FILES[@]}"; do
     BASE_PATH="${BASE_DIR}/${REL_PATH}"
@@ -108,29 +107,77 @@ for REL_PATH in "${VI_FILES[@]}"; do
     fi
 
     PROCESSED=$((PROCESSED+1))
+    PROCESSED_ENTRIES+=("${TYPE}|${SAFE_NAME}|${REL_PATH}")
 done
 
 echo ""
 echo "=== VIDiff complete: ${PROCESSED} processed, ${ERRORS} errors ==="
 
-# Write simple index page
+# ── Machine-readable manifest (consumed by the VI Browser to flag changed VIs) ─
+json_escape() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }
+{
+  echo '{'
+  echo '  "platform": "linux",'
+  echo '  "files": ['
+  n=${#PROCESSED_ENTRIES[@]}; i=0
+  for entry in "${PROCESSED_ENTRIES[@]}"; do
+    i=$((i+1))
+    e_type="${entry%%|*}"; e_rest="${entry#*|}"
+    e_safe="${e_rest%%|*}"; e_rel="${e_rest#*|}"
+    [ "$i" -lt "$n" ] && sep="," || sep=""
+    printf '    {"file": "%s", "type": "%s", "report": "%s/index.html"}%s\n' \
+      "$(json_escape "$e_rel")" "$e_type" "$(json_escape "$e_safe")" "$sep"
+  done
+  echo '  ]'
+  echo '}'
+} > "${REPORT_DIR}/changes.json"
+
+# ── Human-facing index page (system light/dark theme + change-type labels) ────
 {
 cat << 'HTML'
 <!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8"><title>VIDiff — challenge-of-champions</title>
-<style>body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3}
-h1{font-size:1.3em}a{color:#58a6ff}</style></head>
-<body><h1>VIDiff — challenge-of-champions</h1>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VIDiff — challenge-of-champions</title>
+<style>
+  :root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--fg:#e6edf3;--fg-muted:#8b949e;--link:#58a6ff;--row:#21262d;--hover:#1c2128}
+  @media(prefers-color-scheme:light){:root{--bg:#fff;--surface:#f6f8fa;--border:#d0d7de;--fg:#1f2328;--fg-muted:#57606a;--link:#0969da;--row:#eaeef2;--hover:#f3f4f6}}
+  *{box-sizing:border-box}
+  body{margin:0;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--fg)}
+  h1{font-size:1.3em;margin:0 0 4px}
+  .sub{color:var(--fg-muted);font-size:.85em;margin-bottom:18px}
+  table{border-collapse:collapse;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);color:var(--fg-muted);font-size:.74em;text-transform:uppercase;letter-spacing:.04em}
+  td{padding:9px 12px;border-bottom:1px solid var(--row);font-size:.9em;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:var(--hover)}
+  a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.7em;font-weight:600;color:#fff;text-transform:uppercase;letter-spacing:.03em}
+  .modified{background:#9a6700}.added{background:#1a7f37}.deleted{background:#cf222e}
+  .file{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.84em;word-break:break-all}
+  .note{color:var(--fg-muted);font-size:.8em;margin-top:14px}
+</style>
+</head>
+<body>
+<h1>VIDiff — challenge-of-champions</h1>
 HTML
-echo "<p style=\"color:#8b949e\">${PROCESSED} file(s) compared | ${ERRORS} error(s)</p>"
-echo "<ul>"
-for REL_PATH in "${VI_FILES[@]}"; do
-    SAFE_NAME="${REL_PATH//[\/]/-}"
-    SAFE_NAME="${SAFE_NAME//[^a-zA-Z0-9._-]/_}"
-    echo "<li><a href=\"${SAFE_NAME}/index.html\">${REL_PATH}</a></li>"
-done
-echo "</ul></body></html>"
+echo "<div class=\"sub\">${PROCESSED} file(s) compared &nbsp;|&nbsp; ${ERRORS} error(s)</div>"
+if [ "${#PROCESSED_ENTRIES[@]}" -eq 0 ]; then
+  echo "<p class=\"note\">No comparable VI changes in this revision.</p>"
+else
+  echo "<table><thead><tr><th>Change</th><th>VI</th><th>Report</th></tr></thead><tbody>"
+  for entry in "${PROCESSED_ENTRIES[@]}"; do
+    e_type="${entry%%|*}"; e_rest="${entry#*|}"; e_safe="${e_rest%%|*}"; e_rel="${e_rest#*|}"
+    if [ "$e_type" = "modified" ]; then linktext="View diff report"; else linktext="View snapshot"; fi
+    esc_rel="$(printf '%s' "$e_rel" | sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g')"
+    echo "<tr><td><span class=\"badge ${e_type}\">${e_type}</span></td><td class=\"file\">${esc_rel}</td><td><a href=\"${e_safe}/index.html\">${linktext} &rarr;</a></td></tr>"
+  done
+  echo "</tbody></table>"
+  echo "<p class=\"note\"><strong>modified</strong> VIs show a true side-by-side diff. <strong>added</strong> / <strong>deleted</strong> VIs have no counterpart to compare, so a single-version snapshot is shown.</p>"
+fi
+echo "</body></html>"
 } > "${REPORT_DIR}/index.html"
 
 [ "$ERRORS" -gt 0 ] && exit 1

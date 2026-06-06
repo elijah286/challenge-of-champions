@@ -65,11 +65,17 @@
                       justify-content:center;color:var(--fg-muted);transition:transform .12s ease}
     .tree-row.folder.open>.twisty{transform:rotate(90deg)}
     .tree-row .icon{flex:0 0 16px;display:inline-flex;align-items:center;justify-content:center;color:var(--fg-muted)}
-    .tree-row .label{overflow:hidden;text-overflow:ellipsis}
+    .tree-row .label{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
     .tree-row.folder>.label{font-weight:500;color:var(--fg)}
     .tree-row.file.active{background:var(--sidebar-active);color:var(--link)}
     .tree-row.file.active .icon{color:var(--link)}
     .sidebar-note{padding:16px;color:var(--fg-muted);font-size:.8em}
+    /* change indicators sourced from the VIDiff changes.json for the selected commit */
+    .chg{flex:0 0 auto;font-size:.64em;font-weight:700;padding:1px 6px;border-radius:10px;
+         color:#fff;text-transform:uppercase;letter-spacing:.03em;cursor:pointer}
+    .chg.modified{background:#9a6700}.chg.added{background:#1a7f37}.chg.deleted{background:#cf222e}
+    .chg:hover{filter:brightness(1.15)}
+    .chg-dot{flex:0 0 auto;width:7px;height:7px;border-radius:50%;background:#9a6700;opacity:.85}
 
     /* ── Main panel ── */
     #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -130,6 +136,8 @@ let manifest = [];
 let treeRoot = null;             // hierarchical tree built from each VI's vi_rel path
 const expanded = new Set();      // folder paths currently expanded (persists across commits)
 let activeHtml = null;           // html of the currently-open VI (drives row highlight)
+let changeMap = {};              // vi_rel -> { type, url } from the commit's VIDiff changes.json
+let changedFolders = new Set();  // folder paths that contain >=1 changed VI (for the folder dot)
 
 const ICON = {
   chevron: '<svg viewBox="0 0 16 16" width="10" height="10" fill="currentColor"><path d="M6 4l4 4-4 4z"/></svg>',
@@ -197,7 +205,33 @@ async function loadManifest(sha) {
   manifest = await fetchJson(BASE + sha + '/manifest.json').catch(() => []);
   treeRoot = buildTree(manifest);
   activeHtml = null;
+  await loadChanges(sha);
   renderList(document.getElementById('search').value);
+}
+
+// Pull the VIDiff change set for this commit so the tree can flag changed VIs and
+// deep-link to their diff reports. The diff reports live as a sibling of
+// vi-snapshots/ on Pages:  <root>/vidiff/push-<sha>/<platform>/vidiff/changes.json
+// Missing data (a commit without a VIDiff run) degrades gracefully to no badges.
+async function loadChanges(sha) {
+  changeMap = {};
+  changedFolders = new Set();
+  const root = BASE.replace(/vi-snapshots\/$/, '');
+  for (const platform of ['linux', 'windows']) {
+    const dir = `${root}vidiff/push-${sha}/${platform}/vidiff/`;
+    let data = null;
+    try { data = await fetchJson(dir + 'changes.json'); } catch (e) { continue; }
+    if (data && Array.isArray(data.files) && data.files.length) {
+      for (const f of data.files) {
+        if (!f.file) continue;
+        changeMap[f.file] = { type: f.type, url: dir + f.report };
+        const parts = f.file.split('/'); parts.pop();
+        let acc = '';
+        for (const p of parts) { acc = acc ? acc + '/' + p : p; changedFolders.add(acc); }
+      }
+      return;   // first platform that has data wins
+    }
+  }
 }
 
 // Render a tree node's folders (then files) into the fragment. When a filter is
@@ -213,10 +247,11 @@ function renderTree(node, depth, f, frag) {
     row.className = 'tree-row folder' + (open ? ' open' : '');
     row.style.paddingLeft = pad;
     row.title = child.path;
+    const dot = changedFolders.has(child.path) ? '<span class="chg-dot" title="contains changed VIs"></span>' : '';
     row.innerHTML =
       `<span class="twisty">${ICON.chevron}</span>` +
       `<span class="icon">${ICON.folder}</span>` +
-      `<span class="label">${escapeHtml(name)}</span>`;
+      `<span class="label">${escapeHtml(name)}</span>` + dot;
     row.addEventListener('click', () => {
       if (expanded.has(child.path)) expanded.delete(child.path); else expanded.add(child.path);
       renderList(document.getElementById('search').value);
@@ -238,6 +273,17 @@ function renderTree(node, depth, f, frag) {
       `<span class="icon">${ICON.vi}</span>` +
       `<span class="label">${escapeHtml(v.vi_name)}</span>`;
     row.addEventListener('click', () => openVI(row));
+    const chg = changeMap[v.vi_rel];
+    if (chg) {
+      const badge = document.createElement('span');
+      badge.className = 'chg ' + chg.type;
+      badge.textContent = chg.type === 'modified' ? 'diff' : chg.type;
+      badge.title = chg.type === 'modified'
+        ? 'View side-by-side diff report'
+        : `VI ${chg.type} in this revision — view report`;
+      badge.addEventListener('click', (e) => { e.stopPropagation(); openDiff(chg.url, v.vi_rel, chg.type); });
+      row.appendChild(badge);
+    }
     frag.appendChild(row);
   }
 }
@@ -272,6 +318,20 @@ function openVI(row) {
   document.getElementById('empty').style.display  = 'none';
   document.getElementById('viewer').style.display = 'block';
   document.getElementById('vi-frame').src = htmlPath;
+}
+
+// Open a VIDiff report (side-by-side for modified VIs; single-version snapshot for
+// added/deleted) for a changed VI, triggered from its tree badge.
+function openDiff(url, viRel, type) {
+  document.querySelectorAll('.tree-row.file.active').forEach(el => el.classList.remove('active'));
+  activeHtml = null;
+  const label = type === 'modified' ? 'diff' : type;
+  document.getElementById('vi-title').textContent = `${viRel} — ${label}`;
+  const link = document.getElementById('open-link');
+  link.href = url; link.style.display = 'inline';
+  document.getElementById('empty').style.display  = 'none';
+  document.getElementById('viewer').style.display = 'block';
+  document.getElementById('vi-frame').src = url;
 }
 
 document.getElementById('search').addEventListener('input', e => renderList(e.target.value));

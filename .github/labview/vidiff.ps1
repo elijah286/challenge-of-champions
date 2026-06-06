@@ -175,36 +175,59 @@ foreach ($RelPath in $Files) {
 Write-Host ""
 Write-Host "=== VIDiff complete: $Processed processed, $Errors errors ==="
 
-# ── Generate index page ──────────────────────────────────────────────────────
+# ── Machine-readable manifest (consumed by the VI Browser to flag changed VIs) ─
+function ConvertTo-JsonString([string]$s) { ($s -replace '\\', '\\') -replace '"', '\"' }
+$fileEntries = $Results | ForEach-Object {
+    '    {"file": "' + (ConvertTo-JsonString $_.File) + '", "type": "' + $_.Type +
+    '", "report": "' + (ConvertTo-JsonString $_.Html) + '"}'
+}
+$ChangesJson = "{`n  `"platform`": `"windows`",`n  `"files`": [`n" + ($fileEntries -join ",`n") + "`n  ]`n}"
+[System.IO.File]::WriteAllText((Join-Path $ReportDir 'changes.json'), $ChangesJson, [System.Text.UTF8Encoding]::new($false))
+
+# ── Human-facing index page (system light/dark theme + change-type labels) ────
+function Encode-Html([string]$s) { ($s -replace '&', '&amp;' -replace '<', '&lt;') -replace '>', '&gt;' }
 $Rows = ($Results | ForEach-Object {
-    $badge  = switch ($_.Type) {
-        'modified' { '<span style="background:#9a6700;color:#fff;padding:2px 8px;border-radius:4px;font-size:.8em">modified</span>' }
-        'added'    { '<span style="background:#2ea043;color:#fff;padding:2px 8px;border-radius:4px;font-size:.8em">added</span>' }
-        'deleted'  { '<span style="background:#da3633;color:#fff;padding:2px 8px;border-radius:4px;font-size:.8em">deleted</span>' }
-    }
-    "<tr><td style='padding:8px'>$badge</td><td style='padding:8px;font-family:monospace'>$($_.File)</td><td style='padding:8px'><a href='$($_.Html)' style='color:#58a6ff'>View report</a></td></tr>"
+    $linktext = if ($_.Type -eq 'modified') { 'View diff report &rarr;' } else { 'View snapshot &rarr;' }
+    "<tr><td><span class=`"badge $($_.Type)`">$($_.Type)</span></td>" +
+    "<td class=`"file`">$(Encode-Html $_.File)</td>" +
+    "<td><a href=`"$($_.Html)`">$linktext</a></td></tr>"
 }) -join "`n"
+if (-not $Rows) { $Rows = '<tr><td colspan="3" style="color:var(--fg-muted)">No comparable VI changes in this revision.</td></tr>' }
 
 $IndexHtml = @"
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>VIDiff — challenge-of-champions</title>
   <style>
-    body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3}
-    h1{font-size:1.3em}table{border-collapse:collapse;width:100%;background:#161b22;border:1px solid #30363d;border-radius:8px}
-    th{text-align:left;padding:10px 8px;border-bottom:1px solid #30363d;color:#8b949e;font-size:.85em}
-    tr:hover{background:#1c2128}a{color:#58a6ff}
+    :root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--fg:#e6edf3;--fg-muted:#8b949e;--link:#58a6ff;--row:#21262d;--hover:#1c2128}
+    @media(prefers-color-scheme:light){:root{--bg:#fff;--surface:#f6f8fa;--border:#d0d7de;--fg:#1f2328;--fg-muted:#57606a;--link:#0969da;--row:#eaeef2;--hover:#f3f4f6}}
+    *{box-sizing:border-box}
+    body{margin:0;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--fg)}
+    h1{font-size:1.3em;margin:0 0 4px}
+    .sub{color:var(--fg-muted);font-size:.85em;margin-bottom:18px}
+    table{border-collapse:collapse;width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);color:var(--fg-muted);font-size:.74em;text-transform:uppercase;letter-spacing:.04em}
+    td{padding:9px 12px;border-bottom:1px solid var(--row);font-size:.9em;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:var(--hover)}
+    a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
+    .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.7em;font-weight:600;color:#fff;text-transform:uppercase;letter-spacing:.03em}
+    .modified{background:#9a6700}.added{background:#1a7f37}.deleted{background:#cf222e}
+    .file{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.84em;word-break:break-all}
+    .note{color:var(--fg-muted);font-size:.8em;margin-top:14px}
   </style>
 </head>
 <body>
   <h1>VIDiff — challenge-of-champions</h1>
-  <p style="color:#8b949e;font-size:.9em">$Processed file(s) compared | $Errors error(s)</p>
+  <div class="sub">$Processed file(s) compared &nbsp;|&nbsp; $Errors error(s)</div>
   <table>
-    <thead><tr><th>Status</th><th>File</th><th>Report</th></tr></thead>
+    <thead><tr><th>Change</th><th>VI</th><th>Report</th></tr></thead>
     <tbody>$Rows</tbody>
   </table>
+  <p class="note"><strong>modified</strong> VIs show a true side-by-side diff. <strong>added</strong> / <strong>deleted</strong> VIs have no counterpart to compare, so a single-version snapshot is shown.</p>
 </body>
 </html>
 "@
