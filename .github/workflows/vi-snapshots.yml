@@ -11,7 +11,24 @@ on:
       - '**.lvclass'
       - '.github/pages/vi-browser.html'
       - '.github/pages/vi-interactive.html'
+      - '.github/labview/build-snapshots.ps1'
+      - '.github/labview/render-snapshots.ps1'
+      - '.github/labview/build-gallery.py'
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "head = current commit only; backfill = walk history oldest→newest"
+        type: choice
+        options: [head, backfill]
+        default: head
+      max_commits:
+        description: "backfill: cap to most recent N VI-touching commits (0 = all)"
+        required: false
+        default: '0'
+      time_budget_minutes:
+        description: "backfill: stop launching new renders after N minutes (resume next run)"
+        required: false
+        default: '300'
 
 concurrency:
   group: vi-snapshots-${{ github.ref }}
@@ -30,12 +47,25 @@ permissions:
 jobs:
   export-snapshots:
     runs-on: windows-2022   # windows-latest = Server 2025, broken Docker daemon
+    timeout-minutes: 350
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0   # full history: backfill + per-commit worktrees
+
+      # Seed the set of already-rendered snapshots so we never re-render a VI
+      # whose content (git blob) has already been captured. Sparse-checkout keeps
+      # this cheap — we only need the by-blob file listing.
+      - name: Checkout deployed gallery (gh-pages) for incremental seeding
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: _pages
+          sparse-checkout: vi-snapshots/by-blob
+          sparse-checkout-cone-mode: false
 
       - name: Ensure Docker daemon is running
         shell: powershell
@@ -51,11 +81,6 @@ jobs:
           }
           docker version
 
-      - name: Log in to GHCR
-        shell: bash
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-
       - name: Post pending status
         shell: bash
         env:
@@ -67,76 +92,60 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}" \
             -d "{\"state\":\"pending\",\"target_url\":\"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\",\"description\":\"VI Snapshots in progress\",\"context\":\"CI / VI Snapshots\"}"
 
-      - name: Pull LabVIEW container image
+      - name: Build VI snapshots (incremental, content-addressed)
+        id: snapshots
         shell: powershell
-        run: docker pull $Env:LABVIEW_CONTAINER_IMAGE
-
-      - name: Export VI snapshots inside container
-        shell: powershell
-        id: export
         run: |
-          docker run --rm `
-            -v "${{ github.workspace }}:C:\workspace" `
-            $Env:LABVIEW_CONTAINER_IMAGE `
-            powershell -NonInteractive -ExecutionPolicy Bypass `
-              -File "C:\workspace\.github\labview\export-vi-snapshots.ps1" `
-              -WorkspaceRoot "C:\workspace" `
-              -OutputDir     "C:\workspace\ci-out\vi-snapshots\${{ github.sha }}"
+          & .github\labview\build-snapshots.ps1 `
+            -Mode              '${{ github.event.inputs.mode || 'head' }}' `
+            -WorkspaceRoot     '${{ github.workspace }}' `
+            -TargetSha         '${{ github.sha }}' `
+            -OutDir            '${{ github.workspace }}\ci-out\vi-snapshots' `
+            -ExistingByBlobDir '${{ github.workspace }}\_pages\vi-snapshots\by-blob' `
+            -Image             "$Env:LABVIEW_CONTAINER_IMAGE" `
+            -MaxCommits        ${{ github.event.inputs.max_commits || '0' }} `
+            -TimeBudgetMinutes ${{ github.event.inputs.time_budget_minutes || '300' }}
         continue-on-error: true
 
-      - name: Build gallery manifest
+      - name: Verify gallery output
+        id: verify
         shell: bash
         run: |
-          python3 .github/labview/build-gallery.py \
-            --snapshot-dir  "${{ github.workspace }}/ci-out/vi-snapshots/${{ github.sha }}" \
-            --workspace-dir "${{ github.workspace }}" \
-            --commit-sha    "${{ github.sha }}" \
-            --commit-msg    "${{ github.event.head_commit.message }}" \
-            --author        "${{ github.event.head_commit.author.name }}" \
-            --output-dir    "${{ github.workspace }}/ci-out/vi-snapshots"
-
-      - name: Fail if no snapshots were generated
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-
-          manifest_path = Path('ci-out/vi-snapshots/manifest.json')
-          if not manifest_path.exists():
-              raise SystemExit('manifest.json not found')
-
-          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
-          count = len(manifest)
-          print(f'snapshot_count={count}')
-          if count == 0:
-              raise SystemExit('No snapshots were generated')
-          PY
-
-      - name: Copy VI Browser page
-        shell: bash
-        run: |
-          cp .github/pages/vi-browser.html    ci-out/vi-snapshots/index.html
-          cp .github/pages/vi-interactive.html ci-out/vi-snapshots/vi-interactive.html
+          if [ -f ci-out/vi-snapshots/commits.json ] && [ -d ci-out/vi-snapshots/by-blob ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Deploy snapshots to GitHub Pages
+        if: steps.verify.outputs.ok == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/ci-out/vi-snapshots
           destination_dir: vi-snapshots
-          keep_files: true
+          keep_files: true   # preserve previously-rendered by-blob snapshots
 
       - name: Post commit status
+        if: always()
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REPORT_URL="${{ env.PAGES_URL }}/vi-snapshots/index.html"
-          STATE="${{ steps.export.outcome == 'success' && 'success' || 'failure' }}"
+          if [ "${{ steps.snapshots.outcome }}" = "success" ] && [ "${{ steps.verify.outputs.ok }}" = "true" ]; then
+            STATE="success"
+          else
+            STATE="failure"
+          fi
           curl -s -X POST \
             -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}" \
             -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"VI Snapshots $STATE\",\"context\":\"CI / VI Snapshots\"}"
+
+      - name: Fail job if snapshots failed
+        if: steps.snapshots.outcome != 'success' || steps.verify.outputs.ok != 'true'
+        run: exit 1
+
 

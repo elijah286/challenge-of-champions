@@ -73,6 +73,11 @@ $Start = Get-Date
 # Run MassCompile and tee output to log.
 # NOTE: -Headless is REQUIRED for LabVIEW 2026+ inside Windows containers, otherwise
 # LabVIEWCLI cannot establish a VI Server connection (error -350000).
+# LabVIEWCLI prints its operation output to stderr; relax ErrorActionPreference so
+# that merging it with 2>&1 does not raise a terminating NativeCommandError. We
+# judge success by the real $LASTEXITCODE instead.
+$prevEAP = $ErrorActionPreference
+$ErrorActionPreference = 'Continue'
 & $CliExe `
     -LogToConsole       TRUE `
     -OperationName      MassCompile `
@@ -82,6 +87,7 @@ $Start = Get-Date
     2>&1 | Tee-Object -FilePath $LogFile
 
 $ExitCode = $LASTEXITCODE
+$ErrorActionPreference = $prevEAP
 $Duration = [math]::Round(((Get-Date) - $Start).TotalSeconds, 1)
 
 # Parse log for error/warning counts (case-insensitive)

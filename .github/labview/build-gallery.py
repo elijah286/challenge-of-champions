@@ -1,187 +1,166 @@
 #!/usr/bin/env python3
 """
-build-gallery.py — Build manifest.json and commits.json for the VI Browser.
+build-gallery.py — Build a per-commit manifest.json and update commits.json for
+the content-addressed VI Browser gallery.
+
+Snapshots are stored once per unique VI *content*, keyed by the file's git blob
+SHA, under:
+
+    vi-snapshots/by-blob/<ab>/<blobsha>.html
+
+A commit's manifest.json maps every VI in that commit to its by-blob HTML file,
+so unchanged VIs are reused across commits with no re-rendering and no
+duplication.
 
 Usage:
     python3 build-gallery.py \
-        --snapshot-dir  path/to/vi-snapshots/COMMIT_SHA \
-        --workspace-dir path/to/repo-root \
-        --commit-sha    abc1234 \
-        --commit-msg    "commit message" \
-        --author        "Author Name" \
-        --output-dir    path/to/output
+        --vimap        path/to/vimap.tsv      # lines: "<blobsha>\\t<vi_rel_path>"
+        --commit-sha   abc123... \
+        --commit-msg   "commit message" \
+        --author       "Author Name" \
+        --date         2026-06-06T12:00:00Z \
+        --output-dir   path/to/vi-snapshots/<commit-sha> \
+        --commits-file path/to/vi-snapshots/commits.json \
+        --by-blob-prefix by-blob
 
 Outputs:
-    manifest.json  — list of all exported VI HTML files with project-tree metadata
-    commits.json   — updated rolling list of commits that have snapshots (for the VI Browser)
+    <output-dir>/manifest.json   — VI list for this commit (html -> by-blob path)
+    <commits-file>               — rolling list of commits that have snapshots
 """
 
 import argparse
 import json
-import os
-import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from xml.etree import ElementTree as ET
 
 
-# ---------------------------------------------------------------------------
-# Parse .lvproj to extract project tree structure
-# ---------------------------------------------------------------------------
-
-def parse_lvproj(lvproj_path: Path) -> dict[str, list[str]]:
+def _group_for(vi_rel: str) -> str:
     """
-    Returns a dict mapping library/class name → list of VI relative paths.
+    Group a VI by its top-level folder so the browser shows a sensible tree
+    (e.g. "Contestant", "Controller"). VIs at the repo root are grouped under
+    "Project".
     """
-    tree: dict[str, list[str]] = {}
-    try:
-        root = ET.parse(lvproj_path).getroot()
-        # Flatten all Item elements that reference .vi or .ctl files
-        for item in root.iter('Item'):
-            url  = item.get('URL', '')
-            name = item.get('Name', '')
-            if not url.endswith(('.vi', '.ctl')):
-                continue
-            # Convert URL to a normalized relative path
-            rel = url.lstrip('./ \\').replace('/', os.sep).replace('\\', os.sep)
-            # Group by nearest containing library/class ancestor
-            group = _find_group(item)
-            tree.setdefault(group, []).append(rel)
-    except Exception as e:
-        print(f"Warning: could not parse {lvproj_path}: {e}", file=sys.stderr)
-    return tree
+    parts = vi_rel.replace("\\", "/").split("/")
+    if len(parts) > 1 and parts[0]:
+        return parts[0]
+    return "Project"
 
 
-def _find_group(element) -> str:
-    """Walk up to find the nearest lvlib/lvclass parent item name."""
-    # ElementTree doesn't expose parent references natively;
-    # we rely on the Name attribute heuristic
-    name = element.get('Name', '')
-    if name.endswith(('.lvlib', '.lvclass')):
-        return name
-    return 'Project'
-
-
-# ---------------------------------------------------------------------------
-# Build manifest
-# ---------------------------------------------------------------------------
-
-def build_manifest(
-    snapshot_dir: Path,
-    workspace_dir: Path,
-    commit_sha: str,
-) -> list[dict]:
+def read_vimap(vimap_path: Path) -> list[tuple[str, str]]:
     """
-    Walk snapshot_dir for .html files and enrich with project-tree info.
+    Read a TSV worklist of "<blob_sha>\\t<vi_rel_path>" lines.
+    Returns a list of (blob_sha, vi_rel) tuples, sorted by vi_rel.
     """
-    # Build project tree index from all .lvproj files
-    project_tree: dict[str, list[str]] = {}
-    for lvproj in workspace_dir.rglob('*.lvproj'):
-        project_tree.update(parse_lvproj(lvproj))
-
-    # Invert: vi_rel_path → group
-    vi_to_group: dict[str, str] = {}
-    for group, vis in project_tree.items():
-        for vi in vis:
-            vi_to_group[vi.lower()] = group
-
-    entries = []
-    for html_file in sorted(snapshot_dir.rglob('*.html')):
-        rel_html = html_file.relative_to(snapshot_dir)
-        # Reverse safe-name encoding: dashes back to path separators
-        # The safe name is <rel_path_with_slashes_replaced_by_dashes>.html
-        vi_rel_guess = str(rel_html).replace('-', os.sep).removesuffix('.html')
-        group = vi_to_group.get(vi_rel_guess.lower(), 'Unknown')
-        vi_name = html_file.stem.split('-')[-1] if '-' in html_file.stem else html_file.stem
-        entries.append({
-            'html':       str(rel_html).replace(os.sep, '/'),
-            'vi_name':    vi_name,
-            'group':      group,
-            'vi_rel':     vi_rel_guess.replace(os.sep, '/'),
-            'commit_sha': commit_sha,
-        })
-
+    entries: list[tuple[str, str]] = []
+    if not vimap_path.exists():
+        return entries
+    for raw in vimap_path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        parts = line.split("\t")
+        if len(parts) != 2:
+            print(f"  WARNING: skipping malformed vimap line: {raw!r}", file=sys.stderr)
+            continue
+        blob, vi_rel = parts[0].strip(), parts[1].strip().replace("\\", "/")
+        if not blob or not vi_rel:
+            continue
+        entries.append((blob, vi_rel))
+    entries.sort(key=lambda e: e[1].lower())
     return entries
 
 
-# ---------------------------------------------------------------------------
-# Rolling commits.json
-# ---------------------------------------------------------------------------
+def build_manifest(
+    vimap: list[tuple[str, str]],
+    commit_sha: str,
+    by_blob_prefix: str,
+) -> list[dict]:
+    entries: list[dict] = []
+    for blob, vi_rel in vimap:
+        html = f"{by_blob_prefix}/{blob[:2]}/{blob}.html"
+        entries.append(
+            {
+                "html": html,
+                "vi_name": Path(vi_rel).stem,
+                "group": _group_for(vi_rel),
+                "vi_rel": vi_rel,
+                "blob": blob,
+                "commit_sha": commit_sha,
+            }
+        )
+    return entries
+
 
 def update_commits_json(
     commits_file: Path,
     commit_sha: str,
     commit_msg: str,
     author: str,
+    date: str,
     vi_count: int,
 ) -> list[dict]:
     existing: list[dict] = []
     if commits_file.exists():
         try:
-            existing = json.loads(commits_file.read_text(encoding='utf-8-sig'))
+            existing = json.loads(commits_file.read_text(encoding="utf-8-sig"))
         except Exception:
             existing = []
 
-    # Remove duplicate entry for same SHA
-    existing = [c for c in existing if c.get('sha') != commit_sha]
+    # Drop any prior entry for this SHA so re-runs update in place.
+    existing = [c for c in existing if c.get("sha") != commit_sha]
 
     new_entry = {
-        'sha':      commit_sha,
-        'short':    commit_sha[:7],
-        'message':  commit_msg[:120],
-        'author':   author,
-        'date':     datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-        'vi_count': vi_count,
+        "sha": commit_sha,
+        "short": commit_sha[:7],
+        "message": (commit_msg or "").splitlines()[0][:120] if commit_msg else "",
+        "author": author or "",
+        "date": date or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "vi_count": vi_count,
     }
     existing.insert(0, new_entry)
-    return existing[:200]  # keep last 200 commits
 
+    # Newest first by date; keep the most recent 200.
+    existing.sort(key=lambda c: c.get("date", ""), reverse=True)
+    return existing[:200]
 
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Build VI Browser gallery manifest.')
-    parser.add_argument('--snapshot-dir',  required=True, help='Dir with exported .html VI snapshots')
-    parser.add_argument('--workspace-dir', required=True, help='Repo root (for .lvproj parsing)')
-    parser.add_argument('--commit-sha',    required=True)
-    parser.add_argument('--commit-msg',    default='')
-    parser.add_argument('--author',        default='')
-    parser.add_argument('--output-dir',    required=True, help='Dir to write manifest.json / commits.json')
+    parser = argparse.ArgumentParser(description="Build VI Browser gallery manifest (content-addressed).")
+    parser.add_argument("--vimap", required=True, help='TSV file: "<blob_sha>\\t<vi_rel_path>" per line')
+    parser.add_argument("--commit-sha", required=True)
+    parser.add_argument("--commit-msg", default="")
+    parser.add_argument("--author", default="")
+    parser.add_argument("--date", default="", help="ISO-8601 commit date (default: now)")
+    parser.add_argument("--output-dir", required=True, help="Dir to write this commit's manifest.json")
+    parser.add_argument("--commits-file", required=True, help="Path to rolling commits.json")
+    parser.add_argument("--by-blob-prefix", default="by-blob", help="Path prefix (relative to vi-snapshots/) for snapshot HTML")
     args = parser.parse_args()
 
-    snap_dir      = Path(args.snapshot_dir)
-    workspace_dir = Path(args.workspace_dir)
-    output_dir    = Path(args.output_dir)
+    vimap = read_vimap(Path(args.vimap))
+    output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Building manifest for commit {args.commit_sha[:7]}...")
-    manifest = build_manifest(snap_dir, workspace_dir, args.commit_sha)
-    print(f"  {len(manifest)} VI snapshots found")
+    print(f"Building manifest for commit {args.commit_sha[:7]} ({len(vimap)} VIs)...")
+    manifest = build_manifest(vimap, args.commit_sha, args.by_blob_prefix.strip("/"))
 
-    manifest_file = output_dir / 'manifest.json'
-    manifest_file.write_text(
-        json.dumps(manifest, indent=2, ensure_ascii=False),
-        encoding='utf-8',
-    )
+    manifest_file = output_dir / "manifest.json"
+    manifest_file.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"  manifest.json -> {manifest_file}")
 
-    commits_file = output_dir / 'commits.json'
+    commits_file = Path(args.commits_file)
     commits = update_commits_json(
         commits_file,
         args.commit_sha,
         args.commit_msg,
         args.author,
+        args.date,
         len(manifest),
     )
-    commits_file.write_text(
-        json.dumps(commits, indent=2, ensure_ascii=False),
-        encoding='utf-8',
-    )
+    commits_file.parent.mkdir(parents=True, exist_ok=True)
+    commits_file.write_text(json.dumps(commits, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"  commits.json  -> {commits_file} ({len(commits)} entries)")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -94,6 +94,11 @@ $Results   = [System.Collections.Generic.List[hashtable]]::new()
 $Processed = 0
 $Errors    = 0
 
+# LabVIEWCLI prints operation output to stderr; relax ErrorActionPreference so that
+# informational stderr is not treated as a terminating error. Each operation's
+# success is judged by $LASTEXITCODE inside the loop.
+$ErrorActionPreference = 'Continue'
+
 foreach ($RelPath in $Files) {
     $RelPath  = $RelPath.Trim().TrimStart('/')
     $BasePath = Join-Path $BaseDir $RelPath

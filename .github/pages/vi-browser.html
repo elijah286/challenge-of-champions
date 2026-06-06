@@ -172,8 +172,9 @@ function renderList(filter) {
 function openVI(item) {
   document.querySelectorAll('.vi-item').forEach(el => el.classList.remove('active'));
   item.classList.add('active');
-  const sha      = document.getElementById('commit-select').value;
-  const htmlPath = `${BASE}${sha}/${item.dataset.html}`;
+  // Snapshots are content-addressed and shared across commits, so the manifest's
+  // `html` is relative to the vi-snapshots base (e.g. "by-blob/ab/<blob>.html").
+  const htmlPath = `${BASE}${item.dataset.html}`;
   document.getElementById('vi-title').textContent = item.dataset.name;
   const link = document.getElementById('open-link');
   link.href  = htmlPath; link.style.display = 'inline';
