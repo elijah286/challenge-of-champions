@@ -90,11 +90,25 @@ jobs:
                   cands = [status_map[c] for c in contexts if c in status_map]
                   if not cands:
                       return None
-                  # Prefer a terminal state (success/failure/error) over a stale/orphaned
-                  # 'pending' — e.g. a cancelled Windows run leaving an unresolved pending
-                  # should not mask a completed Linux result for the same logical check.
+                  # Prefer a terminal state (success/failure/error) over 'pending', then
+                  # take the MOST RECENT one. This means a fresh Linux success wins over a
+                  # stale Windows failure for the same logical check, and an orphaned
+                  # 'pending' from a cancelled run never masks a completed result.
                   terminal = [c for c in cands if c['state'] in ('success', 'failure', 'error')]
-                  return terminal[0] if terminal else cands[0]
+                  pool = terminal if terminal else cands
+                  chosen = max(pool, key=lambda s: s.get('created_at', ''))
+                  # A 'pending' older than 2h is almost certainly orphaned (cancelled run) —
+                  # show it as no-status rather than a perpetual ⏳.
+                  if chosen.get('state') == 'pending':
+                      try:
+                          import datetime as _dt
+                          ts = chosen.get('created_at', '').replace('Z', '+00:00')
+                          age = _dt.datetime.now(_dt.timezone.utc) - _dt.datetime.fromisoformat(ts)
+                          if age.total_seconds() > 2 * 3600:
+                              return None
+                      except Exception:
+                          pass
+                  return chosen
 
               def badge(label, *contexts):
                   s = pick_status(*contexts)
