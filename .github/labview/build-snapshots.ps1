@@ -167,7 +167,7 @@ try {
         # Smoke-test cap: limit how many NEW VIs to render (0 = no limit). Lets a
         # validation run exercise the full pipeline quickly without rendering all VIs.
         if ($MaxVIs -gt 0 -and $worklist.Count -gt $MaxVIs) {
-            Write-Host "MaxVIs=$MaxVIs: capping worklist from $($worklist.Count) for $($sha.Substring(0,7))."
+            Write-Host "MaxVIs=${MaxVIs}: capping worklist from $($worklist.Count) for $($sha.Substring(0,7))."
             $worklist = @($worklist[0..($MaxVIs - 1)])
         }
         if ($worklist.Count -gt 0 -and (Get-Date) -gt $deadline) {
