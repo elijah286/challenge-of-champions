@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - '.github/pages/index.html'
+      - '.github/pages/vi-browser.html'
+      - '.github/pages/vi-interactive.html'
       - '.github/workflows/dashboard-pages.yml'
   workflow_run:
     workflows:

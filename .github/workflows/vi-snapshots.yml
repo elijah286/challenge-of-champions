@@ -9,8 +9,6 @@ on:
       - '**.lvproj'
       - '**.lvlib'
       - '**.lvclass'
-      - '.github/pages/vi-browser.html'
-      - '.github/pages/vi-interactive.html'
       - '.github/labview/build-snapshots.ps1'
       - '.github/labview/render-snapshots.ps1'
       - '.github/labview/build-gallery.py'
