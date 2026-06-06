@@ -1,10 +1,10 @@
 [
   {
-    "sha": "1773827c3e1e1efc5c4f989c532a99f3ab203eff",
-    "short": "1773827",
-    "message": "fix(snapshots): use ${MaxVIs} to avoid PS drive-reference parser error",
+    "sha": "e97e039386f29f5e59e687645f65cb354d864eb5",
+    "short": "e97e039",
+    "message": "fix(dashboard): pick most-recent terminal status; drop stale pendings",
     "author": "elijah286",
-    "date": "2026-06-06T09:04:14-05:00",
+    "date": "2026-06-06T09:06:14-05:00",
     "vi_count": 222
   }
 ]
