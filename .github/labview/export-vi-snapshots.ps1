@@ -132,10 +132,10 @@ foreach ($vi in $allFiles) {
             -VIPath                       $vi.FullName `
             -ExportPath                   $HtmlOut
         if ($LASTEXITCODE -ne 0) { throw "Exit code $LASTEXITCODE" }
-        Write-Host "  OK: $RelPath → $SafeName.html"
+        Write-Host "  OK: $RelPath -> $SafeName.html"
         $Exported++
     } catch {
-        Write-Warning "  ERROR: $RelPath — $_"
+        Write-Warning "  ERROR: $RelPath - $_"
         $Errors++
     }
 }
