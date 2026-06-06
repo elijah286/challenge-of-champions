@@ -85,8 +85,19 @@ jobs:
                   if ctx not in status_map:          # keep latest per context
                       status_map[ctx] = s
 
-              def badge(ctx, label, fallback=None):
-                  s = status_map.get(ctx) or (status_map.get(fallback) if fallback else None)
+              def pick_status(*contexts):
+                  # Gather the latest status for each candidate context (in priority order).
+                  cands = [status_map[c] for c in contexts if c in status_map]
+                  if not cands:
+                      return None
+                  # Prefer a terminal state (success/failure/error) over a stale/orphaned
+                  # 'pending' — e.g. a cancelled Windows run leaving an unresolved pending
+                  # should not mask a completed Linux result for the same logical check.
+                  terminal = [c for c in cands if c['state'] in ('success', 'failure', 'error')]
+                  return terminal[0] if terminal else cands[0]
+
+              def badge(label, *contexts):
+                  s = pick_status(*contexts)
                   if ci_only:
                       return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
                   if not s:
@@ -97,10 +108,10 @@ jobs:
                   link   = f'<a href="{url}" style="color:inherit">{emoji} {label}</a>' if url else f'{emoji} {label}'
                   return f'<td style="text-align:center"><span style="background:{color};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">{link}</span></td>'
 
-              mc_badge  = badge('CI / Mass Compile',      'compile')
-              via_badge = badge('CI / VI Analyzer',       'analyze',  'CI / VI Analyzer (Linux)')
-              diff_badge= badge('CI / VIDiff (windows)',  'diff',     'CI / VIDiff (linux)')
-              snap_badge= badge('CI / VI Snapshots',      'snapshots')
+              mc_badge  = badge('compile',   'CI / Mass Compile')
+              via_badge = badge('analyze',   'CI / VI Analyzer', 'CI / VI Analyzer (Linux)')
+              diff_badge= badge('diff',      'CI / VIDiff (windows)', 'CI / VIDiff (linux)')
+              snap_badge= badge('snapshots', 'CI / VI Snapshots')
 
               rows_html.append(f"""
               <tr data-ci-only="{ci_flag}">
