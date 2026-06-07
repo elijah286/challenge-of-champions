@@ -118,7 +118,10 @@ if ($ChangedFilesPath -ne '' -and (Test-Path $ChangedFilesPath)) {
 if ($ChangedFiles -eq '') {
     $ChangedFiles = $Env:CHANGED_FILES
 }
-$Files = $ChangedFiles -split "`n" | Where-Object { $_ -match '\.(vi|ctl)$' }
+# Split on CR?LF and trim each entry: a file written with \r\n line endings would
+# otherwise leave a trailing \r that breaks the '\.(vi|ctl)$' end-anchored match.
+$Files = $ChangedFiles -split "`r?`n" | ForEach-Object { $_.Trim() } | Where-Object { $_ -match '\.(vi|ctl)$' }
+Write-Host "Changed VI/CTL files to diff: $($Files.Count)"
 
 if ($Files.Count -eq 0) {
     Write-Host 'No .vi/.ctl files changed - nothing to diff.'

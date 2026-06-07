@@ -124,8 +124,9 @@ try {
 
         # Changed-file list is delivered into the container via the C:\wt mount
         # (host -> container direction across a Windows bind-mount is reliable).
+        # Write LF-only so the container's regex match isn't broken by stray \r.
         $changedFile = Join-Path $WorkTreesHost "changed-$sha.txt"
-        [System.IO.File]::WriteAllLines($changedFile, $changed, $Utf8NoBom)
+        [System.IO.File]::WriteAllText($changedFile, (($changed -join "`n") + "`n"), $Utf8NoBom)
 
         try {
             # Render into a CONTAINER-INTERNAL dir, then copy the result to the host.
@@ -145,9 +146,15 @@ try {
             if ($LASTEXITCODE -ne 0) { Write-Warning "docker cp failed for $short (continuing)." }
             & docker exec $ContainerName powershell -NoProfile -Command "Remove-Item -Recurse -Force '$cOut' -ErrorAction SilentlyContinue" | Out-Null
 
-            $meta = "{`n  `"head_sha`":  `"$sha`",`n  `"base_sha`":  `"$prev`",`n  `"pr_number`": `"`",`n  `"platform`":  `"windows`",`n  `"outcome`":   `"success`"`n}"
-            [System.IO.File]::WriteAllText((Join-Path $reportHostDir 'vidiff-meta.json'), $meta, $Utf8NoBom)
-            $processed++
+            # Only count it if the report actually landed on the host.
+            if (Test-Path (Join-Path $reportHostDir 'vidiff\changes.json')) {
+                $meta = "{`n  `"head_sha`":  `"$sha`",`n  `"base_sha`":  `"$prev`",`n  `"pr_number`": `"`",`n  `"platform`":  `"windows`",`n  `"outcome`":   `"success`"`n}"
+                [System.IO.File]::WriteAllText((Join-Path $reportHostDir 'vidiff-meta.json'), $meta, $Utf8NoBom)
+                $processed++
+            }
+            else {
+                Write-Warning "No changes.json produced for $short (report not generated)."
+            }
         }
         finally {
             Remove-Item $changedFile -Force -ErrorAction SilentlyContinue
