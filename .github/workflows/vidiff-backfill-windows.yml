@@ -73,9 +73,14 @@ jobs:
         id: backfill
         shell: powershell
         run: |
+          # Use a SHORT output root (C:\o). Deep per-VI report paths
+          # (…\<safe-vi-name>\index_files\support\unchecked-image.png) otherwise
+          # exceed Windows MAX_PATH (260) under the long workspace path, which
+          # makes the host unable to enumerate or deploy them.
+          New-Item -ItemType Directory -Force -Path 'C:\o' | Out-Null
           & .github\labview\vidiff-backfill.ps1 `
             -WorkspaceRoot     '${{ github.workspace }}' `
-            -OutRoot           '${{ github.workspace }}\ci-out\vidiff-backfill' `
+            -OutRoot           'C:\o' `
             -Image             "$Env:LABVIEW_CONTAINER_IMAGE" `
             -MaxCommits        ${{ github.event.inputs.max_commits || '0' }} `
             -SkipListPath      '${{ github.workspace }}\_skip\done.txt' `
@@ -86,7 +91,7 @@ jobs:
         id: verify
         shell: powershell
         run: |
-          $found = Get-ChildItem -Path 'ci-out\vidiff-backfill' -Recurse -Filter 'changes.json' -ErrorAction SilentlyContinue
+          $found = Get-ChildItem -Path 'C:\o' -Recurse -Filter 'changes.json' -ErrorAction SilentlyContinue
           if ($found) {
             "ok=true" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding ascii -Append
             Write-Host "Generated $($found.Count) report(s):"
@@ -101,6 +106,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/ci-out/vidiff-backfill
+          publish_dir: C:\o
           destination_dir: vidiff
           keep_files: true   # preserve existing reports (incl. all Linux ones)
