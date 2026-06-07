@@ -64,10 +64,13 @@ if ($SkipListPath -ne '' -and (Test-Path $SkipListPath)) {
 # ── Start the long-lived container ───────────────────────────────────────────
 & docker pull $Image | Out-Null
 Write-Host "Starting warm container $ContainerName ..."
+# NOTE: report OUTPUT is intentionally NOT a bind-mount. On Windows containers,
+# files written inside the container to a host bind-mount are not reliably visible
+# back on the host. We write to a container-internal dir (C:\cout) and `docker cp`
+# each commit's report out to the host instead.
 & docker run -d --name $ContainerName `
     -v "${OpsHost}:C:\ops" `
     -v "${WorkTreesHost}:C:\wt" `
-    -v "${OutRoot}:C:\out" `
     $Image powershell -NoProfile -Command "while (`$true) { Start-Sleep -Seconds 3600 }" | Out-Null
 if ($LASTEXITCODE -ne 0) { throw "Failed to start container." }
 
@@ -116,25 +119,34 @@ try {
         & git -C $WorkspaceRoot worktree add --detach $hwt $sha 2>$null | Out-Null
         if ($LASTEXITCODE -ne 0) { Write-Warning "worktree(head) failed for $short; skipping."; $prev = $sha; continue }
 
-        $reportDir = Join-Path $OutRoot "push-$sha\windows\vidiff"
-        New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
+        $reportHostDir = Join-Path $OutRoot "push-$sha\windows"
+        New-Item -ItemType Directory -Force -Path $reportHostDir | Out-Null
 
-        # Changed-file list -> a file the container reads (robust vs multiline env).
-        $changedFile = Join-Path $OutRoot "changed-$sha.txt"
+        # Changed-file list is delivered into the container via the C:\wt mount
+        # (host -> container direction across a Windows bind-mount is reliable).
+        $changedFile = Join-Path $WorkTreesHost "changed-$sha.txt"
         [System.IO.File]::WriteAllLines($changedFile, $changed, $Utf8NoBom)
 
         try {
+            # Render into a CONTAINER-INTERNAL dir, then copy the result to the host.
+            $cOut = "C:\cout\$sha"
+            & docker exec $ContainerName powershell -NoProfile -Command "Remove-Item -Recurse -Force '$cOut' -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path '$cOut\vidiff' | Out-Null" | Out-Null
             & docker exec $ContainerName powershell -NoProfile -ExecutionPolicy Bypass `
                 -File 'C:\ops\vidiff.ps1' `
                 -BaseDir          "C:\wt\base-$sha" `
                 -HeadDir          "C:\wt\head-$sha" `
-                -ReportDir        "C:\out\push-$sha\windows\vidiff" `
+                -ReportDir        "$cOut\vidiff" `
                 -OpsDir           'C:\ops' `
-                -ChangedFilesPath "C:\out\changed-$sha.txt"
+                -ChangedFilesPath "C:\wt\changed-$sha.txt"
             if ($LASTEXITCODE -ne 0) { Write-Warning "vidiff returned $LASTEXITCODE for $short (continuing)." }
 
+            # Copy the rendered report tree out of the container to the host.
+            & docker cp "${ContainerName}:$cOut\vidiff" "$reportHostDir\vidiff"
+            if ($LASTEXITCODE -ne 0) { Write-Warning "docker cp failed for $short (continuing)." }
+            & docker exec $ContainerName powershell -NoProfile -Command "Remove-Item -Recurse -Force '$cOut' -ErrorAction SilentlyContinue" | Out-Null
+
             $meta = "{`n  `"head_sha`":  `"$sha`",`n  `"base_sha`":  `"$prev`",`n  `"pr_number`": `"`",`n  `"platform`":  `"windows`",`n  `"outcome`":   `"success`"`n}"
-            [System.IO.File]::WriteAllText((Join-Path $OutRoot "push-$sha\windows\vidiff-meta.json"), $meta, $Utf8NoBom)
+            [System.IO.File]::WriteAllText((Join-Path $reportHostDir 'vidiff-meta.json'), $meta, $Utf8NoBom)
             $processed++
         }
         finally {
