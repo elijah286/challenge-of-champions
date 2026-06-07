@@ -142,7 +142,7 @@
       <button type="button" data-plat="windows">Windows</button>
     </span>
     <a id="open-link" href="#" target="_blank" style="color:var(--link);display:none">Open in new tab ↗</a>
-    <span id="viewer-hint">Drag to pan &middot; <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+scroll to zoom &middot; <kbd>◀</kbd><kbd>▶</kbd> to step cases</span>
+    <span id="viewer-hint">Drag to pan &middot; <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+scroll to zoom &middot; <kbd>◀</kbd><kbd>▶</kbd> to scroll a structure's cases</span>
   </div>
   <div id="empty">
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -464,9 +464,11 @@ function showInFrame(url, title) {
 //   • every diagram image scales to fit the viewer width
 //   • Connector Pane / Front Panel / Block Diagram / Hierarchy images become
 //     zoomable & pannable (toolbar, double-click, Ctrl/⌘+wheel, drag)
-//   • a Case/Event/Sequence structure's frames (the consecutive Block Diagram
-//     images LabVIEW emits) collapse into one stepper the user pages/scrubs
-//     through, instead of a long vertical stack of near-identical pictures
+//   • the top-level block diagram stays visible at the top, and each Case/Event/
+//     Sequence structure's extra cases (the consecutive Block Diagram images
+//     LabVIEW emits) are grouped into their own scrollable window so the user
+//     can page through one structure's cases in place, LabVIEW-style, instead of
+//     a single flat stack that mixes the diagram with every case
 // ───────────────────────────────────────────────────────────────────────────
 const ENHANCE_CSS = `
 *{box-sizing:border-box}
@@ -495,7 +497,17 @@ table{border-collapse:collapse;max-width:100%}
 .vi-step-label{font-weight:700;min-width:96px;text-align:center}
 .vi-step-hint{color:#8b949e;font-size:.82em;text-transform:uppercase;letter-spacing:.04em}
 .vi-step-range{flex:1 1 150px;max-width:340px;accent-color:#0969da}
+.vi-stepper{margin:0}
 .vi-stepper__stage .vi-frame{margin:0}
+.vi-bd{margin:.4em 0}
+.vi-cap{font-weight:700;color:#57606a;font-size:.82em;margin:.2em 0 .25em;text-transform:uppercase;letter-spacing:.04em}
+.vi-bd-intro{margin:1.2em 0 .6em;color:#57606a;font-size:.9em}
+.vi-structs{display:flex;flex-direction:column;gap:14px}
+.vi-struct{border:1px solid #d0d7de;border-radius:10px;background:#f6f8fa;padding:10px 12px}
+.vi-struct__title{display:flex;align-items:baseline;gap:10px;margin-bottom:.55em}
+.vi-struct__name{font-weight:700;color:#1f2328}
+.vi-struct__meta{color:#8b949e;font-size:.82em}
+.vi-struct .vi-fig{background:#fff}
 `;
 
 function enhanceSnapshot(doc) {
@@ -520,7 +532,7 @@ function enhanceSnapshot(doc) {
     const title  = (h3.textContent || '').trim().toLowerCase();
     const frames = collectFrames(h3);
     if (title === 'block diagram') {
-      if (frames.length > 1)       buildStepper(doc, h3, frames);
+      if (frames.length > 1)        buildBlockDiagram(doc, h3, frames);
       else if (frames.length === 1) frames[0].p.replaceWith(makeFigure(doc, frames[0].img));
     } else if (SINGLE.has(title)) {
       for (const fr of frames) fr.p.replaceWith(makeFigure(doc, fr.img));
@@ -638,20 +650,37 @@ function wireZoom(view, img, btn) {
   setMode(); relabel();
 }
 
-// Collapse a multi-frame Block Diagram (Case/Event/Sequence frames) into a stepper.
-function buildStepper(doc, h3, frames) {
+// Read a PNG's pixel size straight from its data-URI (IHDR width/height). LabVIEW
+// renders every case of one structure at that structure's fixed border size, so
+// equal sizes reliably identify cases that belong to the same structure — and the
+// snapshot HTML carries no other grouping/coordinate data to go on.
+function pngSize(img) {
+  const src = img.getAttribute('src') || '';
+  const k = src.indexOf('base64,');
+  if (k < 0) return null;
+  let b;
+  try { b = atob(src.slice(k + 7, k + 7 + 48)); } catch (_) { return null; }
+  if (b.length < 24 || b.charCodeAt(0) !== 0x89) return null;
+  const u32 = o => b.charCodeAt(o) * 16777216 + b.charCodeAt(o + 1) * 65536 +
+                   b.charCodeAt(o + 2) * 256 + b.charCodeAt(o + 3);
+  return u32(16) + 'x' + u32(20);   // IHDR: width x height
+}
+
+// A self-contained Prev/Next/slider stepper over a set of frames. Returns the
+// element; the caller places it. `unit` labels the counter ("Case" / "Frame").
+function makeStepper(doc, frames, unit) {
   const N    = frames.length;
   const wrap = doc.createElement('div'); wrap.className = 'vi-stepper';
   const bar  = doc.createElement('div'); bar.className  = 'vi-stepper__bar';
   const prev = doc.createElement('button'); prev.type = 'button'; prev.className = 'vi-step-btn'; prev.textContent = '◀ Prev';
   const next = doc.createElement('button'); next.type = 'button'; next.className = 'vi-step-btn'; next.textContent = 'Next ▶';
   const label = doc.createElement('span'); label.className = 'vi-step-label';
-  const hint  = doc.createElement('span'); hint.className  = 'vi-step-hint'; hint.textContent = 'case / frame';
+  const hint  = doc.createElement('span'); hint.className  = 'vi-step-hint'; hint.textContent = (unit || 'Frame') + 's';
   let slider = null;
   if (N > 2) {
     slider = doc.createElement('input');
     slider.type = 'range'; slider.min = '1'; slider.max = String(N); slider.value = '1';
-    slider.className = 'vi-step-range'; slider.title = 'Scroll through frames';
+    slider.className = 'vi-step-range'; slider.title = 'Scroll through ' + (unit || 'frame').toLowerCase() + 's';
   }
   const stage = doc.createElement('div'); stage.className = 'vi-stepper__stage';
   const figs = frames.map(fr => {
@@ -662,7 +691,7 @@ function buildStepper(doc, h3, frames) {
   function show(i) {
     idx = Math.max(0, Math.min(N - 1, i));
     figs.forEach((f, k) => { f.style.display = k === idx ? 'block' : 'none'; });
-    label.textContent = `Frame ${idx + 1} / ${N}`;
+    label.textContent = `${unit || 'Frame'} ${idx + 1} / ${N}`;
     if (slider) slider.value = String(idx + 1);
     prev.disabled = idx === 0; next.disabled = idx === N - 1;
   }
@@ -675,10 +704,66 @@ function buildStepper(doc, h3, frames) {
   if (slider) bar.append(slider);
   bar.append(hint);
   wrap.append(bar, stage);
-  frames.forEach(fr => fr.p.remove());
-  h3.after(wrap);
   doc.__activeStepper = doc.__activeStepper || wrap;
   show(0);
+  return wrap;
+}
+
+// Lay out a multi-image Block Diagram the way a user reads a VI: the top-level
+// diagram stays pinned and visible, and every Case/Event/Sequence structure's
+// extra cases get their own scrollable window (grouped by rendered size, since
+// that's the only signal the snapshot exposes — see pngSize). This replaces the
+// single flat stepper that forced a choice between the diagram and the cases.
+function buildBlockDiagram(doc, h3, frames) {
+  const container = doc.createElement('div'); container.className = 'vi-bd';
+
+  // First emitted image == the whole top-level diagram. Always shown, zoomable.
+  const topCap = doc.createElement('div'); topCap.className = 'vi-cap'; topCap.textContent = 'Top-level diagram';
+  const topFig = makeFigure(doc, frames[0].img); topFig.classList.add('vi-bd-top');
+  container.append(topCap, topFig);
+
+  // Remaining images are additional structure cases. Group by exact pixel size:
+  // all cases of one structure share its fixed border size, so equal sizes group
+  // together even when LabVIEW interleaves nested structures between them.
+  const rest = frames.slice(1);
+  if (rest.length) {
+    const groups = [];
+    const byKey  = new Map();
+    rest.forEach((fr, i) => {
+      const key = pngSize(fr.img) || ('u' + i);   // unknown size -> its own group
+      let g = byKey.get(key);
+      if (!g) { g = []; byKey.set(key, g); groups.push(g); }
+      g.push(fr);
+    });
+
+    const intro = doc.createElement('div'); intro.className = 'vi-bd-intro';
+    intro.textContent = groups.length === 1
+      ? 'One case / event structure — scroll its cases in the window below.'
+      : `${groups.length} case / event structures — scroll each one's cases in its window below.`;
+    container.appendChild(intro);
+
+    const structs = doc.createElement('div'); structs.className = 'vi-structs';
+    groups.forEach((g, i) => {
+      const panel = doc.createElement('div'); panel.className = 'vi-struct';
+      const title = doc.createElement('div'); title.className = 'vi-struct__title';
+      const name  = doc.createElement('span'); name.className = 'vi-struct__name'; name.textContent = `Structure ${i + 1}`;
+      const meta  = doc.createElement('span'); meta.className = 'vi-struct__meta';
+      meta.textContent = g.length === 1 ? '1 case' : `${g.length} cases`;
+      title.append(name, meta);
+      panel.appendChild(title);
+      if (g.length > 1) {
+        panel.appendChild(makeStepper(doc, g, 'Case'));
+      } else {
+        const f = makeFigure(doc, g[0].img); f.classList.add('vi-frame');
+        panel.appendChild(f);
+      }
+      structs.appendChild(panel);
+    });
+    container.appendChild(structs);
+  }
+
+  frames.forEach(fr => fr.p.remove());
+  h3.after(container);
 }
 
 // Configure the toolbar "View diff report" link. Shown only when a true side-by-side
