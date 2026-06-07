@@ -1,0 +1,6 @@
+{
+  "platform": "windows",
+  "files": [
+    {"file": "main.vi", "type": "modified", "report": "main.vi/index.html"}
+  ]
+}

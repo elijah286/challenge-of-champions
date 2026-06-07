@@ -1,0 +1,15 @@
+{
+  "platform": "windows",
+  "files": [
+    {"file": "Contestant/Contestant Messages/Decrement Score Msg/Do.vi", "type": "added", "report": "Contestant-Contestant_Messages-Decrement_Score_Msg-Do.vi/index.html"},
+    {"file": "Contestant/Contestant Messages/Decrement Score Msg/Send Decrement Score.vi", "type": "added", "report": "Contestant-Contestant_Messages-Decrement_Score_Msg-Send_Decrement_Score.vi/index.html"},
+    {"file": "Contestant/Contestant/Decrement Score.vi", "type": "added", "report": "Contestant-Contestant-Decrement_Score.vi/index.html"},
+    {"file": "Controller/Controller/Answer Received.vi", "type": "modified", "report": "Controller-Controller-Answer_Received.vi/index.html"},
+    {"file": "Controller/Controller/Buzzer Pressed.vi", "type": "modified", "report": "Controller-Controller-Buzzer_Pressed.vi/index.html"},
+    {"file": "Controller/Controller/Load Questions from Disk.vi", "type": "modified", "report": "Controller-Controller-Load_Questions_from_Disk.vi/index.html"},
+    {"file": "Controller/Controller/Reset Contestant Lights.vi", "type": "modified", "report": "Controller-Controller-Reset_Contestant_Lights.vi/index.html"},
+    {"file": "Controller/Controller/Reset Who Has Attempted to Answer.vi", "type": "added", "report": "Controller-Controller-Reset_Who_Has_Attempted_to_Answer.vi/index.html"},
+    {"file": "Hardware Buzzer/Hardware Buzzer/Actor Core.vi", "type": "modified", "report": "Hardware_Buzzer-Hardware_Buzzer-Actor_Core.vi/index.html"},
+    {"file": "MC Prompt/MC Prompt/Actor Core.vi", "type": "modified", "report": "MC_Prompt-MC_Prompt-Actor_Core.vi/index.html"}
+  ]
+}
