@@ -8,6 +8,14 @@ on:
       - '.github/pages/vi-browser.html'
       - '.github/pages/vi-interactive.html'
       - '.github/workflows/dashboard-pages.yml'
+  # Rebuild whenever ANY CI activity reports a commit status. The dashboard's
+  # badges are sourced from each commit's statuses, so reacting to the `status`
+  # event keeps it current for every workflow that posts one — present or future —
+  # with no per-workflow enumeration and no polling. The dashboard only *reads*
+  # statuses (it never posts one), so this can never self-trigger a loop.
+  status:
+  # Also rebuild after workflows that publish page artifacts (snapshots, diff
+  # reports) without necessarily posting a commit status.
   workflow_run:
     workflows:
       - "Mass Compile — Windows Container"
@@ -15,10 +23,19 @@ on:
       - "Run VI Analyzer — Linux Container"
       - "VIDiff Report — Windows Container"
       - "VIDiff Report — Linux Container"
-      - "VI Snapshots and VI Browser"
       - "VIDiff Deploy — Pages + PR Comment"
+      - "VIDiff Backfill — Windows Container"
+      - "VIDiff Backfill — Linux Container"
+      - "VI Snapshots and VI Browser"
     types: [completed]
   workflow_dispatch:
+
+# A single push fans out into many status events (each check reports pending then
+# success/failure), so collapse overlapping triggers into one latest-wins rebuild
+# instead of running a separate deploy for every individual status update.
+concurrency:
+  group: dashboard-pages
+  cancel-in-progress: true
 
 env:
   PAGES_URL: https://elijah286.github.io/challenge-of-champions
