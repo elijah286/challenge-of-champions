@@ -24,7 +24,7 @@ on:
         default: ''
 
 env:
-  LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
+  LABVIEW_CONTAINER_IMAGE: ghcr.io/${{ github.repository_owner }}/challenge-of-champions-labview:2026
   PAGES_URL: https://elijah286.github.io/challenge-of-champions
 
 permissions:
@@ -111,15 +111,14 @@ jobs:
               -File "C:\workspace\.github\labview\run-vi-analyzer.ps1" `
               -WorkspaceRoot  "C:\workspace" `
               -ReportDir      "C:\workspace\ci-out\vi-analyzer" `
-              -ConfigTemplate "C:\workspace\.github\labview\via-configs\via-config-default.viancfg" `
-              -LabVIEWPath    "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
+              -LabVIEWPath    "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
         continue-on-error: true
 
       - name: Check report directory
         id: report
         shell: bash
         run: |
-          if [ -d "${{ github.workspace }}/ci-out/vi-analyzer" ] && [ "$(ls -A "${{ github.workspace }}/ci-out/vi-analyzer")" ]; then
+          if [ -f "${{ github.workspace }}/ci-out/vi-analyzer/index.html" ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"

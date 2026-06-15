@@ -1,64 +1,51 @@
-# syntax=docker/dockerfile:1
+# escape=`
 # =============================================================================
 # LabVIEW CI image for challenge-of-champions
 # =============================================================================
-# Extends the official NI LabVIEW Windows container with:
-#   - VI Analyzer support package (ni-viawin-labview-support) via nipkg
-#   - VIPM + COTC Dependencies.vipc baked in at build time
+# Extends the official NI LabVIEW Windows container (LabVIEW 2026) with the VI
+# Analyzer support package (ni-viawin-labview-support), which provides the full
+# default VI Analyzer test set (~90 tests). Without this package the analyzer
+# reports "0 tests run".
 #
-# Build args:
-#   NIPM_FEED_URL   – NI nipkg feed for the target LabVIEW version
-#   VIA_SUPPORT_PACKAGE – nipkg package name for VI Analyzer support
+# Project VIPM dependencies (OpenG — used by only a handful of VIs) are
+# intentionally NOT baked in: every project VI already loads on the bare NI base
+# image (the snapshot pipeline renders all 222 VIs there), so the analyzer can
+# load and test them without applying the .vipc, keeping the build fast and
+# reliable.
 # =============================================================================
-
-ARG NIPM_FEED_URL=https://download.ni.com/support/nipkg/products/ni-l/ni-labview-2024/24.1/released
-ARG VIA_SUPPORT_PACKAGE=ni-viawin-labview-support
-
 FROM nationalinstruments/labview:latest-windows
 
-ARG NIPM_FEED_URL
-ARG VIA_SUPPORT_PACKAGE
+SHELL ["powershell", "-NoLogo", "-NoProfile", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
-SHELL ["powershell", "-Command", \
-    "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
+# Feed/package values are ARGs so they are explicit and easy to revise per LabVIEW major version.
+ARG NIPM_FEED_NAME=LV2026
+ARG NIPM_FEED_URL=https://download.ni.com/support/nipkg/products/ni-l/ni-labview-2026/26.1/released
+ARG VIA_SUPPORT_PACKAGE=ni-viawin-labview-support
 
-# ---------------------------------------------------------------------------- #
-# Install VI Analyzer support via nipkg
-# nipkg.exe ships with LabVIEW / NI Package Manager at the path below
-# ---------------------------------------------------------------------------- #
-RUN $nipkg = 'C:\Program Files\National Instruments\NI Package Manager\nipkg.exe'; \
-    Write-Host "Adding nipkg feed: $Env:NIPM_FEED_URL"; \
-    & $nipkg feed-add --name=ni-labview-2024 $Env:NIPM_FEED_URL; \
-    Write-Host "Installing $Env:VIA_SUPPORT_PACKAGE ..."; \
-    & $nipkg install --accept-eulas $Env:VIA_SUPPORT_PACKAGE; \
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }; \
-    Write-Host 'VI Analyzer support installed.'
-
-# ---------------------------------------------------------------------------- #
-# Stage VIPM hook folder (.vipc files + install-vipc.ps1)
-# The build context is the repo root so both COPY paths are reachable
-# ---------------------------------------------------------------------------- #
+# Optional VIPC automation assets (install-vipc.ps1). No .vipc is staged here, so
+# the VIPM hook below is a no-op unless one is added later.
 COPY .github/labview/vipm/ C:/vipm/
 
-# Copy the project-level VIPC file from the repo root into the staging folder
-# (challenge-of-champions ships its VIPM deps as "COTC Dependencies.vipc")
-COPY ["COTC Dependencies.vipc", "C:/vipm/"]
+# Install the VI Analyzer support package at image build-time. nipkg install is
+# idempotent — if the package is already present it exits cleanly.
+RUN if (-not (Get-Command nipkg -ErrorAction SilentlyContinue)) { throw 'nipkg was not found in the LabVIEW base image.' }; `
+    nipkg feed-add --name=$env:NIPM_FEED_NAME $env:NIPM_FEED_URL; `
+    nipkg update; `
+    nipkg install --accept-eulas -y --passive $env:VIA_SUPPORT_PACKAGE; `
+    if (Test-Path 'C:\ProgramData\National Instruments\NI Package Manager\cache') { `
+      Remove-Item -Path 'C:\ProgramData\National Instruments\NI Package Manager\cache\*' -Force -Recurse -ErrorAction SilentlyContinue `
+    }
 
-# ---------------------------------------------------------------------------- #
-# Conditionally install VIPM / apply VIPC files
-#   - No .vipc files  → skip silently
-#   - .vipc present but install-vipc.ps1 missing → fail loudly
-# ---------------------------------------------------------------------------- #
-RUN $vipcFiles = @(Get-ChildItem 'C:\vipm' -Filter '*.vipc' -ErrorAction SilentlyContinue); \
-    if ($vipcFiles.Count -gt 0) { \
-        $installScript = 'C:\vipm\install-vipc.ps1'; \
-        if (-not (Test-Path $installScript)) { \
-            Write-Error 'ERROR: .vipc files found in C:\vipm but install-vipc.ps1 is missing. Create .github/labview/vipm/install-vipc.ps1.'; \
-            exit 1 \
-        }; \
-        Write-Host ("Applying {0} VIPC files via install-vipc.ps1 ..." -f $vipcFiles.Count); \
-        & $installScript; \
-        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } \
-    } else { \
-        Write-Host 'No .vipc files found - skipping VIPM installation.' \
+# Optional VIPC support hook. If .vipc files exist, an installer script must be
+# present so dependencies are handled explicitly.
+RUN $vipcFiles = Get-ChildItem -Path 'C:\vipm' -Filter '*.vipc' -Recurse -ErrorAction SilentlyContinue; `
+    if ($vipcFiles -and $vipcFiles.Count -gt 0) { `
+      if (Test-Path 'C:\vipm\install-vipc.ps1') { `
+        Write-Host 'VIPC files detected. Running C:\vipm\install-vipc.ps1 ...'; `
+        powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -File 'C:\vipm\install-vipc.ps1' `
+      } else { `
+        throw 'VIPC files were detected in C:\vipm but install-vipc.ps1 was not provided.' `
+      } `
+    } else { `
+      Write-Host 'No VIPC dependencies were provided. Skipping VIPM install hook.' `
     }

@@ -122,7 +122,7 @@ jobs:
         id: report
         shell: bash
         run: |
-          if [ -d "${{ github.workspace }}/ci-out/masscompile" ] && [ "$(ls -A "${{ github.workspace }}/ci-out/masscompile")" ]; then
+          if [ -f "${{ github.workspace }}/ci-out/masscompile/index.html" ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"

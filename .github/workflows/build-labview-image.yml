@@ -20,7 +20,7 @@ on:
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/challenge-of-champions-labview
-  DEFAULT_TAG: '2024'
+  DEFAULT_TAG: '2026'
 
 permissions:
   contents: read

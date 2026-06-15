@@ -87,11 +87,15 @@ $ErrorActionPreference = 'Continue'
     2>&1 | Tee-Object -FilePath $LogFile
 
 $ExitCode = $LASTEXITCODE
-$ErrorActionPreference = $prevEAP
 $Duration = [math]::Round(((Get-Date) - $Start).TotalSeconds, 1)
+
+# Keep going even if report parsing hits an unexpected condition — we always want
+# to emit an index.html so the dashboard never links to a 404.
+$ErrorActionPreference = 'Continue'
 
 # Parse log for error/warning counts (case-insensitive)
 $LogText  = Get-Content $LogFile -Raw -ErrorAction SilentlyContinue
+if ([string]::IsNullOrEmpty($LogText)) { $LogText = '(no output captured)' }
 $Errors   = ([regex]::Matches($LogText, '(?i)\berror\b')).Count
 $Warnings = ([regex]::Matches($LogText, '(?i)\bwarning\b')).Count
 
