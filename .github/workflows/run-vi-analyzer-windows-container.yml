@@ -134,6 +134,27 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Build friendly report (parse native HTML + join snapshots)
+        if: steps.report.outputs.exists == 'true'
+        shell: bash
+        continue-on-error: true   # a formatting hiccup must never block deploying the native report
+        run: |
+          # Transform the dense native VI Analyzer report into a navigable one:
+          # keeps the original as raw.html, writes summary.json, and replaces
+          # index.html with a grouped/filterable report whose per-VI snapshots are
+          # resolved client-side from the VI Browser gallery (vi-snapshots/<sha>/).
+          REPORT_DIR="${{ github.workspace }}/ci-out/vi-analyzer"
+          python .github/labview/build-analyzer-report.py \
+            --in        "$REPORT_DIR/index.html" \
+            --out       "$REPORT_DIR" \
+            --sha       "${{ steps.sha.outputs.sha }}" \
+            --platform  windows \
+            --repo      "${{ github.repository }}" \
+            --pages-url "${{ env.PAGES_URL }}" \
+            --commit-msg "$(git log -1 --pretty=%s   ${{ steps.sha.outputs.sha }})" \
+            --author     "$(git log -1 --pretty=%an  ${{ steps.sha.outputs.sha }})" \
+            --date       "$(git log -1 --pretty=%cI  ${{ steps.sha.outputs.sha }})"
+
       - name: Upload report artifact
         if: steps.report.outputs.exists == 'true'
         uses: actions/upload-artifact@v4
