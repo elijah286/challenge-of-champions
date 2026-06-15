@@ -13,7 +13,7 @@
 # released, add its id to `activities` below and retire the matching vendored
 # workflow — that is the "upgrade a capability" step we want to exercise here.
 schemaVersion: 1
-installedVersion: 1.1.0
+installedVersion: 1.2.1
 source:
   repo: elijah286/LabVIEW-CI-with-Containers
   ref: v1
@@ -29,3 +29,7 @@ config:
 # workflows. masscompile is the first capability consumed from central @v1.
 activities:
   - masscompile
+  - dashboard
+  - vi-analyzer
+  - vidiff
+  - snapshots
