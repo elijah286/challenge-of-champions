@@ -37,9 +37,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # ── Classify: is this a SOURCE repo or a CLIENT (consumes tooling elsewhere)? ──
+  # Version governance (bump enforcement + release tagging) is a SOURCE concern.
+  # A client repo's catalog.source.repo points at the upstream tooling repo, so it
+  # adopts upstream versions and must NOT publish its own releases.
+  classify:
+    runs-on: ubuntu-latest
+    outputs:
+      client: ${{ steps.c.outputs.client }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        run: |
+          set -euo pipefail
+          CAT=.github/labview-ci/catalog.json
+          SRC=$(python3 -c "import json;d=json.load(open('$CAT'));print((d.get('source') or {}).get('repo') or '')" 2>/dev/null || echo "")
+          lc() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
+          if [ -n "$SRC" ] && [ "$(lc "$SRC")" != "$(lc "$GITHUB_REPOSITORY")" ]; then
+            echo "client=true" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Client repository::Consumes tooling from $SRC; version-bump enforcement and release tagging are skipped (governance applies to the source repo)."
+          else
+            echo "client=false" >> "$GITHUB_OUTPUT"
+          fi
+
   # ── On a PR: block merges that change tooling without bumping the version ──
   enforce:
-    if: github.event_name == 'pull_request'
+    needs: classify
+    if: github.event_name == 'pull_request' && needs.classify.outputs.client != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -84,7 +108,8 @@ jobs:
 
   # ── On main / dispatch: tag + release when the version changed; else warn ──
   release:
-    if: github.event_name != 'pull_request'
+    needs: classify
+    if: github.event_name != 'pull_request' && needs.classify.outputs.client != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
