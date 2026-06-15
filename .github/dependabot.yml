@@ -1,0 +1,15 @@
+# Auto-update the pinned LabVIEW CI tooling. Dependabot opens a PR whenever the
+# referenced reusable workflow / action tag (@v1) gets a new release — the
+# "install an update" path, as a reviewable pull request. This is how
+# challenge-of-champions tests pulling capability upgrades from the central repo.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "labview-ci"

@@ -1,0 +1,31 @@
+# .github/labview-ci.yml — LabVIEW CI consumer config for challenge-of-champions.
+#
+# challenge-of-champions consumes the LabVIEW CI tooling from the dedicated repo
+# elijah286/LabVIEW-CI-with-Containers (pinned in .github/workflows/labview-ci.yml).
+# This file is read at runtime by that repo's load-config action to gate which
+# activities/platforms the reusable workflow runs — so changing a toggle here (or
+# via the Configure Workers UI) turns a job on/off with no workflow edits.
+#
+# HYBRID STATE (migration in progress): the central reusable workflow currently
+# implements only `masscompile`. vi-analyzer / vidiff / snapshots / dashboard are
+# still served by this repo's own vendored workflows in .github/workflows/ until
+# central grows reusable jobs for them. As each capability lands centrally and is
+# released, add its id to `activities` below and retire the matching vendored
+# workflow — that is the "upgrade a capability" step we want to exercise here.
+schemaVersion: 1
+installedVersion: 1.0.0
+source:
+  repo: elijah286/LabVIEW-CI-with-Containers
+  ref: v1
+config:
+  labviewVersion: "2026"
+  os: [windows, linux]
+  concurrency:
+    # GitHub Free concurrent-job limit.
+    maxParallel: 20
+# Capabilities driven by the central reusable workflow today. Add vi-analyzer,
+# vidiff, snapshots, dashboard here (one per line, no comments between items —
+# the parser stops at the first non-list line) as they migrate off the vendored
+# workflows. masscompile is the first capability consumed from central @v1.
+activities:
+  - masscompile

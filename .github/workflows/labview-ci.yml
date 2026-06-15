@@ -1,0 +1,34 @@
+# LabVIEW CI — thin CALLER (consumer of the standalone tooling repo).
+#
+# This makes challenge-of-champions a real client of elijah286/LabVIEW-CI-with-Containers:
+# it owns only the triggers and delegates all job logic to the versioned reusable
+# workflow there. Bump the @v1 pin (or let Dependabot do it — see .github/dependabot.yml)
+# to pull capability upgrades. Activities/platforms are gated by .github/labview-ci.yml.
+#
+# WHY workflow_dispatch-only (for now): this repo still runs masscompile via its own
+# vendored .github/workflows/masscompile-windows-container.yml on every push/PR. Running
+# this caller on the same triggers would double-run masscompile. So while we pilot the
+# cross-repo path, this is invoked on demand (Actions ▸ run workflow) to validate that
+# consuming the central @v1 reusable workflow works — exactly the "test an upgrade" loop.
+#
+# CUTOVER: when central reaches parity for a capability, (1) add its id to
+# .github/labview-ci.yml `activities`, (2) delete this repo's vendored workflow for it,
+# and (3) enable the push/pull_request triggers below so the caller runs automatically.
+name: LabVIEW CI (consumer)
+
+on:
+  workflow_dispatch:
+  # Enable these at cutover (and retire the matching vendored workflows) so the
+  # central tooling runs automatically on code changes:
+  # push:
+  #   branches: [main]
+  #   paths: ['**.vi', '**.ctl', '**.lvproj', '**.lvlib', '**.lvclass']
+  # pull_request:
+  #   paths: ['**.vi', '**.ctl', '**.lvproj', '**.lvlib', '**.lvclass']
+
+jobs:
+  labview-ci:
+    uses: elijah286/LabVIEW-CI-with-Containers/.github/workflows/labview-ci.reusable.yml@v1
+    with:
+      labview-version: "2026"
+    secrets: inherit
