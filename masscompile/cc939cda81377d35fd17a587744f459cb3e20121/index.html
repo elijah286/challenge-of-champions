@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Mass Compile â€” challenge-of-champions</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3}
+    .card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:20px;margin-bottom:16px}
+    h1{margin:0 0 12px;font-size:1.3em}
+    .badge{display:inline-block;padding:3px 10px;border-radius:4px;font-weight:700;font-size:.85em;color:#fff;background:#bb8009}
+    .meta{margin-top:10px;font-size:.82em;color:#8b949e;display:flex;flex-wrap:wrap;gap:16px}
+    pre{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:14px;font-size:.75em;white-space:pre-wrap;word-break:break-all;overflow-y:auto;max-height:65vh;margin:0}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Mass Compile â€” challenge-of-champions</h1>
+    <span class="badge">90% compiled</span>
+    <div class="meta">
+      <span>Date: 2026-06-15 18:02:52 UTC</span>
+      <span>Duration: 32.2s</span>
+      <span>Project VIs: 216</span>
+      <span>Compiled OK: 195</span>
+      <span>Bad: 21</span>
+    </div>
+  </div>
+  <pre>LabVIEWCLI started logging in file:  C:\Users\ContainerAdministrator\AppData\Local\Temp\lvtemporary_747592.log
+Using LabVIEW: "C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe"
+Connection established with LabVIEW at port number 3363.
+
+LabVIEWCLI.exe : Operation output: 
+At C:\ops\masscompile.ps1:81 char:1
++ &amp; $CliExe `
++ ~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Operation output: :String) [], Re 
+   moteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+#### Starting Mass Compile: Mon, Jun 15, 2026 6:02:21 PM
+  Directory: "C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121"
+Search failed to find "DAQmx Timing (Sample Clock).vi" previously from 
+"&lt;vilib&gt;:\DAQmx\configure\timing.llb\DAQmx Timing (Sample Clock).vi"  +=+   
+Caller: "Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Create Channel (AI-Voltage-Basic).vi" previously 
+from "&lt;vilib&gt;:\DAQmx\create\channels.llb\DAQmx Create Channel 
+(AI-Voltage-Basic).vi"  +=+   Caller: "Hardware Buzzer.lvlib:Hardware 
+Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Clear Task.vi" previously from 
+"&lt;vilib&gt;:\DAQmx\configure\task.llb\DAQmx Clear Task.vi"  +=+   Caller: 
+"Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Stop Task.vi" previously from 
+"&lt;vilib&gt;:\DAQmx\configure\task.llb\DAQmx Stop Task.vi"  +=+   Caller: 
+"Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Read (Analog 1D Wfm NChan NSamp).vi" previously 
+from "&lt;vilib&gt;:\DAQmx\read.llb\DAQmx Read (Analog 1D Wfm NChan NSamp).vi"  +=+  
+ Caller: "Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Timing.vi" previously from 
+"&lt;vilib&gt;:\DAQmx\configure\timing.llb\DAQmx Timing.vi"  +=+   Caller: "Hardware 
+Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Create Virtual Channel.vi" previously from 
+"&lt;vilib&gt;:\DAQmx\create\channels.llb\DAQmx Create Virtual Channel.vi"  +=+   
+Caller: "Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Start Task.vi" previously from 
+"&lt;vilib&gt;:\DAQmx\configure\task.llb\DAQmx Start Task.vi"  +=+   Caller: 
+"Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "DAQmx Read.vi" previously from 
+"&lt;vilib&gt;:\DAQmx\read.llb\DAQmx Read.vi"  +=+   Caller: "Hardware 
+Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"
+Search failed to find "G-Image.lvlib:Load Image (Path).vi" previously from 
+"&lt;vilib&gt;:\Dataflow_G\G-Image\Image IO\Polymorphic VIs\Load Image (Path).vi"  
++=+   Caller: "Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "Convert File Extension (Path)__ogtk.vi" previously from 
+"&lt;userlib&gt;:\_OpenG.lib\file\file.llb\Convert File Extension (Path)__ogtk.vi"  
++=+   Caller: "Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "File Exists - Scalar__ogtk.vi" previously from 
+"&lt;userlib&gt;:\_OpenG.lib\file\file.llb\File Exists - Scalar__ogtk.vi"  +=+   
+Caller: "Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "Strip Path Extension - Path__ogtk.vi" previously from 
+"&lt;userlib&gt;:\_OpenG.lib\file\file.llb\Strip Path Extension - Path__ogtk.vi"  
++=+   Caller: "Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "File Exists__ogtk.vi" previously from 
+"&lt;userlib&gt;:\_OpenG.lib\file\file.llb\File Exists__ogtk.vi"  +=+   Caller: 
+"Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "Convert File Extension__ogtk.vi" previously from 
+"&lt;userlib&gt;:\_OpenG.lib\file\file.llb\Convert File Extension__ogtk.vi"  +=+   
+Caller: "Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "Strip Path Extension__ogtk.vi" previously from 
+"&lt;userlib&gt;:\_OpenG.lib\file\file.llb\Strip Path Extension__ogtk.vi"  +=+   
+Caller: "Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "G-Image.lvlib:Load Image.vi" previously from 
+"&lt;vilib&gt;:\Dataflow_G\G-Image\Image IO\Load Image.vi"  +=+   Caller: 
+"Controller.lvlib:Controller.lvclass:Question Prompt Display.vi"
+Search failed to find "G-Image.lvlib:Resize Image (Scale).vi" previously from 
+"&lt;vilib&gt;:\Dataflow_G\G-Image\Image Processing\Polymorphic VIs\Resize Image 
+(Scale).vi"  +=+   Caller: "Controller.lvlib:Controller.lvclass:Resize Image 
+for Question.vi"
+Search failed to find "Search or Split String__ogtk.vi" previously from 
+"&lt;userlib&gt;:\_OpenG.lib\string\string.llb\Search or Split String__ogtk.vi"  +=+ 
+  Caller: "Controller.lvlib:Controller.lvclass:Resize Image for Question.vi"
+Search failed to find "G-Image.lvlib:Resize Image.vi" previously from 
+"&lt;vilib&gt;:\Dataflow_G\G-Image\Image Processing\Resize Image.vi"  +=+   Caller: 
+"Controller.lvlib:Controller.lvclass:Resize Image for Question.vi"
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Receive Message.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Receive Message.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Load Questions from 
+Disk.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\C
+ontroller\Load Questions from Disk.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Resize Image for 
+Question.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controll
+er\Controller\Resize Image for Question.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Question Prompt 
+Display.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controlle
+r\Controller\Question Prompt Display.vi" 
+  ### Bad subVI: "Controller.lvlib:Question Prompt Display Msg.lvclass:Do.vi"	P
+ath="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller 
+Messages\Question Prompt Display Msg\Do.vi" 
+  ### Bad subVI: "Controller.lvlib:Resize Image for Question 
+Msg.lvclass:Do.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Co
+ntroller\Controller Messages\Resize Image for Question Msg\Do.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor Core.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor Core.vi" 
+  ### Bad subVI: "MC Prompt.lvlib:MC Prompt.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Prompt\MC 
+Prompt\Actor Core.vi" 
+  ### Bad subVI: "Simulated Hardware.lvlib:Simulated Hardware.lvclass:Actor 
+Core.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Simulated 
+HW\Simulated Hardware\Actor Core.vi" 
+  ### Bad VI:    "Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Hardware 
+Buzzer\Hardware Buzzer\Actor Core.vi" 
+  ### Bad subVI: "Grid Screen.lvlib:Grid Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Screen\MC 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Sounds.lvlib:Sounds.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Sounds\Sounds\Actor 
+Core.vi" 
+  ### Bad subVI: "Controller.lvlib:Controller.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller\Actor 
+Core.vi" 
+  ### Bad subVI: "Grid Animation.lvlib:Grid Animation.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Grid Animation\Grid 
+Animation\Actor Core.vi" 
+  ### Bad subVI: "Contestant.lvlib:Contestant.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Contestant\Contestant\Actor 
+Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor.vi" 
+  ### Bad subVI: "Controller.lvlib:Load Questions from Disk Msg.lvclass:Do.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller
+ Messages\Load Questions from Disk Msg\Do.vi" 
+  ### Bad subVI: "Main Screen.lvlib:Main Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Main Screen\Main 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Self-Addressed Msg.lvclass:Do.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Specialty Messages\Self-Addressed Msg\Do.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Receive Message.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Receive Message.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Load Questions from 
+Disk.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\C
+ontroller\Load Questions from Disk.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Resize Image for 
+Question.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controll
+er\Controller\Resize Image for Question.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Question Prompt 
+Display.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controlle
+r\Controller\Question Prompt Display.vi" 
+  ### Bad subVI: "Controller.lvlib:Question Prompt Display Msg.lvclass:Do.vi"	P
+ath="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller 
+Messages\Question Prompt Display Msg\Do.vi" 
+  ### Bad subVI: "Controller.lvlib:Resize Image for Question 
+Msg.lvclass:Do.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Co
+ntroller\Controller Messages\Resize Image for Question Msg\Do.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor Core.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor Core.vi" 
+  ### Bad subVI: "MC Prompt.lvlib:MC Prompt.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Prompt\MC 
+Prompt\Actor Core.vi" 
+  ### Bad subVI: "Simulated Hardware.lvlib:Simulated Hardware.lvclass:Actor 
+Core.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Simulated 
+HW\Simulated Hardware\Actor Core.vi" 
+  ### Bad VI:    "Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Hardware 
+Buzzer\Hardware Buzzer\Actor Core.vi" 
+  ### Bad subVI: "Grid Screen.lvlib:Grid Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Screen\MC 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Sounds.lvlib:Sounds.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Sounds\Sounds\Actor 
+Core.vi" 
+  ### Bad subVI: "Controller.lvlib:Controller.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller\Actor 
+Core.vi" 
+  ### Bad subVI: "Grid Animation.lvlib:Grid Animation.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Grid Animation\Grid 
+Animation\Actor Core.vi" 
+  ### Bad subVI: "Contestant.lvlib:Contestant.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Contestant\Contestant\Actor 
+Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor.vi" 
+  ### Bad subVI: "Controller.lvlib:Load Questions from Disk Msg.lvclass:Do.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller
+ Messages\Load Questions from Disk Msg\Do.vi" 
+  ### Bad subVI: "Main Screen.lvlib:Main Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Main Screen\Main 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Self-Addressed Msg.lvclass:Do.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Specialty Messages\Self-Addressed Msg\Do.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Receive Message.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Receive Message.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Load Questions from 
+Disk.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\C
+ontroller\Load Questions from Disk.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Resize Image for 
+Question.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controll
+er\Controller\Resize Image for Question.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Question Prompt 
+Display.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controlle
+r\Controller\Question Prompt Display.vi" 
+  ### Bad subVI: "Controller.lvlib:Question Prompt Display Msg.lvclass:Do.vi"	P
+ath="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller 
+Messages\Question Prompt Display Msg\Do.vi" 
+  ### Bad subVI: "Controller.lvlib:Resize Image for Question 
+Msg.lvclass:Do.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Co
+ntroller\Controller Messages\Resize Image for Question Msg\Do.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor Core.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor Core.vi" 
+  ### Bad subVI: "MC Prompt.lvlib:MC Prompt.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Prompt\MC 
+Prompt\Actor Core.vi" 
+  ### Bad subVI: "Simulated Hardware.lvlib:Simulated Hardware.lvclass:Actor 
+Core.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Simulated 
+HW\Simulated Hardware\Actor Core.vi" 
+  ### Bad VI:    "Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Hardware 
+Buzzer\Hardware Buzzer\Actor Core.vi" 
+  ### Bad subVI: "Grid Screen.lvlib:Grid Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Screen\MC 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Sounds.lvlib:Sounds.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Sounds\Sounds\Actor 
+Core.vi" 
+  ### Bad subVI: "Controller.lvlib:Controller.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller\Actor 
+Core.vi" 
+  ### Bad subVI: "Grid Animation.lvlib:Grid Animation.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Grid Animation\Grid 
+Animation\Actor Core.vi" 
+  ### Bad subVI: "Contestant.lvlib:Contestant.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Contestant\Contestant\Actor 
+Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor.vi" 
+  ### Bad subVI: "Controller.lvlib:Load Questions from Disk Msg.lvclass:Do.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller
+ Messages\Load Questions from Disk Msg\Do.vi" 
+  ### Bad subVI: "Main Screen.lvlib:Main Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Main Screen\Main 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Self-Addressed Msg.lvclass:Do.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Specialty Messages\Self-Addressed Msg\Do.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Receive Message.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Receive Message.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Load Questions from 
+Disk.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\C
+ontroller\Load Questions from Disk.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Resize Image for 
+Question.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controll
+er\Controller\Resize Image for Question.vi" 
+  ### Bad VI:    "Controller.lvlib:Controller.lvclass:Question Prompt 
+Display.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controlle
+r\Controller\Question Prompt Display.vi" 
+  ### Bad subVI: "Controller.lvlib:Question Prompt Display Msg.lvclass:Do.vi"	P
+ath="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller 
+Messages\Question Prompt Display Msg\Do.vi" 
+  ### Bad subVI: "Controller.lvlib:Resize Image for Question 
+Msg.lvclass:Do.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Co
+ntroller\Controller Messages\Resize Image for Question Msg\Do.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor Core.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor Core.vi" 
+  ### Bad subVI: "MC Prompt.lvlib:MC Prompt.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Prompt\MC 
+Prompt\Actor Core.vi" 
+  ### Bad subVI: "Simulated Hardware.lvlib:Simulated Hardware.lvclass:Actor 
+Core.vi"	Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Simulated 
+HW\Simulated Hardware\Actor Core.vi" 
+  ### Bad VI:    "Hardware Buzzer.lvlib:Hardware Buzzer.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Hardware 
+Buzzer\Hardware Buzzer\Actor Core.vi" 
+  ### Bad subVI: "Grid Screen.lvlib:Grid Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\MC Screen\MC 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Sounds.lvlib:Sounds.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Sounds\Sounds\Actor 
+Core.vi" 
+  ### Bad subVI: "Controller.lvlib:Controller.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller\Actor 
+Core.vi" 
+  ### Bad subVI: "Grid Animation.lvlib:Grid Animation.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Grid Animation\Grid 
+Animation\Actor Core.vi" 
+  ### Bad subVI: "Contestant.lvlib:Contestant.lvclass:Actor Core.vi"	Path="C:\w
+t\head-cc939cda81377d35fd17a587744f459cb3e20121\Contestant\Contestant\Actor 
+Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Actor.lvclass:Actor.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Actor\Actor.vi" 
+  ### Bad subVI: "Controller.lvlib:Load Questions from Disk Msg.lvclass:Do.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller
+ Messages\Load Questions from Disk Msg\Do.vi" 
+  ### Bad subVI: "Main Screen.lvlib:Main Screen.lvclass:Actor Core.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Main Screen\Main 
+Screen\Actor Core.vi" 
+  ### Bad subVI: "Actor Framework.lvlib:Self-Addressed Msg.lvclass:Do.vi"	
+Path="C:\Program Files\National Instruments\LabVIEW 
+2026\vi.lib\ActorFramework\Specialty Messages\Self-Addressed Msg\Do.vi" 
+  ### Bad VI:    "Answer from Contestant Msg.lvclass:Send Template.vi"	Path="C:
+\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller 
+Messages\Answer from Contestant Msg\Send Template.vi" 
+  ### Bad VI:    "Answer from Contestant Msg.lvclass:Do.vi"	Path="C:\wt\head-cc
+939cda81377d35fd17a587744f459cb3e20121\Controller\Controller Messages\Answer 
+from Contestant Msg\Do.vi" 
+  ### Bad VI:    "Answer from Contestant Msg.lvclass:Send Template.vi"	Path="C:
+\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Controller\Controller 
+Messages\Answer from Contestant Msg\Send Template.vi" 
+  ### Bad VI:    "Answer from Contestant Msg.lvclass:Do.vi"	Path="C:\wt\head-cc
+939cda81377d35fd17a587744f459cb3e20121\Controller\Controller Messages\Answer 
+from Contestant Msg\Do.vi" 
+  ### Bad VI:    "Buzzer Pressed.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Sounds\Sounds\Buzzer 
+Pressed.vi" 
+  ### Bad VI:    "Correct Answer.vi"	Path="C:\wt\head-cc939cda81377d35fd17a5877
+44f459cb3e20121\Sounds\Sounds\Correct Answer.vi" 
+  ### Bad VI:    "Incorrect Answer.vi"	Path="C:\wt\head-cc939cda81377d35fd17a58
+7744f459cb3e20121\Sounds\Sounds\Incorrect Answer.vi" 
+  ### Bad VI:    "Time Expired.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Sounds\Sounds\Time 
+Expired.vi" 
+  ### Bad VI:    "Untitled 2.vi"	
+Path="C:\wt\head-cc939cda81377d35fd17a587744f459cb3e20121\Untitled 2.vi" 
+#### Finished Mass Compile: Mon, Jun 15, 2026 6:02:51 PM
+
+MassCompile operation failed.
+
+</pre>
+</body>
+</html>
