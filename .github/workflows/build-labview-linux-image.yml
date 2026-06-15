@@ -21,8 +21,8 @@ on:
         default: false
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/challenge-of-champions-labview
-  DEFAULT_TAG: linux-2026
+  # Image name derives from the repo in the resolve step below (-> $GITHUB_ENV).
+  DEFAULT_TAG: linux-${{ vars.LABVIEW_VERSION || '2026' }}
 
 permissions:
   contents: read
@@ -46,9 +46,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Generate date tag
+      - name: Resolve image name and date tag
         id: date
-        run: echo "date=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
+        env:
+          IMAGE_OVERRIDE: ${{ vars.LABVIEW_IMAGE_NAME }}
+        run: |
+          owner=$(printf '%s' "${GITHUB_REPOSITORY%%/*}" | tr '[:upper:]' '[:lower:]')
+          name="${IMAGE_OVERRIDE:-${GITHUB_REPOSITORY##*/}-labview}"
+          name=$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE_NAME=ghcr.io/${owner}/${name}" >> "$GITHUB_ENV"
+          echo "date=$(date +'%Y%m%d')" >> "$GITHUB_OUTPUT"
 
       - name: Resolve feed URL
         id: feed

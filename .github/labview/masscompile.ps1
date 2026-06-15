@@ -122,16 +122,27 @@ $BadVIs  = $BadSet.Count
 $OkVIs   = [math]::Max(0, $TotalVIs - $BadVIs)
 $Percent = if ($TotalVIs -gt 0) { [int][math]::Round($OkVIs / $TotalVIs * 100) } else { 0 }
 
-# Full pass (exit 0, nothing bad), hard failure (nothing compiled), else partial.
-if ($ExitCode -eq 0 -and $BadVIs -eq 0) {
+# Classify the run. LabVIEW Mass Compile returns exit code 3 when it finished but
+# flagged some bad VIs (the ones depending on libraries absent from the CI image) —
+# that is a PARTIAL compile, not a failure. Any OTHER non-zero code (or zero project
+# VIs discovered) means LabVIEW could not complete the compile at all: a true, red
+# failure. A clean exit with nothing bad is a full pass.
+$RealError = ($ExitCode -ne 0 -and $ExitCode -ne 3)
+if ($RealError -or $TotalVIs -le 0) {
+    $StatusWord = 'failed'
+} elseif ($ExitCode -eq 0 -and $BadVIs -eq 0) {
     $StatusWord = 'passed'
 } elseif ($OkVIs -le 0) {
     $StatusWord = 'failed'
 } else {
     $StatusWord = 'partial'
 }
-$StatusLabel = "$Percent% compiled"
-$StatusColor = if ($Percent -ge 100) { '#2ea043' } elseif ($Percent -ge 50) { '#bb8009' } else { '#da3633' }
+# A true failure means nothing reliably compiled — zero the figures so the summary
+# and badge read 0% (red), not an inflated count from a run that never completed.
+if ($StatusWord -eq 'failed') { $OkVIs = 0; $Percent = 0 }
+$StatusLabel = if ($StatusWord -eq 'failed') { 'compile failed' } else { "$Percent% compiled" }
+# Yellow for a partial (some VIs failed); red reserved for a true failure; green at 100%.
+$StatusColor = if ($StatusWord -eq 'passed') { '#2ea043' } elseif ($StatusWord -eq 'failed') { '#da3633' } else { '#bb8009' }
 
 Write-Host ""
 Write-Host "=== Result: $StatusLabel ($OkVIs/$TotalVIs project VIs, $BadVIs bad; exit=$ExitCode duration=${Duration}s) ==="
@@ -197,4 +208,6 @@ $Html = @"
 [System.IO.File]::WriteAllText($HtmlOut, $Html, [System.Text.UTF8Encoding]::new($false))
 Write-Host "HTML report -> $HtmlOut"
 
-exit $ExitCode
+# Partial/passed are a successful CI outcome (the report shows the %); only a true
+# failure fails the job and turns the commit status red.
+if ($StatusWord -eq 'failed') { exit 1 } else { exit 0 }

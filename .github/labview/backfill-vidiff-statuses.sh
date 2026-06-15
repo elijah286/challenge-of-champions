@@ -24,7 +24,7 @@ set -euo pipefail
 REPO=""
 DRY_RUN=0
 ONLY_MISSING=0
-PAGES_URL="https://elijah286.github.io/challenge-of-champions"
+PAGES_URL=""   # default: derived from the repo's Pages site after REPO is resolved
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -38,6 +38,13 @@ done
 
 if [ -z "$REPO" ]; then
   REPO=$(gh repo view --json nameWithOwner --jq '.nameWithOwner')
+fi
+
+# Repo-agnostic default: derive the Pages site (owner.github.io/repo) from the
+# resolved repo when not given via --pages-url. Owner is lowercased for the host.
+if [ -z "$PAGES_URL" ]; then
+  _owner=$(printf '%s' "${REPO%%/*}" | tr '[:upper:]' '[:lower:]')
+  PAGES_URL="https://${_owner}.github.io/${REPO##*/}"
 fi
 
 echo "Repo:        $REPO"

@@ -120,13 +120,14 @@ jobs:
             -v "${workspace}\head:C:\workspace" `
             -v "${workspace}\base:C:\workspace-base" `
             -e CHANGED_FILES=$Env:CHANGED_FILES `
+            -e "GITHUB_REPOSITORY=${{ github.repository }}" `
             $Env:LABVIEW_CONTAINER_IMAGE `
             powershell -NonInteractive -ExecutionPolicy Bypass `
               -File "C:\workspace\.github\labview\vidiff.ps1" `
               -BaseDir      "C:\workspace-base" `
               -HeadDir      "C:\workspace" `
               -ReportDir    "C:\workspace\ci-out\vidiff" `
-              -LabVIEWPath  "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
+              -LabVIEWPath  "C:\Program Files\National Instruments\LabVIEW ${{ vars.LABVIEW_VERSION || '2026' }}\LabVIEW.exe"
         continue-on-error: true
 
       - name: Save metadata for deploy workflow

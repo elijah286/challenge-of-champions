@@ -8,7 +8,7 @@ on:
     types: [completed]
 
 env:
-  PAGES_URL: https://elijah286.github.io/challenge-of-champions
+  PAGES_URL: ${{ vars.PAGES_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
 
 permissions:
   contents: write

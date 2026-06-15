@@ -39,10 +39,10 @@ if ($OutRoot -eq '') { $OutRoot = Join-Path $WorkspaceRoot 'ci-out\vidiff-backfi
 $OpsHost = Join-Path $WorkspaceRoot '.github\labview'
 
 $TempRoot = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [System.IO.Path]::GetTempPath() }
-$WorkTreesHost = Join-Path $TempRoot 'cotc-vidiff-wt'
+$WorkTreesHost = Join-Path $TempRoot 'lvci-vidiff-wt'
 New-Item -ItemType Directory -Force -Path $OutRoot, $WorkTreesHost | Out-Null
 
-$ContainerName = "cotc-vidiff-$([System.Guid]::NewGuid().ToString('N').Substring(0,8))"
+$ContainerName = "lvci-vidiff-$([System.Guid]::NewGuid().ToString('N').Substring(0,8))"
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 
 # ── VI-touching commits, oldest first ────────────────────────────────────────

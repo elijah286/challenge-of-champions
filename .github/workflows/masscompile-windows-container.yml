@@ -25,7 +25,7 @@ on:
 
 env:
   LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
-  PAGES_URL: https://elijah286.github.io/challenge-of-champions
+  PAGES_URL: ${{ vars.PAGES_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
 
 permissions:
   contents: write
@@ -117,13 +117,14 @@ jobs:
         shell: powershell
         run: |
           docker run --rm `
+            -e "GITHUB_REPOSITORY=${{ github.repository }}" `
             -v "${{ github.workspace }}:C:\workspace" `
             $Env:LABVIEW_CONTAINER_IMAGE `
             powershell -NonInteractive -ExecutionPolicy Bypass `
               -File "C:\workspace\.github\labview\masscompile.ps1" `
               -WorkspaceRoot "C:\workspace" `
               -ReportDir     "C:\workspace\ci-out\masscompile" `
-              -LabVIEWPath   "C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe"
+              -LabVIEWPath   "C:\Program Files\National Instruments\LabVIEW ${{ vars.LABVIEW_VERSION || '2026' }}\LabVIEW.exe"
         # Allow step to fail so we can still upload the report
         continue-on-error: true
         id: compile

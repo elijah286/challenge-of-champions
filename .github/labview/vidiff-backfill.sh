@@ -29,7 +29,7 @@ OPS_HOST="${WORKSPACE_ROOT}/.github/labview"
 WT_ROOT="$(mktemp -d)/wt"
 mkdir -p "$WT_ROOT" "$OUT_ROOT"
 
-CNAME="cotc-vidiff-$(head -c4 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+CNAME="lvci-vidiff-$(head -c4 /dev/urandom | od -An -tx1 | tr -d ' \n')"
 DEADLINE=$(( $(date +%s) + TIME_BUDGET_MIN * 60 ))
 
 # VI-touching commits, oldest first.

@@ -17,6 +17,10 @@ FROM nationalinstruments/labview:latest-linux
 
 ARG NIPM_FEED_URL
 ARG VIA_SUPPORT_PACKAGE
+# Worker version: short content hash of the build inputs (this Dockerfile),
+# computed by the build workflow and passed in so the image self-reports which
+# worker it is. VIPM/VIPC is Windows-only, so the Linux worker carries no .vipc.
+ARG CI_WORKER_VERSION=dev
 
 # ---------------------------------------------------------------------------- #
 # Install VI Analyzer support via nipkg
@@ -29,3 +33,9 @@ RUN set -ex \
  && echo "Installing ${VIA_SUPPORT_PACKAGE} ..." \
  && nipkg install --accept-eulas --no-progress "${VIA_SUPPORT_PACKAGE}" \
  && echo "VI Analyzer support installed: ${VIA_SUPPORT_PACKAGE}"
+
+# Stamp the worker version so any consuming CI job can read it back from the
+# pulled image and link the dashboard to this worker's published manifest.
+ENV CI_WORKER_VERSION=${CI_WORKER_VERSION}
+LABEL com.cotc.ci-worker.version=${CI_WORKER_VERSION} \
+      com.cotc.ci-worker.platform=linux

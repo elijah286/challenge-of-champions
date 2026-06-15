@@ -78,11 +78,11 @@ $OpsHost   = Join-Path $WorkspaceRoot '.github\labview'
 $PagesDir  = Join-Path $WorkspaceRoot '.github\pages'
 
 $TempRoot = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [System.IO.Path]::GetTempPath() }
-$WorkTreesHost = Join-Path $TempRoot 'cotc-wt'
+$WorkTreesHost = Join-Path $TempRoot 'lvci-wt'
 
 New-Item -ItemType Directory -Force -Path $OutDir, $ByBlobDir, $WorkTreesHost | Out-Null
 
-$ContainerName = "cotc-snap-$([System.Guid]::NewGuid().ToString('N').Substring(0,8))"
+$ContainerName = "lvci-snap-$([System.Guid]::NewGuid().ToString('N').Substring(0,8))"
 
 function Resolve-Python {
     foreach ($c in 'python3', 'python') {

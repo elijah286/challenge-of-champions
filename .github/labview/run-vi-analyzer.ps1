@@ -1,28 +1,24 @@
 <#
 .SYNOPSIS
-    Runs LabVIEW VI Analyzer (Windows container) with the full default test set
-    and writes the native VI Analyzer HTML report.
-
-.DESCRIPTION
-    Passing the workspace *directory* as -ConfigPath makes LabVIEWCLI run the full
-    default VI Analyzer test configuration against every VI under it. This requires
-    the VI Analyzer test LLBs, which ship in the ni-viawin-labview-support package
-    baked into the custom CI image (.github/docker/labview-ci.Dockerfile). On the
-    bare NI base image no tests are installed and the report shows "0 tests run".
+    Runs LabVIEW VI Analyzer (Windows container) and generates an HTML report.
 
 .PARAMETER WorkspaceRoot
     Absolute path to the project inside the container. Default: C:\workspace
 
 .PARAMETER ReportDir
-    Output directory for the HTML report (written as index.html).
+    Output directory for the XML results and HTML report.
+
+.PARAMETER ConfigTemplate
+    Path to the .viancfg template file (uses __WORKSPACE_PATH__ placeholder).
 
 .PARAMETER LabVIEWPath
     Path to LabVIEW.exe inside the container.
 #>
 param(
-    [string]$WorkspaceRoot = 'C:\workspace',
-    [string]$ReportDir     = 'C:\report',
-    [string]$LabVIEWPath   = 'C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe'
+    [string]$WorkspaceRoot   = 'C:\workspace',
+    [string]$ReportDir       = 'C:\report',
+    [string]$ConfigTemplate  = 'C:\workspace\.github\labview\via-configs\via-config-default.viancfg',
+    [string]$LabVIEWPath     = 'C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -63,33 +59,35 @@ function Resolve-LabVIEWCLI([string]$LabVIEWExePath) {
 }
 
 $LabVIEWPath = Resolve-LabVIEWPath $LabVIEWPath
-$CliExe      = Resolve-LabVIEWCLI $LabVIEWPath
-$HtmlOut     = Join-Path $ReportDir 'index.html'
+$CliExe     = Resolve-LabVIEWCLI $LabVIEWPath
+$ConfigFile = Join-Path $ReportDir 'via-config.viancfg'
+$ResultsXml = Join-Path $ReportDir 'via-results.xml'
+$HtmlOut    = Join-Path $ReportDir 'index.html'
 
 New-Item -ItemType Directory -Force -Path $ReportDir | Out-Null
 
 Write-Host "=== VI Analyzer (Windows) ==="
-Write-Host "  Workspace      : $WorkspaceRoot"
-Write-Host "  LabVIEW        : $LabVIEWPath"
-Write-Host "  CLI            : $CliExe"
-Write-Host "  Report (HTML)  : $HtmlOut"
+Write-Host "  Workspace  : $WorkspaceRoot"
+Write-Host "  LabVIEW    : $LabVIEWPath"
+Write-Host "  Config src : $ConfigTemplate"
+
+# ── Patch config: replace __WORKSPACE_PATH__ with the actual container path ──
+$ConfigXml = Get-Content $ConfigTemplate -Raw
+$ConfigXml = $ConfigXml -replace '__WORKSPACE_PATH__', $WorkspaceRoot
+[System.IO.File]::WriteAllText($ConfigFile, $ConfigXml, [System.Text.UTF8Encoding]::new($false))
+Write-Host "  Config out : $ConfigFile"
 Write-Host ""
 
 $Start = Get-Date
 
-# Passing the workspace DIRECTORY as -ConfigPath runs the full default VI Analyzer
-# test set against every VI under it (requires the VI Analyzer test LLBs from
-# ni-viawin-labview-support, baked into the custom CI image). -ReportSaveType HTML
-# emits the native, richly formatted VI Analyzer report.
 # NOTE: -Headless is REQUIRED for LabVIEW 2026+ inside Windows containers, otherwise
 # LabVIEWCLI cannot establish a VI Server connection (error -350000).
 & $CliExe `
-    -LogToConsole   TRUE `
-    -OperationName  RunVIAnalyzer `
-    -ConfigPath     $WorkspaceRoot `
-    -ReportPath     $HtmlOut `
-    -ReportSaveType HTML `
-    -LabVIEWPath    $LabVIEWPath `
+    -LogToConsole  TRUE `
+    -OperationName RunVIAnalyzer `
+    -ConfigPath    $ConfigFile `
+    -ReportPath    $ResultsXml `
+    -LabVIEWPath   $LabVIEWPath `
     -Headless
 
 $ExitCode = $LASTEXITCODE
@@ -98,20 +96,67 @@ $Duration = [math]::Round(((Get-Date) - $Start).TotalSeconds, 1)
 Write-Host ""
 Write-Host "=== VI Analyzer finished (exit=$ExitCode duration=${Duration}s) ==="
 
-if (Test-Path $HtmlOut) {
-    $size = (Get-Item $HtmlOut).Length
-    Write-Host "HTML report -> $HtmlOut ($size bytes)"
-} else {
-    Write-Warning "No HTML report was generated at $HtmlOut"
+# ── Parse XML results ────────────────────────────────────────────────────────
+$Passed = 0; $Failed = 0; $TotalVIs = 0
+if (Test-Path $ResultsXml) {
+    try {
+        [xml]$Xml = Get-Content $ResultsXml -Raw
+        $TestResults = $Xml.SelectNodes("//TestResult")
+        foreach ($r in $TestResults) {
+            if ($r.Result -eq 'Pass') { $Passed++ } else { $Failed++ }
+        }
+        $TotalVIs = ($Xml.SelectNodes("//VI") | Measure-Object).Count
+    } catch {
+        Write-Warning "Could not parse results XML: $_"
+    }
 }
 
-# Exit code 3 = analysis succeeded but found rule failures -> treat as success
-# (failures are detailed in the report). Any other non-zero code is a real error.
-if ($ExitCode -eq 3) {
-    Write-Host "VI Analyzer completed with rule failures (exit 3) - see report."
-    exit 0
-} elseif ($ExitCode -ne 0) {
-    exit $ExitCode
-}
+$StatusLabel = if ($ExitCode -eq 0 -and $Failed -eq 0) { 'PASSED' } else { 'FAILED' }
+$StatusColor = if ($StatusLabel -eq 'PASSED') { '#2ea043' } else { '#da3633' }
 
-exit 0
+# ── Embed results XML as escaped HTML ────────────────────────────────────────
+function Encode-Html([string]$s) {
+    $s -replace '&','&amp;' -replace '<','&lt;' -replace '>','&gt;'
+}
+$XmlContent = if (Test-Path $ResultsXml) { Get-Content $ResultsXml -Raw } else { '(no results file)' }
+$XmlHtml    = Encode-Html $XmlContent
+$ReportTs   = (Get-Date).ToUniversalTime().ToString('yyyy-MM-dd HH:mm:ss UTC')
+
+$Html = @"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>VI Analyzer — challenge-of-champions</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3}
+    .card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:20px;margin-bottom:16px}
+    h1{margin:0 0 12px;font-size:1.3em}
+    .badge{display:inline-block;padding:3px 10px;border-radius:4px;font-weight:700;font-size:.85em;color:#fff;background:$StatusColor}
+    .meta{margin-top:10px;font-size:.82em;color:#8b949e;display:flex;flex-wrap:wrap;gap:16px}
+    pre{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:14px;font-size:.75em;white-space:pre-wrap;word-break:break-all;overflow-y:auto;max-height:65vh;margin:0}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>VI Analyzer — challenge-of-champions</h1>
+    <span class="badge">$StatusLabel</span>
+    <div class="meta">
+      <span>Date: $ReportTs</span>
+      <span>Duration: ${Duration}s</span>
+      <span>VIs analyzed: $TotalVIs</span>
+      <span>Tests passed: $Passed</span>
+      <span>Tests failed: $Failed</span>
+    </div>
+  </div>
+  <pre>$XmlHtml</pre>
+</body>
+</html>
+"@
+
+[System.IO.File]::WriteAllText($HtmlOut, $Html, [System.Text.UTF8Encoding]::new($false))
+Write-Host "HTML report -> $HtmlOut"
+
+exit $ExitCode

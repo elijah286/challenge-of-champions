@@ -3,9 +3,18 @@
     Installs VIPM and applies all .vipc dependency files found in C:\vipm.
     This script runs INSIDE the Docker build container (Windows Server Core).
 
+    Used to bake third-party VIPM add-ons into the CI image -- e.g. Antidoc
+    (wovalab_lib_antidoc_cli), Wovalab's LabVIEW code-documentation generator,
+    which is distributed only through VIPM and is the supported way to produce
+    project documentation headlessly in CI/CD.
+
 .NOTES
-    Adjust $VipmInstallerUrl to the latest VIPM release URL from https://vipm.jki.net
-    Adjust $LabVIEWVersion  to match the LabVIEW version in the base NI image.
+    These values can be overridden at image-build time via environment variables
+    so the script does not need editing for each LabVIEW major version:
+      LABVIEW_VERSION     LabVIEW year passed to `vipm apply_vipc`; MUST match the
+                          LabVIEW in the NI base image. Default: 2026.
+      VIPM_INSTALLER_URL  VIPM community installer (https://vipm.jki.net) for a
+                          VIPM build that supports LABVIEW_VERSION.
 #>
 
 $ErrorActionPreference = 'Stop'
@@ -14,8 +23,8 @@ $ProgressPreference   = 'SilentlyContinue'
 $VipmDir          = 'C:\Program Files\JKI\VI Package Manager'
 $VipmExe          = "$VipmDir\vipm.exe"
 $VipcDir          = 'C:\vipm'
-$LabVIEWVersion   = '2024'   # match the LabVIEW version in the NI base image
-$VipmInstallerUrl = 'https://vipm.jki.net/l/download/vipm_2024_x64.exe'
+$LabVIEWVersion   = if ($Env:LABVIEW_VERSION)    { $Env:LABVIEW_VERSION }    else { '2026' }  # match the LabVIEW version in the NI base image
+$VipmInstallerUrl = if ($Env:VIPM_INSTALLER_URL) { $Env:VIPM_INSTALLER_URL } else { 'https://vipm.jki.net/l/download/vipm_2024_x64.exe' }
 
 # ── 1. Install VIPM if not already present ───────────────────────────────────
 if (-not (Test-Path $VipmExe)) {

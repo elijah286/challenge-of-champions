@@ -43,6 +43,7 @@ env:
 permissions:
   contents: write
   pages: write
+  actions: read
 
 jobs:
   build-dashboard:
@@ -59,7 +60,8 @@ jobs:
           PAGES_URL: ${{ env.PAGES_URL }}
         run: |
           python3 - <<'PYEOF'
-          import json, os, sys, urllib.request, urllib.error
+          import json, os, re, sys, urllib.request, urllib.error
+          from urllib.parse import quote
 
           token    = os.environ['GH_TOKEN']
           repo     = os.environ['REPO']
@@ -145,6 +147,27 @@ jobs:
               except Exception:
                   return False
 
+          # A 'pending' commit status only means a run STARTED. If that run later
+          # crashed or was cancelled WITHOUT posting a terminal status, the pending
+          # lingers and the dashboard would otherwise show a perpetual "running" spinner
+          # for a job that has actually stopped (often with an error). Verify the linked
+          # workflow run is genuinely still active before trusting a pending as live.
+          _run_active_cache = {}
+          def run_is_active(url):
+              if not url:
+                  return False
+              m = re.search(r'/actions/runs/(\d+)', url)
+              if not m:
+                  return False
+              rid = m.group(1)
+              if rid in _run_active_cache:
+                  return _run_active_cache[rid]
+              data = gh_get(f'actions/runs/{rid}')
+              active = bool(data) and data.get('status') in (
+                  'queued', 'in_progress', 'requested', 'waiting', 'pending')
+              _run_active_cache[rid] = active
+              return active
+
           # Set as soon as any cell renders an actively-running activity; drives the
           # faster page auto-refresh so a live run (and its result) surfaces promptly.
           running_flag = {'on': False}
@@ -215,6 +238,10 @@ jobs:
                           continue
                       if best is None or s.get('created_at', '') > best.get('created_at', ''):
                           best = s
+                  # A pending whose workflow run has already finished is stale (the run
+                  # stopped without posting its terminal status) — don't render it live.
+                  if best is not None and not run_is_active(best.get('target_url', '')):
+                      return None
                   return best
 
               def running_cell(label, url):
@@ -243,6 +270,23 @@ jobs:
                   link   = f'<a href="{url}" style="color:inherit">{emoji} {label}</a>' if url else f'{emoji} {label}'
                   return f'<td style="text-align:center"><span style="background:{color};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">{link}</span></td>'
 
+              def worker_cell(*contexts):
+                  # Worker-version column: the version string the worker status posted
+                  # (e.g. win-abc123def456) linked to its published manifest. EMPTY_CELL
+                  # for non-project revisions or before the analyzer reported a worker.
+                  if not is_project:
+                      return EMPTY_CELL
+                  s = pick_status(*contexts)
+                  if not s:
+                      return EMPTY_CELL
+                  desc = (s.get('description') or '').strip()
+                  m = re.search(r'(?:win|linux)-[0-9a-f]{6,}', desc)
+                  ver = m.group(0) if m else (desc or 'manifest')
+                  url = s.get('target_url', '')
+                  inner = f'<a href="{url}" style="color:inherit">{ver}</a>' if url else ver
+                  return ('<td style="text-align:center"><span style="font-family:monospace;'
+                          f'font-size:.72em;color:var(--fg-muted)">{inner}</span></td>')
+
               # Mass Compile column: show the % of project VIs that compiled (most VIs
               # compile even when a few depend on libraries absent from the CI image),
               # sourced from the run's summary.json. Falls back to the plain status badge
@@ -257,9 +301,20 @@ jobs:
                   elif _mc and isinstance(_mc.get('percent'), int):
                       _pct = _mc['percent']
                       _ok, _tot = _mc.get('ok', 0), _mc.get('total', 0)
-                      _col = '#2ea043' if _pct >= 100 else ('#bb8009' if _pct >= 50 else '#da3633')
-                      _emoji = '✅' if _pct >= 100 else ('⚠️' if _pct >= 1 else '❌')
-                      _url = f'{pages_url}/masscompile/{sha}/index.html'
+                      # Yellow whenever SOME VIs failed (a partial compile); red is reserved
+                      # for a true failure (0% — nothing compiled / LabVIEW errored); green
+                      # only at a clean 100%. Prefer the run's own status word, falling back
+                      # to the percentage for older summaries that predate it.
+                      _st = _mc.get('status')
+                      _failed = (_st == 'failed') or (_st is None and _pct <= 0)
+                      _passed = (_st == 'passed') or (_st is None and _pct >= 100)
+                      _col = '#2ea043' if _passed else ('#da3633' if _failed else '#bb8009')
+                      _emoji = '✅' if _passed else ('❌' if _failed else '⚠️')
+                      # Open the report inside the framed viewer (chrome + "← CI Dashboard"
+                      # back-nav) rather than as a bare full-page report.
+                      _src = quote(f'../masscompile/{sha}/index.html', safe='')
+                      _vt  = quote(f'Mass Compile · {short}')
+                      _url = f'{pages_url}/report/index.html?title={_vt}&src={_src}&sha={sha}'
                       mc_badge = (f'<td style="text-align:center"><span title="{_ok}/{_tot} project VIs compiled" '
                                   f'style="background:{_col};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">'
                                   f'<a href="{_url}" style="color:inherit">{_emoji} {_pct}%</a></span></td>')
@@ -293,6 +348,11 @@ jobs:
                               _links.append(f'<a href="{_href}" style="color:var(--link)">{_label}({_n})</a>')
                       snap_badge = f'<td style="text-align:center;font-size:.78em;white-space:nowrap">{" / ".join(_links)}</td>'
 
+              # Worker columns: which CI worker image analyzed this revision, each
+              # linking to that worker's published manifest (what's installed + VIPC).
+              win_worker   = worker_cell('CI / Worker (windows)')
+              linux_worker = worker_cell('CI / Worker (linux)')
+
               rows_html.append(f"""
               <tr data-project="{proj_flag}">
                 <td style="padding:8px;font-family:monospace;font-size:.85em">
@@ -305,6 +365,8 @@ jobs:
                 {via_badge}
                 {diff_badge}
                 {snap_badge}
+                {win_worker}
+                {linux_worker}
               </tr>""")
 
           rows = '\n'.join(rows_html)
@@ -386,6 +448,8 @@ jobs:
                   <th style="text-align:center">VI Analyzer</th>
                   <th style="text-align:center">VIDiff</th>
                   <th style="text-align:center">Snapshots</th>
+                  <th style="text-align:center">Win Worker</th>
+                  <th style="text-align:center">Linux Worker</th>
                 </tr>
               </thead>
               <tbody>{rows}</tbody>
@@ -421,9 +485,12 @@ jobs:
 
           # Ensure VI Browser route exists so dashboard commit links do not 404.
           os.makedirs('ci-out/dashboard/vi-snapshots', exist_ok=True)
+          # Framed report viewer (chrome + back-nav) that the Mass Compile badge links to.
+          os.makedirs('ci-out/dashboard/report', exist_ok=True)
           for src, dst in [
               ('.github/pages/vi-browser.html', 'ci-out/dashboard/vi-snapshots/index.html'),
               ('.github/pages/vi-interactive.html', 'ci-out/dashboard/vi-snapshots/vi-interactive.html'),
+              ('.github/pages/report-viewer.html', 'ci-out/dashboard/report/index.html'),
           ]:
               with open(src, 'r', encoding='utf-8') as sf, open(dst, 'w', encoding='utf-8') as df:
                   df.write(sf.read())

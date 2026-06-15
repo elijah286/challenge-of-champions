@@ -30,7 +30,7 @@ param(
     [string]$HeadDir      = 'C:\workspace',
     [string]$ChangedFiles = '',   # passed as env or piped
     [string]$ReportDir    = 'C:\report',
-    [string]$LabVIEWPath  = 'C:\Program Files\National Instruments\LabVIEW 2024\LabVIEW.exe',
+    [string]$LabVIEWPath  = 'C:\Program Files\National Instruments\LabVIEW 2026\LabVIEW.exe',
     # Directory containing the PrintToSingleFileHtml operation. Defaults to the head
     # checkout, but the backfill orchestrator passes a stable ops mount because old
     # commits' worktrees predate the CI scripts.
