@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="refresh" content="900">
+  <meta http-equiv="refresh" content="60">
   <title>CI Dashboard — challenge-of-champions</title>
   <style>
     :root{
@@ -40,7 +40,7 @@
 </head>
 <body>
   <h1>CI Dashboard — challenge-of-champions</h1>
-  <div class="sub">Last updated: 2026-06-15 14:28 UTC &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
+  <div class="sub">Last updated: 2026-06-15 14:36 UTC &nbsp;|&nbsp; Live — refreshing every 60 s while CI runs</div>
   <div class="nav">
     <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/">VI Browser</a>
     <a href="https://github.com/elijah286/challenge-of-champions">GitHub</a>
@@ -61,6 +61,19 @@
       </tr>
     </thead>
     <tbody>
+    <tr data-project="false">
+      <td style="padding:8px;font-family:monospace;font-size:.85em">
+        <a href="https://github.com/elijah286/challenge-of-champions/commit/7f91e4b78aa5a764370d975a7aafb0381bb0550b" style="color:var(--link)">7f91e4b</a>
+      </td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="fix(ci): deploy reports from Windows past MAX_PATH (mass compile 404 root cause)"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=7f91e4b78aa5a764370d975a7aafb0381bb0550b" style="color:var(--fg)">fix(ci): deploy reports from Windows past MAX_PATH (mass compile 404 root cause)</a></td>
+      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
+      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+    </tr>
+
     <tr data-project="false">
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://github.com/elijah286/challenge-of-champions/commit/1ff7341669245c7cb99bc652820d61bc0dfae162" style="color:var(--link)">1ff7341</a>
@@ -939,8 +952,8 @@
       <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="minor improvements"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712" style="color:var(--fg)">minor improvements</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">Elijah Kerry</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2025-04-27</td>
-      <td style="text-align:center"><span style="background:#da3633;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/masscompile/0d83d346da3d3fe1fc36ee40fb283da0ef857712/index.html" style="color:inherit">❌ compile</a></span></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><span class="run-badge" title="Running — click to view progress"><a href="https://github.com/elijah286/challenge-of-champions/actions/runs/27553619127" style="color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:5px"><span class="run-spin"></span>compile</a></span></td>
+      <td style="text-align:center"><span class="run-badge" title="Running — click to view progress"><a href="https://github.com/elijah286/challenge-of-champions/actions/runs/27553332170" style="color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:5px"><span class="run-spin"></span>analyze</a></span></td>
       <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&plat=windows&changed=1" style="color:var(--link)">Win(1)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&plat=linux&changed=1" style="color:var(--link)">Linux(1)</a></td>
     </tr>
@@ -1346,19 +1359,6 @@
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
       <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=5c6c0a76492473182eb589175e15f0c9d770d4e6&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=5c6c0a76492473182eb589175e15f0c9d770d4e6&plat=windows&changed=1" style="color:var(--link)">Win(54)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=5c6c0a76492473182eb589175e15f0c9d770d4e6&plat=linux&changed=1" style="color:var(--link)">Linux(54)</a></td>
-    </tr>
-
-    <tr data-project="true">
-      <td style="padding:8px;font-family:monospace;font-size:.85em">
-        <a href="https://github.com/elijah286/challenge-of-champions/commit/55852b9622b6ae0aea2b8571d53b4370a424e70b" style="color:var(--link)">55852b9</a>
-      </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Image functionality"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=55852b9622b6ae0aea2b8571d53b4370a424e70b" style="color:var(--fg)">Image functionality</a></td>
-      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">Elijah Kerry</td>
-      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2024-05-07</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=55852b9622b6ae0aea2b8571d53b4370a424e70b&changed=1" style="color:inherit">✅ diff</a></span></td>
-      <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=55852b9622b6ae0aea2b8571d53b4370a424e70b&plat=windows&changed=1" style="color:var(--link)">Win(6)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=55852b9622b6ae0aea2b8571d53b4370a424e70b&plat=linux&changed=1" style="color:var(--link)">Linux(6)</a></td>
     </tr></tbody>
   </table>
   <script>
