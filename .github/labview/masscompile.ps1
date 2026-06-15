@@ -93,18 +93,61 @@ $Duration = [math]::Round(((Get-Date) - $Start).TotalSeconds, 1)
 # to emit an index.html so the dashboard never links to a 404.
 $ErrorActionPreference = 'Continue'
 
-# Parse log for error/warning counts (case-insensitive)
-$LogText  = Get-Content $LogFile -Raw -ErrorAction SilentlyContinue
+# ── Compute per-VI compile success ───────────────────────────────────────────
+# LabVIEW Mass Compile processes every VI individually: VIs that do not depend on
+# libraries missing from the CI image (NI-DAQmx / OpenG / G-Image / G-Audio) still
+# compile cleanly, while only the ones that do are flagged "### Bad VI/subVI ...
+# Path=...". So instead of a binary pass/fail, report the percentage of project VIs
+# that compiled.
+#   Denominator: every .vi under the workspace except the CI tooling in .github.
+#   Failures:    unique project VI paths flagged bad in the log. The log is UTF-16
+#                and LabVIEW hard-wraps long lines, so a captured Path may contain
+#                embedded newlines — strip them before de-duping.
+$LogText = Get-Content $LogFile -Raw -ErrorAction SilentlyContinue
 if ([string]::IsNullOrEmpty($LogText)) { $LogText = '(no output captured)' }
-$Errors   = ([regex]::Matches($LogText, '(?i)\berror\b')).Count
-$Warnings = ([regex]::Matches($LogText, '(?i)\bwarning\b')).Count
 
-$Passed      = ($ExitCode -eq 0 -and $Errors -eq 0)
-$StatusLabel = if ($Passed) { 'PASSED' } else { 'FAILED' }
-$StatusColor = if ($Passed) { '#2ea043' } else { '#da3633' }
+$AllVIs = @(Get-ChildItem -LiteralPath $WorkspaceRoot -Recurse -File -Filter '*.vi' -ErrorAction SilentlyContinue |
+    Where-Object { $_.FullName -notmatch '(?i)\\\.github\\' })
+$TotalVIs = $AllVIs.Count
+
+$wsPrefix = ($WorkspaceRoot.TrimEnd('\') + '\').ToLowerInvariant()
+$BadSet = New-Object 'System.Collections.Generic.HashSet[string]'
+foreach ($m in [regex]::Matches($LogText, 'Path="([^"]+)"')) {
+    $p = ($m.Groups[1].Value -replace '[\r\n]', '').ToLowerInvariant()
+    if ($p.EndsWith('.vi') -and $p.StartsWith($wsPrefix) -and ($p -notmatch '\\\.github\\')) {
+        [void]$BadSet.Add($p)
+    }
+}
+$BadVIs  = $BadSet.Count
+$OkVIs   = [math]::Max(0, $TotalVIs - $BadVIs)
+$Percent = if ($TotalVIs -gt 0) { [int][math]::Round($OkVIs / $TotalVIs * 100) } else { 0 }
+
+# Full pass (exit 0, nothing bad), hard failure (nothing compiled), else partial.
+if ($ExitCode -eq 0 -and $BadVIs -eq 0) {
+    $StatusWord = 'passed'
+} elseif ($OkVIs -le 0) {
+    $StatusWord = 'failed'
+} else {
+    $StatusWord = 'partial'
+}
+$StatusLabel = "$Percent% compiled"
+$StatusColor = if ($Percent -ge 100) { '#2ea043' } elseif ($Percent -ge 50) { '#bb8009' } else { '#da3633' }
 
 Write-Host ""
-Write-Host "=== Result: $StatusLabel (exit=$ExitCode errors=$Errors warnings=$Warnings duration=${Duration}s) ==="
+Write-Host "=== Result: $StatusLabel ($OkVIs/$TotalVIs project VIs, $BadVIs bad; exit=$ExitCode duration=${Duration}s) ==="
+
+# Machine-readable summary: the dashboard's Mass Compile column reads this to show
+# the percentage badge, and the workflow reads it for the commit-status description.
+$Summary = [ordered]@{
+    total    = $TotalVIs
+    ok       = $OkVIs
+    bad      = $BadVIs
+    percent  = $Percent
+    status   = $StatusWord
+    exit     = $ExitCode
+    duration = $Duration
+}
+[System.IO.File]::WriteAllText((Join-Path $ReportDir 'summary.json'), ($Summary | ConvertTo-Json -Compress), [System.Text.UTF8Encoding]::new($false))
 
 # ── Generate HTML report ─────────────────────────────────────────────────────
 function Encode-Html([string]$s) {
@@ -141,8 +184,9 @@ $Html = @"
     <div class="meta">
       <span>Date: $ReportTs</span>
       <span>Duration: ${Duration}s</span>
-      <span>Errors: $Errors</span>
-      <span>Warnings: $Warnings</span>
+      <span>Project VIs: $TotalVIs</span>
+      <span>Compiled OK: $OkVIs</span>
+      <span>Bad: $BadVIs</span>
     </div>
   </div>
   <pre>$LogHtml</pre>

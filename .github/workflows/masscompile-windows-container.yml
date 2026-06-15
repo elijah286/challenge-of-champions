@@ -175,11 +175,23 @@ jobs:
           else
             STATE="failure"
           fi
+          # Prefer a percentage-based description (the report shows % of project VIs
+          # that compiled); fall back to the plain state for runs without a summary.
+          PCT=""
+          SUMMARY="${{ github.workspace }}/ci-out/masscompile/summary.json"
+          if [ -f "$SUMMARY" ]; then
+            PCT=$(grep -o '"percent"[: ]*[0-9]*' "$SUMMARY" | grep -o '[0-9]*$' || true)
+          fi
+          if [ -n "$PCT" ]; then
+            DESC="${PCT}% of project VIs compiled"
+          else
+            DESC="Mass Compile $STATE"
+          fi
           curl -s -X POST \
             -H "Authorization: token $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/${{ github.repository }}/statuses/${{ steps.sha.outputs.sha }}" \
-            -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"Mass Compile $STATE\",\"context\":\"CI / Mass Compile\"}"
+            -d "{\"state\":\"$STATE\",\"target_url\":\"$REPORT_URL\",\"description\":\"$DESC\",\"context\":\"CI / Mass Compile\"}"
 
       - name: Fail the job if compile failed
         if: always() && (steps.pull.outcome != 'success' || steps.compile.outcome != 'success')

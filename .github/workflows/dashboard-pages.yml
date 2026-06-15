@@ -105,6 +105,19 @@ jobs:
               _snap_cache[sha] = counts
               return counts
 
+          _mc_cache = {}
+          def masscompile_summary(sha):
+              # {total, ok, bad, percent, status, exit, duration} written by masscompile.ps1
+              # and deployed alongside the report at masscompile/<sha>/summary.json. Lets the
+              # Mass Compile column show the % of project VIs that compiled instead of a
+              # binary pass/fail (most VIs compile even when a few depend on libraries absent
+              # from the CI image).
+              if sha in _mc_cache:
+                  return _mc_cache[sha]
+              data = http_json(f"{pages_url}/masscompile/{sha}/summary.json")
+              _mc_cache[sha] = data if isinstance(data, dict) else None
+              return _mc_cache[sha]
+
           # ── Fetch recent commits on main ────────────────────────────────
           # Pull a wide window so the actual LabVIEW project history is present,
           # not just a long tail of CI/tooling commits (which can easily fill the
@@ -230,7 +243,28 @@ jobs:
                   link   = f'<a href="{url}" style="color:inherit">{emoji} {label}</a>' if url else f'{emoji} {label}'
                   return f'<td style="text-align:center"><span style="background:{color};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">{link}</span></td>'
 
-              mc_badge  = badge('compile',   'CI / Mass Compile')
+              # Mass Compile column: show the % of project VIs that compiled (most VIs
+              # compile even when a few depend on libraries absent from the CI image),
+              # sourced from the run's summary.json. Falls back to the plain status badge
+              # for older runs that predate summary.json.
+              if not is_project:
+                  mc_badge = EMPTY_CELL
+              else:
+                  _mc_run = fresh_pending('CI / Mass Compile')
+                  _mc = masscompile_summary(sha)
+                  if _mc_run is not None:
+                      mc_badge = running_cell('compile', _mc_run.get('target_url', ''))
+                  elif _mc and isinstance(_mc.get('percent'), int):
+                      _pct = _mc['percent']
+                      _ok, _tot = _mc.get('ok', 0), _mc.get('total', 0)
+                      _col = '#2ea043' if _pct >= 100 else ('#bb8009' if _pct >= 50 else '#da3633')
+                      _emoji = '✅' if _pct >= 100 else ('⚠️' if _pct >= 1 else '❌')
+                      _url = f'{pages_url}/masscompile/{sha}/index.html'
+                      mc_badge = (f'<td style="text-align:center"><span title="{_ok}/{_tot} project VIs compiled" '
+                                  f'style="background:{_col};color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em">'
+                                  f'<a href="{_url}" style="color:inherit">{_emoji} {_pct}%</a></span></td>')
+                  else:
+                      mc_badge = badge('compile', 'CI / Mass Compile')
               via_badge = badge('analyze',   'CI / VI Analyzer')
               # The diff badge opens the unified VI Browser filtered to this commit's
               # changed VIs (each links to its diff report), rather than a separate table.
