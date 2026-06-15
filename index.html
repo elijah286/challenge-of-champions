@@ -95,7 +95,7 @@
   </script>
   <style>#lvci-version.lvci-has-update{cursor:pointer;color:var(--fg);border-color:#d29922;background:rgba(210,153,34,.13)}#lvci-version.lvci-has-update:hover{background:rgba(210,153,34,.22)}#lvci-update-dot{display:none}#lvci-update-dot.on{display:block;position:absolute;top:-5px;right:-5px;width:11px;height:11px;border-radius:50%;background:#d29922;box-shadow:0 0 0 2px var(--bg);animation:lvci-pulse 1.7s ease-out infinite}@keyframes lvci-pulse{0%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,.5)}70%{box-shadow:0 0 0 2px var(--bg),0 0 0 7px rgba(210,153,34,0)}100%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,0)}}</style><script>(function(){var C={"version": "1.1.0", "sourceRepo": "elijah286/LabVIEW-CI-with-Containers", "sourceRef": "main", "isSource": false, "repo": "elijah286/challenge-of-champions"};function cmp(a,b){var p=String(a||"0").split("."),q=String(b||"0").split(".");for(var i=0;i<Math.max(p.length,q.length);i++){var d=(parseInt(p[i],10)||0)-(parseInt(q[i],10)||0);if(d)return d;}return 0;}if(!C.version||C.isSource||!C.sourceRepo)return;var u="https://raw.githubusercontent.com/"+C.sourceRepo+"/"+C.sourceRef+"/.github/labview-ci/catalog.json";fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(cat){if(!cat||!cat.version||cmp(cat.version,C.version)<=0)return;var b=document.getElementById("lvci-version"),d=document.getElementById("lvci-update-dot");if(!b)return;b.classList.add("lvci-has-update");if(d)d.classList.add("on");b.title="Update available: v"+C.version+" \u2192 v"+cat.version+" \u2014 click to see what\u2019s new";b.setAttribute("role","button");b.setAttribute("tabindex","0");var go=function(){lvciOpen("whats-new.html?repo="+encodeURIComponent(C.repo)+"&from="+encodeURIComponent(C.version)+"&src="+encodeURIComponent(C.sourceRepo)+"&ref="+encodeURIComponent(C.sourceRef),"What\u2019s New");};b.addEventListener("click",go);b.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});}).catch(function(){});})();</script>
   <h1>CI Dashboard — challenge-of-champions</h1>
-  <div class="sub">LabVIEW CI v1.1.0 &middot; deployed 2026-06-15 20:48 UTC  &middot; <a href="https://github.com/elijah286/challenge-of-champions/commit/0efd33302f622d2352f250fadbe04c8dace7b101" title="Source commit this dashboard was built from">0efd333</a> &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
+  <div class="sub">LabVIEW CI v1.1.0 &middot; deployed 2026-06-15 20:58 UTC  &middot; <a href="https://github.com/elijah286/challenge-of-champions/commit/ba4a65d5fb6a53a0689628f53cb4474574a7c9f8" title="Source commit this dashboard was built from">ba4a65d</a> &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
   <div class="nav">
     <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/">VI Browser</a>
     <a href="https://github.com/elijah286/challenge-of-champions">GitHub</a>
@@ -118,6 +118,21 @@
       </tr>
     </thead>
     <tbody>
+    <tr data-project="false">
+      <td style="padding:8px;font-family:monospace;font-size:.85em">
+        <a href="https://github.com/elijah286/challenge-of-champions/commit/ba4a65d5fb6a53a0689628f53cb4474574a7c9f8" style="color:var(--link)">ba4a65d</a>
+      </td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(update): one-click 'Update now' button in What's New (no terminal needed)"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ba4a65d5fb6a53a0689628f53cb4474574a7c9f8" style="color:var(--fg)">feat(update): one-click 'Update now' button in What's New (no terminal needed)</a></td>
+      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">github-actions[bot]</td>
+      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+    </tr>
+
     <tr data-project="false">
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://github.com/elijah286/challenge-of-champions/commit/0efd33302f622d2352f250fadbe04c8dace7b101" style="color:var(--link)">0efd333</a>
@@ -1599,21 +1614,6 @@
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-    </tr>
-
-    <tr data-project="true">
-      <td style="padding:8px;font-family:monospace;font-size:.85em">
-        <a href="https://github.com/elijah286/challenge-of-champions/commit/9ad479c4fbe954727c37792e39a7d0163fc8242d" style="color:var(--link)">9ad479c</a>
-      </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Fixed scoring bug"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=9ad479c4fbe954727c37792e39a7d0163fc8242d" style="color:var(--fg)">Fixed scoring bug</a></td>
-      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">Elijah Kerry</td>
-      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2024-05-22</td>
-      <td style="text-align:center"><span title="195/216 project VIs compiled" style="background:#bb8009;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?title=Mass%20Compile%20%C2%B7%209ad479c&src=..%2Fmasscompile%2F9ad479c4fbe954727c37792e39a7d0163fc8242d%2Findex.html&sha=9ad479c4fbe954727c37792e39a7d0163fc8242d" style="color:inherit">⚠️ 90%</a></span></td>
-      <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-analyzer/9ad479c4fbe954727c37792e39a7d0163fc8242d/index.html" style="color:inherit">✅ analyze</a></span></td>
-      <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=9ad479c4fbe954727c37792e39a7d0163fc8242d&changed=1" style="color:inherit">✅ diff</a></span></td>
-      <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=9ad479c4fbe954727c37792e39a7d0163fc8242d&plat=windows&changed=1" style="color:var(--link)">Win(5)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=9ad479c4fbe954727c37792e39a7d0163fc8242d&plat=linux&changed=1" style="color:var(--link)">Linux(5)</a></td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
     </tr></tbody>
