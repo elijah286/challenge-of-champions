@@ -172,14 +172,31 @@ jobs:
           URL=$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')
           if [ -n "$URL" ]; then
             gh pr edit "$URL" --body-file /tmp/pr-body.md >/dev/null || true
+            echo "Updated existing PR: $URL"
+          elif URL=$(gh pr create --title "ci: adopt LabVIEW CI tooling v${TARGET}" \
+                       --base "${{ github.ref_name }}" --head "$BRANCH" \
+                       --body-file /tmp/pr-body.md 2>/tmp/pr-err); then
+            echo "Opened PR: $URL"
           else
-            URL=$(gh pr create --title "ci: adopt LabVIEW CI tooling v${TARGET}" \
-              --base "${{ github.ref_name }}" --head "$BRANCH" --body-file /tmp/pr-body.md)
+            cat /tmp/pr-err || true
+            URL="${{ github.server_url }}/${{ github.repository }}/compare/${{ github.ref_name }}...${BRANCH}?expand=1"
+            echo "::warning title=Open the PR manually::GitHub Actions is not permitted to open PRs in this repo. Enable Settings > Actions > General > 'Allow GitHub Actions to create and approve pull requests', or use the link in the summary. The branch is already pushed."
+            {
+              echo "## &#11014; Upgrade branch ready &mdash; open the pull request"
+              echo ""
+              echo "Adopts LabVIEW CI tooling **v${INSTALLED} &rarr; v${TARGET}** (committed to branch \`${BRANCH}\`)."
+              echo ""
+              echo "**[Open the pull request](${URL})** to review and merge."
+              echo ""
+              echo "> To make this fully one-click next time, enable **Settings > Actions > General > Workflow permissions > 'Allow GitHub Actions to create and approve pull requests'**."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "Manual PR link: $URL"
+            exit 0
           fi
           {
-            echo "## ✅ Upgrade pull request ready"
+            echo "## &#9989; Upgrade pull request ready"
             echo ""
-            echo "Adopts LabVIEW CI tooling **v${INSTALLED} → v${TARGET}**."
+            echo "Adopts LabVIEW CI tooling **v${INSTALLED} &rarr; v${TARGET}**."
             echo ""
             echo "**[Review &amp; merge the pull request](${URL})** to finish the update."
           } >> "$GITHUB_STEP_SUMMARY"
