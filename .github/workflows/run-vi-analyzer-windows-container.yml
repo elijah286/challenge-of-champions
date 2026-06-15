@@ -24,9 +24,14 @@ on:
         default: ''
 
 env:
-  # Custom CI image (built by build-labview-image.yml). Name derives from the repo
-  # so any repo pulls its own image; override with vars.LABVIEW_IMAGE_NAME / LABVIEW_VERSION.
-  LABVIEW_CONTAINER_IMAGE: ghcr.io/${{ github.repository_owner }}/${{ vars.LABVIEW_IMAGE_NAME || format('{0}-labview', github.event.repository.name) }}:${{ vars.LABVIEW_VERSION || '2026' }}
+  # Custom CI image (built by build-labview-image.yml). GHCR repository names MUST be
+  # lowercase, but github.event.repository.name preserves the repo's original case
+  # (e.g. "LabVIEW-CI-with-Containers"), which `docker pull` rejects ("repository name
+  # must be lowercase") — so no worker ever ran and the dashboard's Win Worker column
+  # stayed empty. The image ref is therefore resolved + lowercased at runtime by the
+  # "Resolve container image name" step below (-> $GITHUB_ENV); declared empty here so
+  # it is always a defined key. Override with vars.LABVIEW_IMAGE_NAME / LABVIEW_VERSION.
+  LABVIEW_CONTAINER_IMAGE: ''
   PAGES_URL: ${{ vars.PAGES_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
 
 permissions:
@@ -35,21 +40,33 @@ permissions:
   statuses: write
   packages: read
 
-# Serialize report deploys to gh-pages. peaceiris/actions-gh-pages clones, commits,
-# and pushes the branch; two report jobs pushing at once make the loser's push bounce
-# with "! [rejected] (fetch first)", so its report never deploys (dashboard 404).
-# A shared group across the report-deploy workflows (mass compile + VI Analyzer)
-# makes them queue instead of racing. cancel-in-progress:false so a queued run still
-# publishes rather than being dropped.
-concurrency:
-  group: report-pages-deploy
-  cancel-in-progress: false
+# No workflow-level concurrency group: revisions analyze in parallel, each in its own
+# container (unaware of the others). The gh-pages publish is made concurrency-safe by
+# .github/labview/publish-pages.sh (per-SHA destination + fetch-rebase-retry), so many
+# revisions publish at once without the old "! [rejected] (fetch first)" race that the
+# shared report-pages-deploy group used to prevent by serializing the whole job.
 
 jobs:
   vi-analyzer:
     runs-on: windows-2022   # windows-latest = Server 2025, broken Docker daemon
 
     steps:
+      # GHCR rejects upper-case repository names. Mirror build-labview-image.yml's
+      # resolve step exactly (lowercase owner + name) so the tag pulled here matches
+      # the tag that build pushed; otherwise docker pull fails and no Win Worker
+      # status is posted for the revision.
+      - name: Resolve container image name (GHCR requires lowercase)
+        shell: bash
+        env:
+          IMAGE_OVERRIDE: ${{ vars.LABVIEW_IMAGE_NAME }}
+          IMAGE_TAG: ${{ vars.LABVIEW_VERSION || '2026' }}
+        run: |
+          owner=$(printf '%s' "${GITHUB_REPOSITORY%%/*}" | tr '[:upper:]' '[:lower:]')
+          name="${IMAGE_OVERRIDE:-${GITHUB_REPOSITORY##*/}-labview}"
+          name=$(printf '%s' "$name" | tr '[:upper:]' '[:lower:]')
+          echo "LABVIEW_CONTAINER_IMAGE=ghcr.io/${owner}/${name}:${IMAGE_TAG}" >> "$GITHUB_ENV"
+          echo "Resolved image: ghcr.io/${owner}/${name}:${IMAGE_TAG}"
+
       - name: Determine target SHA
         id: sha
         shell: bash
@@ -237,14 +254,17 @@ jobs:
           git config --global core.longpaths true
           git config --system core.longpaths true || true
 
-      - name: Deploy report to GitHub Pages
+      - name: Deploy report to GitHub Pages (concurrent-safe)
         if: steps.report.outputs.exists == 'true'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/ci-out/vi-analyzer
-          destination_dir: vi-analyzer/${{ steps.sha.outputs.sha }}
-          keep_files: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PP_SRC: ${{ github.workspace }}/ci-out/vi-analyzer
+          PP_DEST: vi-analyzer/${{ steps.sha.outputs.sha }}
+          PP_MSG: "VI Analyzer report for ${{ steps.sha.outputs.sha }}"
+        run: |
+          PP_REMOTE="https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            bash .github/labview/publish-pages.sh
 
       - name: Post commit status
         if: always()

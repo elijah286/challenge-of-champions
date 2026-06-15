@@ -19,6 +19,10 @@ on:
         type: choice
         options: [head, backfill]
         default: head
+      commit_sha:
+        description: "head mode: revision to render (blank = current HEAD). Ignored in backfill."
+        required: false
+        default: ''
       max_commits:
         description: "backfill: cap to most recent N VI-touching commits (0 = all)"
         required: false
@@ -32,9 +36,17 @@ on:
         required: false
         default: '300'
 
+# The snapshot gallery is a SHARED site with an aggregate manifest (commits.json),
+# not a per-SHA path, so two snapshot runs can't be fully parallelized without a
+# manifest merge. Instead of cancelling an in-flight run when a new commit lands
+# (the old cancel-in-progress:true behavior), queue behind it: cancel-in-progress
+# false. Rendering is incremental + content-addressed, so the queued run seeds from
+# the just-deployed gallery and catches up any commits in between. The publish
+# itself is race-safe via .github/labview/publish-pages.sh (so it can't lose a push
+# to a concurrent mass-compile / VI Analyzer deploy).
 concurrency:
-  group: vi-snapshots-${{ github.ref }}
-  cancel-in-progress: true
+  group: vi-snapshots
+  cancel-in-progress: false
 
 env:
   LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
@@ -101,7 +113,7 @@ jobs:
           & .github\labview\build-snapshots.ps1 `
             -Mode              '${{ github.event.inputs.mode || 'head' }}' `
             -WorkspaceRoot     '${{ github.workspace }}' `
-            -TargetSha         '${{ github.sha }}' `
+            -TargetSha         '${{ github.event.inputs.commit_sha || github.sha }}' `
             -OutDir            '${{ github.workspace }}\ci-out\vi-snapshots' `
             -ExistingByBlobDir '${{ github.workspace }}\_pages\vi-snapshots\by-blob' `
             -Image             "$Env:LABVIEW_CONTAINER_IMAGE" `
@@ -120,14 +132,17 @@ jobs:
             echo "ok=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Deploy snapshots to GitHub Pages
+      - name: Deploy snapshots to GitHub Pages (concurrent-safe)
         if: steps.verify.outputs.ok == 'true'
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/ci-out/vi-snapshots
-          destination_dir: vi-snapshots
-          keep_files: true   # preserve previously-rendered by-blob snapshots
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PP_SRC: ${{ github.workspace }}/ci-out/vi-snapshots
+          PP_DEST: vi-snapshots
+          PP_MSG: "VI snapshots for ${{ github.sha }}"
+        run: |
+          PP_REMOTE="https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
+            bash .github/labview/publish-pages.sh
 
       - name: Post commit status
         if: always()
