@@ -33,6 +33,16 @@ permissions:
   statuses: write
   packages: read
 
+# Serialize report deploys to gh-pages. peaceiris/actions-gh-pages clones, commits,
+# and pushes the branch; two report jobs pushing at once make the loser's push bounce
+# with "! [rejected] (fetch first)", so its report never deploys (dashboard 404).
+# A shared group across the report-deploy workflows (mass compile + VI Analyzer)
+# makes them queue instead of racing. cancel-in-progress:false so a queued run still
+# publishes rather than being dropped.
+concurrency:
+  group: report-pages-deploy
+  cancel-in-progress: false
+
 jobs:
   vi-analyzer:
     runs-on: windows-2022   # windows-latest = Server 2025, broken Docker daemon
