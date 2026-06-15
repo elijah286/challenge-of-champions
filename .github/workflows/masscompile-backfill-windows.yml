@@ -1,0 +1,120 @@
+name: Mass Compile Backfill — Windows Container
+
+# Bulk Mass Compile across history. Generates the same per-commit report the
+# per-push "Mass Compile — Windows Container" workflow produces, but for previous
+# revisions, so the dashboard's Mass Compile column shows a compile percentage for
+# them too.
+#
+# Why a backfill rather than re-dispatching the per-push workflow once per commit:
+#   * The per-push workflow shares the `report-pages-deploy` concurrency group
+#     (cancel-in-progress:false). GitHub keeps only 1 running + 1 pending per
+#     group, so dispatching N at once cancels all-but-one queued run.
+#   * One warm container compiles every commit (a single image pull instead of N).
+#   * A single gh-pages deploy at the end can't race other deploys.
+# Resumable + incremental (skips commits already reported) and time-budgeted.
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_commits:
+        description: 'Cap to most recent N project-source commits (0 = all)'
+        required: false
+        default: '0'
+      time_budget_minutes:
+        description: 'Stop launching new compiles after N minutes (resume next run)'
+        required: false
+        default: '300'
+
+# Own group (NOT report-pages-deploy): a long backfill must not block — or be
+# blocked/cancelled by — normal per-push report runs.
+concurrency:
+  group: masscompile-backfill-windows
+  cancel-in-progress: false
+
+env:
+  LABVIEW_CONTAINER_IMAGE: nationalinstruments/labview:latest-windows
+  PAGES_URL: ${{ vars.PAGES_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  masscompile-backfill-windows:
+    runs-on: windows-2022   # windows-latest = Server 2025, broken Docker daemon
+    timeout-minutes: 350
+
+    steps:
+      - name: Enable long paths (Windows MAX_PATH workaround)
+        shell: powershell
+        run: |
+          # The gh-pages branch (cloned by the deploy step) holds deeply-nested
+          # VIDiff report paths that exceed Windows' 260-char MAX_PATH; long-path
+          # support lets the deploy clone/checkout succeed.
+          git config --system core.longpaths true
+          New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' `
+            -Name 'LongPathsEnabled' -Value 1 -PropertyType DWORD -Force | Out-Null
+
+      - name: Checkout repository (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Fetch the list of already-done reports via the API (no filesystem) for
+      # incremental skip — avoids checking out the huge gh-pages tree on Windows.
+      - name: List already-done reports (for incremental skip)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p _skip
+          gh api "repos/${{ github.repository }}/git/trees/gh-pages?recursive=1" \
+            --jq '.tree[].path | select(test("^masscompile/[0-9a-f]+/summary.json$"))' \
+            > _skip/done.txt 2>/dev/null || true
+          echo "Already-done reports: $(wc -l < _skip/done.txt | tr -d ' ')"
+
+      - name: Ensure Docker daemon is running
+        shell: powershell
+        run: |
+          $svc = Get-Service docker -ErrorAction SilentlyContinue
+          if (-not $svc) { Write-Error 'Docker service not found on runner'; exit 1 }
+          if ($svc.Status -ne 'Running') { Start-Service docker; Start-Sleep -Seconds 5 }
+          docker version
+
+      - name: Run Mass Compile backfill (warm container, walks history)
+        id: backfill
+        shell: powershell
+        run: |
+          # SHORT output root (C:\o) keeps staged report paths well under MAX_PATH.
+          New-Item -ItemType Directory -Force -Path 'C:\o' | Out-Null
+          & .github\labview\masscompile-backfill.ps1 `
+            -WorkspaceRoot     '${{ github.workspace }}' `
+            -OutRoot           'C:\o' `
+            -Image             "$Env:LABVIEW_CONTAINER_IMAGE" `
+            -MaxCommits        ${{ github.event.inputs.max_commits || '0' }} `
+            -SkipListPath      '${{ github.workspace }}\_skip\done.txt' `
+            -TimeBudgetMinutes ${{ github.event.inputs.time_budget_minutes || '300' }}
+        continue-on-error: true
+
+      - name: Verify backfill output
+        id: verify
+        shell: powershell
+        run: |
+          $found = Get-ChildItem -Path 'C:\o' -Recurse -Filter 'summary.json' -ErrorAction SilentlyContinue
+          if ($found) {
+            "ok=true" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding ascii -Append
+            Write-Host "Generated $($found.Count) report(s):"
+            $found | ForEach-Object { Write-Host "  $($_.FullName)" }
+          } else {
+            "ok=false" | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding ascii -Append
+            Write-Host "No new reports generated (all commits may already be done)."
+          }
+
+      - name: Deploy Mass Compile reports to GitHub Pages
+        if: steps.verify.outputs.ok == 'true'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: C:\o
+          destination_dir: masscompile
+          keep_files: true   # preserve existing per-push reports and all other trees
