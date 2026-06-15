@@ -1,7 +1,25 @@
 {
   "schemaVersion": 1,
+  "version": "1.0.0",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
+  "history": {
+    "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
+    "releases": [
+      {
+        "version": "1.0.0",
+        "date": "2026-06-15",
+        "title": "LabVIEW CI 1.0.0",
+        "summary": "Baseline release of the portable, catalog-driven LabVIEW CI tooling: containerized checks, comparison reports, a status dashboard, and built-in version/update governance.",
+        "highlights": [
+          "Mass Compile, VI Analyzer, VIDiff comparison reports, and VI snapshots / VI Browser, each running in per-repository LabVIEW container worker images with a versioned manifest.",
+          "GitHub Pages status dashboard that aggregates every commit's CI results, alongside the report viewer and the \u201cIntegrate this CI pipeline\u201d configurator.",
+          "Catalog-driven installer and configurator so capabilities install and update consistently across repositories.",
+          "Version badge, build-liveness indicator, and a What's New dialog so a repository can see the tooling version it runs, confirm a deploy is live on the page, and tell when the source repository has published newer features."
+        ]
+      }
+    ]
+  },
 
   "source": {
     "comment": "Where the installer fetches tooling from and what the configurator links to. Point this at a dedicated tooling repo later without touching any other file.",

@@ -1,0 +1,167 @@
+name: Version Guard
+
+# Enforces the versioning governance in .github/labview-ci/VERSIONING.md:
+#   * Every change to TOOLING must bump catalog.json's version (>= patch).
+#   * Each published version is tagged v<version> + cut as a GitHub Release so
+#     consumers can pin an update and see exactly what shipped.
+#
+# It never auto-commits to main (bumping is a deliberate, reviewable act), which
+# keeps it safe while several changes are in flight at once. On main it only adds
+# tags + releases (additive) and, if a tooling push forgot to bump, warns.
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - '.github/labview/**'
+      - '.github/labview-ci/**'
+      - '.github/pages/**'
+      - '.github/docker/**'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - '.github/labview/**'
+      - '.github/labview-ci/**'
+      - '.github/pages/**'
+      - '.github/docker/**'
+  workflow_dispatch:
+    inputs:
+      force_tag:
+        description: 'Tag/release the current catalog version even if it did not change'
+        type: boolean
+        default: false
+
+concurrency:
+  group: version-guard-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # ── On a PR: block merges that change tooling without bumping the version ──
+  enforce:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Require a version bump
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          CAT=.github/labview-ci/catalog.json
+          # The head catalog must satisfy version == releases[0].version.
+          python3 .github/labview-ci/bump-version.py --check --catalog "$CAT"
+          # The version must be strictly greater than the PR base's.
+          git show "$BASE_SHA:$CAT" > /tmp/base-catalog.json 2>/dev/null || echo '{}' > /tmp/base-catalog.json
+          python3 - "$CAT" /tmp/base-catalog.json <<'PY'
+          import json, sys
+          def ver(path):
+              try:
+                  with open(path) as f: d = json.load(f)
+              except Exception:
+                  return (0, 0, 0), "0.0.0"
+              v = d.get("version") or "0.0.0"
+              try: t = tuple(int(x) for x in str(v).split("."))
+              except Exception: t = (0, 0, 0)
+              return t, v
+          head_t, head_v = ver(sys.argv[1])
+          base_t, base_v = ver(sys.argv[2])
+          if head_t <= base_t:
+              print(
+                  "::error title=Version not bumped::This PR changes tooling but the "
+                  f"catalog version was not increased ({base_v} -> {head_v}). Run "
+                  "`python3 .github/labview-ci/bump-version.py <major|minor|patch>` and "
+                  "commit catalog.json. See .github/labview-ci/VERSIONING.md."
+              )
+              sys.exit(1)
+          print(f"::notice title=Version bump OK::{base_v} -> {head_v}")
+          PY
+
+  # ── On main / dispatch: tag + release when the version changed; else warn ──
+  release:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Decide whether the version changed
+        run: |
+          set -euo pipefail
+          CAT=.github/labview-ci/catalog.json
+          python3 .github/labview-ci/bump-version.py --check --catalog "$CAT"
+          git show HEAD~1:"$CAT" > /tmp/prev-catalog.json 2>/dev/null || echo '{}' > /tmp/prev-catalog.json
+          python3 - "$CAT" /tmp/prev-catalog.json <<'PY'
+          import json, os, sys
+          def load(p):
+              try:
+                  with open(p) as f: return json.load(f)
+              except Exception:
+                  return {}
+          head, prev = load(sys.argv[1]), load(sys.argv[2])
+          def t(v):
+              try: return tuple(int(x) for x in str(v).split("."))
+              except Exception: return (0, 0, 0)
+          hv = head.get("version") or "0.0.0"
+          pv = prev.get("version") or "0.0.0"
+          changed = t(hv) > t(pv)
+          with open(os.environ["GITHUB_ENV"], "a") as e:
+              e.write(f"HEAD_VERSION={hv}\n")
+              e.write(f"PREV_VERSION={pv}\n")
+              e.write(f"VERSION_CHANGED={'1' if changed else '0'}\n")
+          rels = head.get("history") or {}
+          rels = rels.get("releases") if isinstance(rels, dict) else rels
+          rel = (rels or [{}])[0]
+          body = []
+          if rel.get("summary"):
+              body += [rel["summary"], ""]
+          for h in rel.get("highlights") or []:
+              body.append(f"- {h}")
+          body += ["", "See `.github/labview-ci/VERSIONING.md` for the versioning policy."]
+          open("/tmp/relnotes.md", "w").write("\n".join(body))
+          open("/tmp/reltitle.txt", "w").write(rel.get("title") or f"LabVIEW CI {hv}")
+          PY
+
+      - name: Tag + publish release
+        if: env.VERSION_CHANGED == '1' || github.event.inputs.force_tag == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          V="v${HEAD_VERSION}"
+          if gh release view "$V" >/dev/null 2>&1; then
+            echo "::notice::Release $V already exists; nothing to do."
+            exit 0
+          fi
+          gh release create "$V" \
+            --target "$GITHUB_SHA" \
+            --title "$(cat /tmp/reltitle.txt)" \
+            --notes-file /tmp/relnotes.md
+          echo "::notice title=Released::Tagged $V and published a GitHub Release."
+
+      - name: Warn if tooling changed without a bump
+        if: env.VERSION_CHANGED != '1' && github.event.inputs.force_tag != 'true'
+        run: |
+          echo "::warning title=No version bump::Tooling changed on main but the catalog "
+          echo "version stayed ${HEAD_VERSION}. Bump it with "
+          echo ".github/labview-ci/bump-version.py per .github/labview-ci/VERSIONING.md."
+          {
+            echo "### ⚠️ Version not bumped"
+            echo ""
+            echo "Tooling changed on \`main\` but the catalog version stayed \`${HEAD_VERSION}\`."
+            echo "Bump it on the next change with:"
+            echo ""
+            echo '```'
+            echo "python3 .github/labview-ci/bump-version.py <major|minor|patch>"
+            echo '```'
+            echo ""
+            echo "See \`.github/labview-ci/VERSIONING.md\`."
+          } >> "$GITHUB_STEP_SUMMARY"
