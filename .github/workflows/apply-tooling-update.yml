@@ -1,27 +1,30 @@
-# Apply LabVIEW CI update — one-click FULL upgrade target for the dashboard.
+# Apply LabVIEW CI update — one-click, TOKEN-FREE opt-in to a newer tooling version.
 #
 # The "Update now" button in the What's New dialog (.github/pages/whats-new.html)
-# deep-links here. Dispatching this workflow performs a COMPLETE update: it fetches
-# the latest tooling from the source repo (.github/labview-ci.yml: source.repo) and
-# runs the catalog-driven installer in --update mode, which re-pulls every tooling
-# file for this repo's selected activities (bringing new capabilities, not just a
-# version bump), rebrands them to this repo, preserves your own config + baked
-# dependencies, and bumps the version. The result is opened as a pull request.
-# Review + merge to finish — no terminal, no tokens. GitHub's own "Run workflow"
-# gate limits this to write-access users.
+# deep-links here. Dispatching this workflow does NOT re-pull or rewrite any workflow
+# files. It edits exactly one config file — .github/labview-ci.yml — bumping
+# `source.ref` (the capability version this repo has opted into) and `installedVersion`
+# to the chosen release. The shared reusable workflow (@v1) reads that ref at runtime
+# and checks out the tooling at it, so this single config change is all that's needed
+# to move the whole pipeline to the new version. Because a config file is not a
+# workflow file, the built-in GITHUB_TOKEN can push it — no PAT, no secrets.
+#
+# The change is opened as a reviewable pull request; merge to finish. Nothing updates
+# automatically: capabilities stay on their pinned version until someone clicks this.
+# GitHub's own "Run workflow" gate limits dispatch to users with write access.
 name: Apply LabVIEW CI update
 
 on:
   workflow_dispatch:
     inputs:
-      source_ref:
-        description: "Source ref to pull (blank = the source repo's default branch = latest)"
+      target_version:
+        description: "Version to adopt (blank = latest published). e.g. 1.5.0 or v1.5.0"
         required: false
         default: ''
       enable_new_capabilities:
-        description: 'Also enable newly published capabilities in this repo'
+        description: 'Also enable newly published capabilities (otherwise they stay dormant)'
         type: boolean
-        default: true
+        default: false
 
 concurrency:
   group: apply-tooling-update
@@ -37,21 +40,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          # A PAT with repo + workflow scope (added as TOOLING_UPDATE_TOKEN) lets the
-          # update push changes to .github/workflows/** — the default token cannot.
-          token: ${{ secrets.TOOLING_UPDATE_TOKEN || secrets.GITHUB_TOKEN }}
+        # No PAT: this update edits only .github/labview-ci.yml (a config file, not a
+        # workflow file), which the built-in GITHUB_TOKEN is permitted to push.
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Fetch latest tooling and run the installer in update mode
+      - name: Bump the opted-in version in config (token-free)
         id: apply
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INPUT_REF: ${{ inputs.source_ref }}
+          TARGET_VERSION: ${{ inputs.target_version }}
           ENABLE_NEW: ${{ inputs.enable_new_capabilities }}
         run: |
           set -euo pipefail
@@ -63,135 +64,145 @@ jobs:
 
           SRC_REPO=$(awk '/^[[:space:]]*repo:[[:space:]]/{print $2; exit}' "$CFG")
           SRC_REPO=${SRC_REPO:-elijah286/LabVIEW-CI-with-Containers}
-          INSTALLED=$(awk '/^[[:space:]]*installedVersion:[[:space:]]/{print $2; exit}' "$CFG")
-          MAXPAR=$(awk '/^[[:space:]]*maxParallel:[[:space:]]/{print $2; exit}' "$CFG")
-          echo "source repo: $SRC_REPO  installed: ${INSTALLED:-unknown}"
+          export SRC_REPO
+          echo "source repo: $SRC_REPO"
 
-          REF="$INPUT_REF"
-          if [ -z "$REF" ]; then
-            REF=$(gh api "repos/$SRC_REPO" --jq '.default_branch' 2>/dev/null || echo main)
-          fi
-          echo "fetching ${SRC_REPO}@${REF}"
-
-          SRC_DIR="$(mktemp -d)"
-          if ! curl -fsSL "https://codeload.github.com/${SRC_REPO}/tar.gz/${REF}" | tar -xz -C "$SRC_DIR" --strip-components=1; then
-            echo "::error::could not download tooling from ${SRC_REPO}@${REF}."
-            exit 1
-          fi
-          if [ ! -f "$SRC_DIR/.github/labview-ci/install.py" ]; then
-            echo "::error::installer not found in the fetched tooling."
+          # Read the source catalog (public repo — the built-in token can read it) to
+          # learn the latest published version and capability list. No tooling files are
+          # downloaded; only this repo's config is edited, so no PAT is required.
+          if ! gh api "repos/$SRC_REPO/contents/.github/labview-ci/catalog.json" \
+                 -H "Accept: application/vnd.github.raw" > /tmp/catalog.json 2>/tmp/cat-err; then
+            cat /tmp/cat-err || true
+            echo "::error::could not read catalog.json from ${SRC_REPO} (is it public/readable?)."
             exit 1
           fi
 
-          LATEST=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['version'])" "$SRC_DIR/.github/labview-ci/catalog.json")
-          echo "latest published version: $LATEST"
-
-          # Activity set: keep current selection, optionally add new stable capabilities.
-          ACTS=$(SRC_DIR="$SRC_DIR" python3 - <<'PY'
+          python3 - <<'PY'
           import os, re, json
-          cur, in_acts = [], False
-          for line in open('.github/labview-ci.yml', encoding='utf-8'):
-              if re.match(r'^\s*activities:\s*$', line):
-                  in_acts = True; continue
+          cfg = '.github/labview-ci.yml'
+          orig = open(cfg, encoding='utf-8').read()
+          lines = orig.splitlines()
+
+          def scalar(key):
+              for l in lines:
+                  m = re.match(rf'^{key}:\s*(\S+)', l)
+                  if m: return m.group(1)
+              return None
+          installed = scalar('installedVersion') or 'unknown'
+
+          # source.ref is nested under a top-level `source:` block
+          cur_ref, in_src = None, False
+          for l in lines:
+              if re.match(r'^source:\s*$', l): in_src = True; continue
+              if in_src:
+                  if re.match(r'^\S', l): in_src = False
+                  else:
+                      m = re.match(r'^\s*ref:\s*(\S+)', l)
+                      if m: cur_ref = m.group(1)
+          cur_ref = cur_ref or 'v1'
+
+          acts, in_acts, indent = [], False, '  '
+          for l in lines:
+              if re.match(r'^activities:\s*$', l): in_acts = True; continue
               if in_acts:
-                  m = re.match(r'^\s*-\s*(\S+)', line)
-                  if m: cur.append(m.group(1)); continue
-                  in_acts = False
-          if os.environ.get('ENABLE_NEW', 'true').lower() == 'true':
-              cat = json.load(open(os.path.join(os.environ['SRC_DIR'], '.github/labview-ci/catalog.json'), encoding='utf-8'))
-              for c in cat.get('capabilities', []):
-                  if c.get('status') == 'stable' and c['id'] not in cur:
-                      cur.append(c['id'])
-          print(','.join(cur))
+                  m = re.match(r'^(\s*)-\s*(\S+)', l)
+                  if m: acts.append(m.group(2)); indent = m.group(1)
+                  elif re.match(r'^\S', l): in_acts = False
+
+          cat = json.load(open('/tmp/catalog.json', encoding='utf-8'))
+          tv = (os.environ.get('TARGET_VERSION') or '').strip().lstrip('v')
+          latest = tv or str(cat.get('version', '')).strip()
+          if not re.match(r'^\d+\.\d+\.\d+$', latest):
+              raise SystemExit(f'::error::invalid target version {latest!r}')
+          new_ref = 'v' + latest
+
+          stable = [c['id'] for c in cat.get('capabilities', []) if c.get('status') == 'stable']
+          newcaps = [c for c in stable if c not in acts]
+          enable_new = os.environ.get('ENABLE_NEW', 'false').lower() == 'true'
+          to_enable = newcaps if enable_new else []
+
+          # rewrite installedVersion + source.ref only
+          out, in_src = [], False
+          for l in lines:
+              if re.match(r'^installedVersion:\s*', l):
+                  out.append(f'installedVersion: {latest}'); continue
+              if re.match(r'^source:\s*$', l):
+                  in_src = True; out.append(l); continue
+              if in_src:
+                  if re.match(r'^\S', l): in_src = False
+                  elif re.match(r'^\s*ref:\s*', l):
+                      out.append(re.sub(r'(ref:\s*)\S+', r'\g<1>' + new_ref, l)); continue
+              out.append(l)
+
+          # optionally enable newly-available capabilities by appending to the list
+          if to_enable:
+              res, in_acts, last = [], False, -1
+              for l in out:
+                  res.append(l)
+                  if re.match(r'^activities:\s*$', l): in_acts = True; last = len(res) - 1; continue
+                  if in_acts:
+                      if re.match(r'^\s*-\s*\S+', l): last = len(res) - 1
+                      elif re.match(r'^\S', l): in_acts = False
+              res[last + 1:last + 1] = [f'{indent}- {c}' for c in to_enable]
+              out = res
+
+          new = '\n'.join(out)
+          if not new.endswith('\n'): new += '\n'
+          changed = new != orig
+          if changed: open(cfg, 'w', encoding='utf-8').write(new)
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
+              f.write(f'installed={installed}\n')
+              f.write(f'latest={latest}\n')
+              f.write(f'cur_ref={cur_ref}\n')
+              f.write(f'new_ref={new_ref}\n')
+              f.write(f'source_repo={os.environ.get("SRC_REPO", "")}\n')
+              f.write(f'changed={"true" if changed else "false"}\n')
+              f.write(f'newcaps={",".join(newcaps)}\n')
+              f.write(f'enabled={",".join(to_enable)}\n')
+          print(f'installed {installed} -> {latest}; ref {cur_ref} -> {new_ref}; '
+                f'changed={changed}; available_new={newcaps}; enabling={to_enable}')
           PY
-          )
-          echo "activities to install: $ACTS"
 
-          python3 "$SRC_DIR/.github/labview-ci/install.py" --update \
-            --source "$SRC_DIR" --target "$PWD" \
-            --repo "$GITHUB_REPOSITORY" \
-            --activities "$ACTS"
-
-          # Restore runner concurrency (install.py's manifest writer omits it).
-          if [ -n "${MAXPAR:-}" ]; then
-            MAXPAR="$MAXPAR" python3 - <<'PY'
-          import os, re
-          mp = os.environ['MAXPAR']
-          p = '.github/labview-ci.yml'
-          lines = open(p, encoding='utf-8').read().splitlines()
-          if not any('maxParallel:' in l for l in lines):
-              out = []
-              for line in lines:
-                  out.append(line)
-                  if re.match(r'^\s*os:\s*\[', line):
-                      out.append('  concurrency:')
-                      out.append(f'    maxParallel: {mp}')
-              open(p, 'w', encoding='utf-8').write('\n'.join(out) + '\n')
-              print(f'restored maxParallel: {mp}')
-          PY
-          fi
-
-          {
-            echo "installed=${INSTALLED:-unknown}"
-            echo "latest=$LATEST"
-            echo "source_repo=$SRC_REPO"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Open the upgrade pull request
+      - name: Open the update pull request
+        if: steps.apply.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.TOOLING_UPDATE_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INSTALLED: ${{ steps.apply.outputs.installed }}
           LATEST: ${{ steps.apply.outputs.latest }}
+          CUR_REF: ${{ steps.apply.outputs.cur_ref }}
+          NEW_REF: ${{ steps.apply.outputs.new_ref }}
           SOURCE_REPO: ${{ steps.apply.outputs.source_repo }}
+          NEWCAPS: ${{ steps.apply.outputs.newcaps }}
+          ENABLED: ${{ steps.apply.outputs.enabled }}
         run: |
           set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          if [ -z "$(git status --porcelain)" ]; then
-            {
-              echo "## ✅ Already up to date"
-              echo ""
-              echo "This repository already runs the latest LabVIEW CI tooling (**v${LATEST}**). No changes were needed."
-            } >> "$GITHUB_STEP_SUMMARY"
-            echo "No changes — already up to date."
-            exit 0
-          fi
-
-          BRANCH="ci/adopt-tooling-v${LATEST}"
+          BRANCH="ci/update-tooling-${NEW_REF}"
           git checkout -B "$BRANCH"
-          git add -A
-          CHANGED=$(git diff --cached --name-only | wc -l | tr -d ' ')
+          git add .github/labview-ci.yml
 
           {
-            echo "Adopts the latest LabVIEW CI tooling (**v${INSTALLED} → v${LATEST}**) from \`${SOURCE_REPO}\`."
+            echo "Opts this repository into **LabVIEW CI ${NEW_REF}** (was ${CUR_REF}; installed v${INSTALLED} → v${LATEST}), sourced from \`${SOURCE_REPO}\`."
             echo ""
-            echo "This is a **full update**: every tooling file for this repo's selected capabilities was"
-            echo "re-pulled at the latest version (new capabilities included), rebranded to this repo, with your"
-            echo "own configuration and baked dependencies preserved. **${CHANGED} file(s)** changed."
+            echo "**Token-free, config-only.** The sole change is \`.github/labview-ci.yml\` (\`source.ref\` + \`installedVersion\`). No workflow files are touched, so the built-in token can apply it. The shared reusable workflow (pinned \`@v1\`) reads \`source.ref\` at runtime and runs the tooling at that version."
             echo ""
-            echo "Triggered from the dashboard **Update now** button. Review and merge to finish — the version"
-            echo "badge turns green and the pipeline runs the updated capabilities."
+            if [ -n "${ENABLED:-}" ]; then
+              echo "Newly **enabled** capabilities: ${ENABLED}."
+              echo ""
+            elif [ -n "${NEWCAPS:-}" ]; then
+              echo "Newly **available** capabilities (left dormant — re-run with *enable new capabilities*, or toggle them on the Configure page): ${NEWCAPS}."
+              echo ""
+            fi
+            echo "Triggered from the dashboard **Update now** button. Review and merge to finish — the version badge turns green and the pipeline runs the new version."
           } > /tmp/pr-body.md
 
-          git commit -m "ci: adopt LabVIEW CI tooling v${LATEST} (full update)"
+          git commit -m "ci: opt in to LabVIEW CI ${NEW_REF} (config-only)"
 
           if ! git push -u origin "$BRANCH" --force 2>/tmp/push-err; then
             cat /tmp/push-err || true
-            if grep -qi 'workflow' /tmp/push-err; then
-              {
-                echo "## ⚠️ Full update needs a one-time token"
-                echo ""
-                echo "The update is ready (**${CHANGED} file(s)**, v${INSTALLED} → v${LATEST}) but it changes GitHub"
-                echo "**workflow files**, which the built-in token is not allowed to push. To finish automatically:"
-                echo ""
-                echo "1. Create a token with **repo + workflow** scope (classic PAT: \`repo\` + \`workflow\`; or fine-grained: **Contents** + **Workflows** = Read and write)."
-                echo "2. Add it as the repository secret **TOOLING_UPDATE_TOKEN** (Settings ▸ Secrets and variables ▸ Actions)."
-                echo "3. Re-run **Update now**."
-              } >> "$GITHUB_STEP_SUMMARY"
-              echo "::warning title=Token needed::Full update needs a PAT (TOOLING_UPDATE_TOKEN) with workflow scope to push workflow-file changes."
-              exit 0
-            fi
             echo "::error title=Push failed::Could not push the update branch."
             exit 1
           fi
@@ -200,7 +211,7 @@ jobs:
           if [ -n "$URL" ]; then
             gh pr edit "$URL" --body-file /tmp/pr-body.md >/dev/null || true
             echo "Updated existing PR: $URL"
-          elif URL=$(gh pr create --title "ci: adopt LabVIEW CI tooling v${LATEST}" \
+          elif URL=$(gh pr create --title "ci: opt in to LabVIEW CI ${NEW_REF}" \
                        --base "${{ github.ref_name }}" --head "$BRANCH" \
                        --body-file /tmp/pr-body.md 2>/tmp/pr-err); then
             echo "Opened PR: $URL"
@@ -209,9 +220,9 @@ jobs:
             URL="${{ github.server_url }}/${{ github.repository }}/compare/${{ github.ref_name }}...${BRANCH}?expand=1"
             echo "::warning title=Open the PR manually::GitHub Actions is not permitted to open PRs in this repo. Enable Settings > Actions > General > 'Allow GitHub Actions to create and approve pull requests', or use the link in the summary. The branch is already pushed."
             {
-              echo "## ⬆️ Upgrade branch ready — open the pull request"
+              echo "## ⬆️ Update branch ready — open the pull request"
               echo ""
-              echo "Adopts LabVIEW CI tooling **v${INSTALLED} → v${LATEST}** (committed to branch \`${BRANCH}\`, ${CHANGED} file(s))."
+              echo "Opts into LabVIEW CI **${CUR_REF} → ${NEW_REF}** (v${INSTALLED} → v${LATEST}), committed to branch \`${BRANCH}\`."
               echo ""
               echo "**[Open the pull request](${URL})** to review and merge."
               echo ""
@@ -220,9 +231,22 @@ jobs:
             exit 0
           fi
           {
-            echo "## ✅ Upgrade pull request ready"
+            echo "## ✅ Update pull request ready"
             echo ""
-            echo "Adopts LabVIEW CI tooling **v${INSTALLED} → v${LATEST}** (${CHANGED} file(s) changed)."
+            echo "Opts into LabVIEW CI **${CUR_REF} → ${NEW_REF}** (v${INSTALLED} → v${LATEST}), a single config-file change."
             echo ""
             echo "**[Review &amp; merge the pull request](${URL})** to finish the update."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report no-op when already on the target version
+        if: steps.apply.outputs.changed != 'true'
+        env:
+          LATEST: ${{ steps.apply.outputs.latest }}
+          NEW_REF: ${{ steps.apply.outputs.new_ref }}
+        run: |
+          {
+            echo "## ✅ Already up to date"
+            echo ""
+            echo "This repository is already opted into **LabVIEW CI ${NEW_REF}** (v${LATEST}). No changes were needed."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "No changes — already on ${NEW_REF}."
