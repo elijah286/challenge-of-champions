@@ -117,6 +117,17 @@ def to_vi_rel(path: str) -> str:
     return p.replace("\\", "/")
 
 
+# VIs under these top-level paths are CI tooling, not project code. The snapshot
+# gallery (build-snapshots.ps1) already skips them, so the analyzer report skips
+# them too — otherwise their findings would list VIs that never get a snapshot
+# ("No snapshot found"), keeping the report and VI Browser in agreement.
+_TOOLING_VI_RE = re.compile(r"^(\.github|ci-out|build)/", re.I)
+
+
+def is_tooling_vi(vi_rel: str) -> bool:
+    return bool(_TOOLING_VI_RE.match(vi_rel or ""))
+
+
 def group_for(vi_rel: str) -> str:
     """Top-level folder, mirroring build-gallery.py so groups line up with the
     VI Browser tree. VIs at the repo root are grouped under 'Project'."""
@@ -266,7 +277,9 @@ def aggregate_rules(vis: list[dict]) -> list[dict]:
 
 
 def build_data(report: str, args: argparse.Namespace) -> dict:
-    vis = parse_failed(report)
+    # Exclude CI-tooling VIs (.github/, ci-out/, build/) so the report lists only
+    # project code — matching the snapshot gallery, which never renders them.
+    vis = [v for v in parse_failed(report) if not is_tooling_vi(v["vi_rel"])]
     vis.sort(key=lambda v: (-v["total"], v["vi_rel"].lower()))
     summary = parse_summary(report)
     # "Failed Tests" (summary) counts failed test *instances* (VI x test); a single
@@ -274,6 +287,14 @@ def build_data(report: str, args: argparse.Namespace) -> dict:
     # exceed it. Surface both so the per-severity/per-VI tallies reconcile.
     summary["findings"] = sum(v["total"] for v in vis)
     summary["vis_with_findings"] = len(vis)
+
+    # Same project-only scope for the testing-errors banner; drop blocks left empty.
+    testing_errors = []
+    for blk in parse_testing_errors(report):
+        items = [it for it in blk["items"] if not is_tooling_vi(it["vi_rel"])]
+        if items:
+            testing_errors.append({"test": blk["test"], "items": items})
+
     return {
         "meta": {
             "sha": args.sha,
@@ -291,7 +312,7 @@ def build_data(report: str, args: argparse.Namespace) -> dict:
         "category_order": CATEGORY_ORDER,
         "vis": vis,
         "rules": aggregate_rules(vis),
-        "testing_errors": parse_testing_errors(report),
+        "testing_errors": testing_errors,
     }
 
 
