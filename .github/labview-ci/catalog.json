@@ -1,11 +1,82 @@
 {
   "schemaVersion": 1,
-  "version": "1.2.1",
+  "version": "1.6.0",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
     "releases": [
+      {
+        "version": "1.6.0",
+        "date": "2026-06-15",
+        "title": "Opt-in, token-free version updates (the \"Update now\" button)",
+        "summary": "The version a repository runs is now pinned in its own config (.github/labview-ci.yml: source.ref), not baked into a workflow file. The shared reusable workflow reads that ref at runtime and checks out the capabilities at it, so a repository never changes versions automatically \u2014 it opts in by clicking 'Update now', which edits only the config file. Because a config file is not a workflow file, the built-in GITHUB_TOKEN can apply the change, so the whole flow needs no personal access token.",
+        "highlights": [
+          "The reusable workflow's config job now exposes the consumer's pinned capability version (source.ref); each capability job checks out the tooling at that exact ref and runs it, so versions are controlled by config, not by the workflow-file pin.",
+          "Rewrote the 'Update now' button to bump source.ref + installedVersion in .github/labview-ci.yml and open a reviewable PR \u2014 a single config-file change with no vendored files and no token (replaces the previous full re-pull that required a workflow-scoped PAT).",
+          "New capabilities arrive dormant: they appear gated on the config's activities list and only run once a repository opts in (via the button's 'enable new capabilities' option or the Configure page).",
+          "Thin installs now pin source.ref to the exact published version, so a freshly installed repository stays on its version until someone clicks 'Update now'."
+        ]
+      },
+      {
+        "version": "1.5.0",
+        "date": "2026-06-15",
+        "title": "Dashboard as a shared capability + thin (token-free) install",
+        "summary": "The status dashboard now runs from a shared composite action, and a new thin install mode wires a repository to the tooling with only a few small caller files \u2014 every capability, including the dashboard and the version badge, comes from the shared tag (for example @v1) with no vendored workflows and no token.",
+        "highlights": [
+          "Added a CI Dashboard composite action that builds the dashboard and stages all tooling pages (VI Browser, report viewer, What's New, Configure, Apply) from the shared tag \u2014 consumers need no copy.",
+          "The dashboard reads the installed version from the consumer's own config when no catalog is vendored, so the version badge and 'update available' notification work for thin consumers too.",
+          "Added 'install --thin': writes the LabVIEW CI caller, the dashboard caller, Dependabot, and the config \u2014 four small files that reference the shared reusable workflow + actions at the major tag.",
+          "A thin consumer gets the whole pipeline and all future improvements through the moving major-version alias, with no personal access token and nothing to re-install."
+        ]
+      },
+      {
+        "version": "1.4.0",
+        "date": "2026-06-15",
+        "title": "Mass Compile, VIDiff & Snapshots as shared (token-free) capabilities",
+        "summary": "Mass Compile, VIDiff, and VI Snapshots now run from the shared reusable workflow alongside VI Analyzer, so a repository gets them by referencing the tooling at the major tag (for example @v1) \u2014 no vendored workflow files and no token. Each publishes its report and posts its dashboard status just like the vendored workflows.",
+        "highlights": [
+          "Mass Compile (reusable) now deploys its friendly report to the caller's Pages and posts the 'CI / Mass Compile' status with the compile percentage \u2014 full parity, so the dashboard cell populates for thin consumers.",
+          "Added a VIDiff composite action and reusable job: renders changed-VI visual diffs between base and head, deploys them to the caller's Pages, and posts 'CI / VIDiff'.",
+          "Added a VI Snapshots composite action and reusable job: renders the content-addressed VI Browser gallery incrementally and posts 'CI / VI Snapshots'.",
+          "All four capabilities are delivered through the moving major-version alias, so thin-caller consumers receive them and future improvements automatically with no personal access token."
+        ]
+      },
+      {
+        "version": "1.3.0",
+        "date": "2026-06-15",
+        "title": "VI Analyzer as a shared (token-free) capability",
+        "summary": "VI Analyzer now runs from the shared reusable workflow, so a repository can get it by referencing the tooling at the major tag (for example @v1) \u2014 no vendored workflow files and no token. The analyzer publishes its report and posts the 'CI / VI Analyzer' status to the caller's dashboard just like before.",
+        "highlights": [
+          "Added a VI Analyzer composite action and a reusable-workflow job, so consumers run it via the shared @v1 reference instead of copying the workflow into their repo.",
+          "The reusable VI Analyzer job resolves the custom image, runs the analyzer, deploys the friendly report to the caller's GitHub Pages, and posts the commit status the dashboard reads \u2014 full parity with the vendored workflow.",
+          "Thin-caller consumers receive this and future VI Analyzer improvements automatically through the moving major-version alias, with no personal access token.",
+          "The caller grants the report-publish and status scopes; the example caller workflow shows the required permissions block."
+        ]
+      },
+      {
+        "version": "1.2.3",
+        "date": "2026-06-15",
+        "title": "Token-free automatic updates",
+        "summary": "Publishing a release now moves the major-version alias, so any repository that uses the tooling at the major tag (for example @v1) receives non-breaking updates automatically \u2014 no token and no manual step.",
+        "highlights": [
+          "Added release automation: each new version is tagged and published, and the v<major> and v<major>.<minor> aliases are moved to it, so consumers pinned at the major alias get improvements automatically.",
+          "This is the recommended way for many repositories to adopt the tooling and stay current: reference the reusable workflows/actions at the major tag and optionally enable Dependabot \u2014 GitHub opens a reviewable pull request for new versions with no personal access token required.",
+          "The full file re-pull (the installer's update mode) remains available for repositories that vendor a complete copy of the tooling."
+        ]
+      },
+      {
+        "version": "1.2.2",
+        "date": "2026-06-15",
+        "title": "Update now pulls the full tooling",
+        "summary": "The 'Update now' button now performs a complete update \u2014 it re-pulls every tooling file at the latest version (bringing new capabilities, not just a version number) and opens a pull request to review.",
+        "highlights": [
+          "'Update now' runs the catalog-driven installer in update mode, so a client adopts all the latest workflows, scripts, and pages \u2014 including brand-new capabilities \u2014 in one reviewable pull request.",
+          "The client's own configuration (selected activities, LabVIEW version, runner concurrency) and baked dependencies are preserved across the update.",
+          "Fixed the installer's branding rules so files copied into a client repo are correctly rebranded to that repo instead of keeping the source repo's name.",
+          "Because a full update changes workflow files, add a token with repo + workflow scope as the TOOLING_UPDATE_TOKEN secret so the update can open its pull request automatically."
+        ]
+      },
       {
         "version": "1.2.1",
         "date": "2026-06-15",
