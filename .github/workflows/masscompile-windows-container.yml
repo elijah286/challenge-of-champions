@@ -136,6 +136,18 @@ jobs:
           path: ${{ github.workspace }}/ci-out/masscompile/
           if-no-files-found: warn
 
+      - name: Enable Git long paths (Windows MAX_PATH workaround)
+        if: steps.report.outputs.exists == 'true'
+        shell: bash
+        run: |
+          # peaceiris/actions-gh-pages clones the whole gh-pages branch on the
+          # Windows runner. That tree now holds deeply-nested VIDiff report paths
+          # that exceed Windows' 260-char MAX_PATH, so the clone checkout dies with
+          # "Filename too long" and the report never deploys (dashboard 404).
+          # Long-path support lets Git use extended-length paths and succeed.
+          git config --global core.longpaths true
+          git config --system core.longpaths true || true
+
       - name: Deploy report to GitHub Pages
         if: steps.report.outputs.exists == 'true'
         uses: peaceiris/actions-gh-pages@v4
