@@ -1,0 +1,166 @@
+name: VI Analyzer Backfill — Historical
+
+# Populates the dashboard with VI Analyzer reports for VI-touching commits across
+# history. Orchestrator pattern: it walks project commits newest-first and, for
+# each one that does NOT already have a *friendly* report deployed, dispatches the
+# per-commit "Run VI Analyzer — Windows Container" workflow and waits for it to
+# finish before moving on.
+#
+# Why sequential: the per-commit workflow shares the `report-pages-deploy`
+# concurrency group (cancel-in-progress:false) to serialize gh-pages deploys.
+# GitHub keeps only ONE pending run per group, so firing many at once collapses
+# them to the latest. Dispatching one-at-a-time and waiting respects that design.
+#
+# Friendly-aware skip: a commit is "done" only when its deployed report contains
+# the friendly-report marker (id="via-data"). That means a commit whose report is
+# the old native dump, or a failed/stub run, is re-analyzed and upgraded.
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_commits:
+        description: 'Cap to most recent N project (VI-touching) commits (0 = all)'
+        required: false
+        default: '0'
+      force:
+        description: 'Re-run even commits that already have a friendly report'
+        type: boolean
+        required: false
+        default: false
+      dry_run:
+        description: 'List what would be analyzed without dispatching anything'
+        type: boolean
+        required: false
+        default: false
+
+# Only one backfill at a time; never cancel an in-progress backfill mid-walk.
+concurrency:
+  group: vi-analyzer-backfill
+  cancel-in-progress: false
+
+env:
+  TARGET_WORKFLOW: run-vi-analyzer-windows-container.yml
+  PAGES_URL: ${{ vars.PAGES_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+
+permissions:
+  contents: read
+  actions: write   # dispatch the per-commit workflow + read its run status
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+
+    steps:
+      - name: Checkout repository (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Dispatch VI Analyzer for historical commits (sequential)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          MAX_COMMITS: ${{ github.event.inputs.max_commits || '0' }}
+          FORCE: ${{ github.event.inputs.force }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          set -uo pipefail
+          WF="$TARGET_WORKFLOW"
+
+          # LabVIEW / NI source extensions. A commit is a "project" revision when it
+          # touches one of these OUTSIDE the CI tooling under .github/ (mirrors the
+          # dashboard's project-vs-tooling classification).
+          LV_EXTS='\.(vi|vit|ctl|ctt|lvclass|lvlib|lvlibp|lvproj|xctl|xnode|vipc|vip|llb|mnu|lvtest)$'
+
+          # Classify a commit as a "project" revision when it touches a LabVIEW
+          # source file outside the CI tooling under .github/.
+          # NOTE: no `grep -q` here. Under `set -o pipefail`, `grep -q` closes the
+          # pipe on its first match, the upstream `git diff-tree` then dies with
+          # SIGPIPE, and pipefail surfaces that as a non-zero pipeline — which would
+          # silently skip large commits (those whose first matching file appears
+          # before git finishes writing). Collect matches into a var and test it.
+          is_project() {
+            local hits
+            hits=$(git diff-tree --no-commit-id --name-only -r "$1" \
+                     | grep -vE '^\.github/' \
+                     | grep -iE "$LV_EXTS" || true)
+            [ -n "$hits" ]
+          }
+
+          # "Done" only when a FRIENDLY report is deployed (native dumps and failed
+          # stubs lack the marker, so they get re-analyzed and upgraded).
+          # Capture the body and glob-match it — same SIGPIPE/pipefail caution as
+          # above (the marker can appear early enough to trip `grep -q`).
+          is_friendly() {
+            local body
+            body=$(curl -fsS "$PAGES_URL/vi-analyzer/$1/index.html" 2>/dev/null || true)
+            case "$body" in *'id="via-data"'*) return 0 ;; *) return 1 ;; esac
+          }
+
+          # Wait for the run our dispatch created, then poll until it completes.
+          wait_for_run() {
+            local sha="$1" before="$2" run_id="" st=""
+            for _ in $(seq 1 36); do   # up to ~3 min for the run to register
+              run_id=$(gh run list --workflow="$WF" --event=workflow_dispatch --limit 15 \
+                --json databaseId,createdAt \
+                --jq "[.[]|select(.createdAt>=\"$before\")]|sort_by(.createdAt)|last|.databaseId" 2>/dev/null)
+              [ -n "$run_id" ] && [ "$run_id" != "null" ] && break
+              sleep 5
+            done
+            if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
+              echo "    WARN: dispatched run for ${sha:0:12} never registered; continuing."
+              return 0
+            fi
+            echo "    run $run_id — waiting for completion…"
+            for _ in $(seq 1 80); do   # up to ~40 min per analysis
+              st=$(gh run view "$run_id" --json status --jq '.status' 2>/dev/null || echo '')
+              [ "$st" = "completed" ] && break
+              sleep 30
+            done
+            local concl
+            concl=$(gh run view "$run_id" --json conclusion --jq '.conclusion' 2>/dev/null || echo 'unknown')
+            echo "    run $run_id finished -> ${concl:-unknown}"
+          }
+
+          mapfile -t ALL < <(git log origin/main --format=%H -n 300)
+          echo "Scanning ${#ALL[@]} commits for project revisions…"
+
+          cap="${MAX_COMMITS:-0}"; done_n=0; skip_n=0; run_n=0; idx=0
+          for sha in "${ALL[@]}"; do
+            is_project "$sha" || continue
+            idx=$((idx+1))
+            subj=$(git log -1 --format=%s "$sha" | cut -c1-60)
+
+            if [ "$FORCE" != "true" ] && is_friendly "$sha"; then
+              echo "[$idx] skip (friendly report exists) ${sha:0:12}  $subj"
+              skip_n=$((skip_n+1))
+              continue
+            fi
+
+            if [ "$cap" != "0" ] && [ "$run_n" -ge "$cap" ]; then
+              echo "[$idx] cap reached ($cap); stopping."
+              break
+            fi
+
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "[$idx] WOULD analyze ${sha:0:12}  $subj"
+              run_n=$((run_n+1))
+              continue
+            fi
+
+            echo "[$idx] dispatch ${sha:0:12}  $subj"
+            before=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+            if gh workflow run "$WF" --ref main -f commit_sha="$sha" >/dev/null 2>&1; then
+              run_n=$((run_n+1))
+              wait_for_run "$sha" "$before"
+            else
+              echo "    WARN: dispatch failed for ${sha:0:12}"
+            fi
+          done
+
+          echo ""
+          echo "=== Backfill summary ==="
+          echo "  analyzed/dispatched : $run_n"
+          echo "  skipped (friendly)  : $skip_n"
+          echo "  dry-run             : $DRY_RUN"
