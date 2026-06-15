@@ -148,8 +148,43 @@ jobs:
 
           new = '\n'.join(out)
           if not new.endswith('\n'): new += '\n'
-          changed = new != orig
-          if changed: open(cfg, 'w', encoding='utf-8').write(new)
+          cfg_changed = new != orig
+          if cfg_changed: open(cfg, 'w', encoding='utf-8').write(new)
+
+          # If this repo vendors a catalog.json (hybrid consumer), bump its version
+          # + release history too: the dashboard version badge reads catalog.json's
+          # version, NOT the config, so without this the badge would stay stuck and
+          # the "update available" dot would never clear. catalog.json is NOT a
+          # workflow file, so the built-in token can push it (still no PAT). Thin
+          # consumers have no catalog.json and fall back to the config's
+          # installedVersion, so this whole block is simply skipped for them.
+          cat_path = '.github/labview-ci/catalog.json'
+          cat_changed = False
+          if os.path.exists(cat_path):
+              def vt(v): return tuple(int(x) for x in str(v).split('.'))
+              src_rel = (cat.get('history') or {}).get('releases') or []
+              # Filter the source's release notes to <= the version being adopted and
+              # use them as this repo's history, so releases[0].version == version
+              # (the invariant version-guard checks) and What's New shows the right notes.
+              filt = [r for r in src_rel if vt(r.get('version', '0')) <= vt(latest)]
+              if filt and filt[0].get('version') == latest:
+                  cat_text = open(cat_path, encoding='utf-8').read()
+                  local = json.loads(cat_text)
+                  local['version'] = latest
+                  hist = dict(local.get('history') or {})
+                  hist['releases'] = filt
+                  local['history'] = hist
+                  # Preserve everything else (source pointer, capabilities, etc.) and
+                  # match the file's existing unicode style to minimise diff noise.
+                  dumped = json.dumps(local, indent=2, ensure_ascii=('\\u' in cat_text)) + '\n'
+                  if dumped != cat_text:
+                      open(cat_path, 'w', encoding='utf-8').write(dumped)
+                      cat_changed = True
+              else:
+                  print(f'::warning::catalog.json not bumped — {latest} not found in source '
+                        'release history; the version badge may lag the config.')
+
+          changed = cfg_changed or cat_changed
 
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
               f.write(f'installed={installed}\n')
@@ -158,10 +193,12 @@ jobs:
               f.write(f'new_ref={new_ref}\n')
               f.write(f'source_repo={os.environ.get("SRC_REPO", "")}\n')
               f.write(f'changed={"true" if changed else "false"}\n')
+              f.write(f'catalog_changed={"true" if cat_changed else "false"}\n')
               f.write(f'newcaps={",".join(newcaps)}\n')
               f.write(f'enabled={",".join(to_enable)}\n')
           print(f'installed {installed} -> {latest}; ref {cur_ref} -> {new_ref}; '
-                f'changed={changed}; available_new={newcaps}; enabling={to_enable}')
+                f'cfg_changed={cfg_changed}; catalog_changed={cat_changed}; '
+                f'available_new={newcaps}; enabling={to_enable}')
           PY
 
       - name: Open the update pull request
@@ -175,6 +212,7 @@ jobs:
           SOURCE_REPO: ${{ steps.apply.outputs.source_repo }}
           NEWCAPS: ${{ steps.apply.outputs.newcaps }}
           ENABLED: ${{ steps.apply.outputs.enabled }}
+          CATALOG_CHANGED: ${{ steps.apply.outputs.catalog_changed }}
         run: |
           set -euo pipefail
           git config user.name  "github-actions[bot]"
@@ -183,11 +221,21 @@ jobs:
           BRANCH="ci/update-tooling-${NEW_REF}"
           git checkout -B "$BRANCH"
           git add .github/labview-ci.yml
+          # Hybrid consumers also carry a vendored catalog.json (the dashboard badge's
+          # version source); stage it too when the bump touched it. Thin consumers
+          # have no catalog.json, so this is a no-op for them.
+          if [ -f .github/labview-ci/catalog.json ]; then
+            git add .github/labview-ci/catalog.json
+          fi
 
           {
             echo "Opts this repository into **LabVIEW CI ${NEW_REF}** (was ${CUR_REF}; installed v${INSTALLED} → v${LATEST}), sourced from \`${SOURCE_REPO}\`."
             echo ""
-            echo "**Token-free, config-only.** The sole change is \`.github/labview-ci.yml\` (\`source.ref\` + \`installedVersion\`). No workflow files are touched, so the built-in token can apply it. The shared reusable workflow (pinned \`@v1\`) reads \`source.ref\` at runtime and runs the tooling at that version."
+            if [ "${CATALOG_CHANGED:-false}" = "true" ]; then
+              echo "**Token-free, config-driven.** Changes \`.github/labview-ci.yml\` (\`source.ref\` + \`installedVersion\`) and bumps the vendored \`.github/labview-ci/catalog.json\` version + release notes so the dashboard badge moves. Neither is a workflow file, so the built-in token applies them — no PAT. The shared reusable workflow (pinned \`@v1\`) reads \`source.ref\` at runtime and runs the tooling at that version."
+            else
+              echo "**Token-free, config-only.** The sole change is \`.github/labview-ci.yml\` (\`source.ref\` + \`installedVersion\`). No workflow files are touched, so the built-in token can apply it. The shared reusable workflow (pinned \`@v1\`) reads \`source.ref\` at runtime and runs the tooling at that version."
+            fi
             echo ""
             if [ -n "${ENABLED:-}" ]; then
               echo "Newly **enabled** capabilities: ${ENABLED}."
@@ -199,7 +247,7 @@ jobs:
             echo "Triggered from the dashboard **Update now** button. Review and merge to finish — the version badge turns green and the pipeline runs the new version."
           } > /tmp/pr-body.md
 
-          git commit -m "ci: opt in to LabVIEW CI ${NEW_REF} (config-only)"
+          git commit -m "ci: opt in to LabVIEW CI ${NEW_REF} (config-driven)"
 
           if ! git push -u origin "$BRANCH" --force 2>/tmp/push-err; then
             cat /tmp/push-err || true
