@@ -58,8 +58,14 @@ $ContainerName = "lvci-mc-$([System.Guid]::NewGuid().ToString('N').Substring(0,8
 
 # ── Project-source-touching commits, oldest first ────────────────────────────
 # Same source extensions the dashboard uses to classify a "project" revision, so
-# the backfill covers exactly the commits the dashboard shows by default.
-$Commits = @(& git -C $WorkspaceRoot log --reverse --format='%H' -- `
+# the backfill covers exactly the commits the dashboard shows.
+# --full-history is REQUIRED: the dashboard classifies each commit independently
+# (its own diff touches non-.github LabVIEW source), but a plain `git log -- <path>`
+# applies history simplification that DROPS commits whose change is reachable via a
+# merge it deems redundant (TREESAME) — e.g. a real source commit hidden behind a
+# later merge. --full-history disables that simplification so every commit that
+# actually touched LabVIEW source is compiled, matching the dashboard 1:1.
+$Commits = @(& git -C $WorkspaceRoot log --reverse --full-history --format='%H' -- `
     '*.vi' '*.vit' '*.ctl' '*.ctt' '*.lvclass' '*.lvlib' '*.lvproj')
 if ($MaxCommits -gt 0 -and $Commits.Count -gt $MaxCommits) {
     $Commits = $Commits[($Commits.Count - $MaxCommits)..($Commits.Count - 1)]
