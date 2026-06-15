@@ -164,7 +164,7 @@ jobs:
 
           if [ "$UPDATE" = "true" ]; then
             if [ -n "$EXISTING" ]; then
-              gh issue edit "$EXISTING" --body-file /tmp/issue-body.md >/dev/null
+              gh issue edit "$EXISTING" --title "LabVIEW CI tooling update available: v$LATEST" --body-file /tmp/issue-body.md >/dev/null
               echo "Updated tracking issue #$EXISTING"
             else
               gh issue create --title "LabVIEW CI tooling update available: v$LATEST" \
