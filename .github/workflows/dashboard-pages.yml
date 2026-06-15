@@ -119,6 +119,23 @@ jobs:
               '.lvproj', '.xctl', '.xnode', '.vipc', '.vip', '.llb', '.mnu', '.lvtest',
           )
 
+          import datetime as _dt
+          def _stale_pending(s):
+              # A 'pending' status older than 2h is almost certainly orphaned
+              # (a cancelled/abandoned run) rather than one that is still running.
+              if not s or s.get('state') != 'pending':
+                  return False
+              try:
+                  ts = s.get('created_at', '').replace('Z', '+00:00')
+                  age = _dt.datetime.now(_dt.timezone.utc) - _dt.datetime.fromisoformat(ts)
+                  return age.total_seconds() > 2 * 3600
+              except Exception:
+                  return False
+
+          # Set as soon as any cell renders an actively-running activity; drives the
+          # faster page auto-refresh so a live run (and its result) surfaces promptly.
+          running_flag = {'on': False}
+
           rows_html = []
           for c in commits_data:
               sha     = c['sha']
@@ -166,24 +183,47 @@ jobs:
                   pool = terminal if terminal else cands
                   chosen = max(pool, key=lambda s: s.get('created_at', ''))
                   # A 'pending' older than 2h is almost certainly orphaned (cancelled run) —
-                  # show it as no-status rather than a perpetual ⏳.
-                  if chosen.get('state') == 'pending':
-                      try:
-                          import datetime as _dt
-                          ts = chosen.get('created_at', '').replace('Z', '+00:00')
-                          age = _dt.datetime.now(_dt.timezone.utc) - _dt.datetime.fromisoformat(ts)
-                          if age.total_seconds() > 2 * 3600:
-                              return None
-                      except Exception:
-                          pass
+                  # show it as no-status rather than a perpetual spinner.
+                  if _stale_pending(chosen):
+                      return None
                   return chosen
 
+              EMPTY_CELL = '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
+
+              def fresh_pending(*contexts):
+                  # Return the newest actively-running (fresh 'pending') status among the
+                  # candidate contexts, or None. Detected separately from pick_status so a
+                  # re-run in progress reads as "running" even when an older terminal status
+                  # for the same logical check still exists.
+                  best = None
+                  for ctx in contexts:
+                      s = status_map.get(ctx)
+                      if not s or s.get('state') != 'pending' or _stale_pending(s):
+                          continue
+                      if best is None or s.get('created_at', '') > best.get('created_at', ''):
+                          best = s
+                  return best
+
+              def running_cell(label, url):
+                  # A spinning "running" indicator linking straight to the live workflow run
+                  # so the user can jump to it and see where it is.
+                  running_flag['on'] = True
+                  inner = f'<span class="run-spin"></span>{label}'
+                  body  = (f'<a href="{url}" style="color:#fff;text-decoration:none;display:inline-flex;align-items:center;gap:5px">{inner}</a>'
+                           if url else f'<span style="display:inline-flex;align-items:center;gap:5px">{inner}</span>')
+                  return ('<td style="text-align:center">'
+                          '<span class="run-badge" title="Running — click to view progress">'
+                          f'{body}</span></td>')
+
               def badge(label, *contexts, url_override=None):
-                  s = pick_status(*contexts)
                   if not is_project:
-                      return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
+                      return EMPTY_CELL
+                  run = fresh_pending(*contexts)
+                  if run is not None:
+                      return running_cell(label, run.get('target_url', ''))
+                  s = pick_status(*contexts)
                   if not s:
-                      return '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
+                      return EMPTY_CELL
                   color  = {'success':'#2ea043','failure':'#da3633','pending':'#9a6700','error':'#da3633'}.get(s['state'],'#555')
                   emoji  = {'success':'✅','failure':'❌','pending':'⏳','error':'⚠️'}.get(s['state'],'?')
                   url    = url_override or s.get('target_url','')
@@ -202,8 +242,11 @@ jobs:
               if not is_project:
                   snap_badge = '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
               else:
+                  _snap_run = fresh_pending('CI / VI Snapshots')
                   _counts = snapshot_counts(sha)
-                  if not _counts:
+                  if _snap_run is not None:
+                      snap_badge = running_cell('snapshots', _snap_run.get('target_url', ''))
+                  elif not _counts:
                       snap_badge = '<td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>'
                   else:
                       _links = []
@@ -243,12 +286,18 @@ jobs:
           project_count = sum(1 for r in rows_html if 'data-project="true"' in r)
           few_projects = 'true' if project_count < 3 else 'false'
 
+          # While something is actively running, poll faster so the live indicator
+          # (and its eventual result) surfaces promptly; otherwise refresh lazily.
+          refresh_secs = 60 if running_flag['on'] else 900
+          refresh_note = ('Live — refreshing every 60 s while CI runs'
+                          if running_flag['on'] else 'Auto-refreshes every 15 min')
+
           html = f"""<!DOCTYPE html>
           <html lang="en">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width,initial-scale=1">
-            <meta http-equiv="refresh" content="900">
+            <meta http-equiv="refresh" content="{refresh_secs}">
             <title>CI Dashboard — challenge-of-champions</title>
             <style>
               :root{{
@@ -277,11 +326,15 @@ jobs:
               .nav a{{margin-right:16px;color:var(--link)}}
               .controls{{margin:0 0 12px;display:flex;align-items:center;gap:8px;color:var(--fg-muted);font-size:.85em}}
               .controls input{{margin:0;accent-color:var(--link)}}
+              .run-badge{{display:inline-flex;align-items:center;background:#1f6feb;color:#fff;padding:2px 8px;border-radius:4px;font-size:.75em;font-weight:600}}
+              .run-badge a:hover{{text-decoration:underline}}
+              .run-spin{{width:9px;height:9px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;display:inline-block;animation:cidash-spin .7s linear infinite}}
+              @keyframes cidash-spin{{to{{transform:rotate(360deg)}}}}
             </style>
           </head>
           <body>
             <h1>CI Dashboard — challenge-of-champions</h1>
-            <div class="sub">Last updated: {now} &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
+            <div class="sub">Last updated: {now} &nbsp;|&nbsp; {refresh_note}</div>
             <div class="nav">
               <a href="{pages_url}/vi-snapshots/">VI Browser</a>
               <a href="https://github.com/{repo}">GitHub</a>
