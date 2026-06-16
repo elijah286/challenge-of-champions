@@ -1,11 +1,57 @@
 {
   "schemaVersion": 1,
-  "version": "1.7.12",
+  "version": "1.9.0",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
     "releases": [
+      {
+        "version": "1.9.0",
+        "date": "2026-06-16",
+        "title": "One-click install can link the dashboard from your README and turn on Pages for you",
+        "summary": "The 'Apply to New Repo' install now goes the last mile. Alongside opening the install pull request it can add a CI dashboard badge + link to your README (in the same PR), and \u2014 if you grant a slightly broader token \u2014 set your repository's Workflow permissions to read/write and enable GitHub Pages on the gh-pages branch, so the dashboard publishes itself with no manual settings. Both are opt-in checkboxes (on by default); if you decline the broader token the install still works and the page lists the two settings for you to flip, with direct links. The pre-filled token link and the panel adapt to show exactly the permissions needed.",
+        "highlights": [
+          "Adds a dashboard badge + link to the repository's README as part of the install pull request \u2014 idempotent, so re-installs don't duplicate it, and it creates a README if there isn't one.",
+          "Optionally sets Workflow permissions to read/write and enables GitHub Pages (gh-pages) via the API, pre-seeding a 'publishing\u2026' placeholder so the site is live immediately and the dashboard overwrites it on the first run.",
+          "The pre-filled fine-grained-token link and the setup panel adjust to request Administration + Pages only when you opt in to auto-publish; declining falls back to clearly listed manual steps.",
+          "The post-install summary shows what was done for you (README, permissions, Pages) versus what's left, with a note if the token lacked the extra permissions."
+        ]
+      },
+      {
+        "version": "1.8.0",
+        "date": "2026-06-16",
+        "title": "Apply to New Repo can install itself \u2014 no download, just a token and a pull request",
+        "summary": "The 'Apply to New Repo' page now installs the pipeline directly into your repository instead of handing you a zip to unzip and commit by hand. Pick your capabilities, paste a one-time fine-grained token (the page links you straight to GitHub's token screen with the exact permissions pre-filled), and it commits the tailored, rebranded files to a new branch and opens a pull request for you to review and merge. The command-line install and downloadable bundle are still there under 'Other ways to install'.",
+        "highlights": [
+          "New 'Install into your repo' button commits the resolved files to a 'ci/install-labview-ci' branch via the GitHub Git Data API and opens a pull request \u2014 nothing to download, unzip, or commit by hand.",
+          "Guided one-time token setup: a pre-filled fine-grained-token link requests exactly Contents, Pull requests, and Workflows (write); the token is stored only in your browser and sent only to api.github.com.",
+          "After the pull request opens, the page lists the remaining steps with direct links \u2014 merge the PR, set Workflow permissions to read/write, and enable Pages once the gh-pages branch exists.",
+          "Actionable messages for the common token mistakes (401 rejected, 403 missing permission, 404 repo not visible, and the Workflows permission required to add files under .github/workflows/)."
+        ]
+      },
+      {
+        "version": "1.7.14",
+        "date": "2026-06-16",
+        "title": "The 'Updating\u2026' badge now appears the moment you click Update now",
+        "summary": "The version badge's in-flight 'Updating\u2026' indicator was easy to miss: it was only detected by polling GitHub when the dashboard loaded, but the update workflow finishes in a few seconds while the dashboard auto-refreshes only every 15 minutes \u2014 so a refresh almost never landed while the workflow was running. Now, clicking 'Update now' in What's New paints the badge as 'Updating\u2026' immediately and records it in the browser, so it persists across the dashboard's auto-refreshes until the new version is actually deployed (or 30 minutes pass). Clicking it opens the update's pull request, where you approve and merge to finish.",
+        "highlights": [
+          "'Update now' optimistically flags the update (localStorage 'lvci_updating') and immediately switches the badge to 'Updating\u2026' \u2014 no longer dependent on catching the brief workflow run by chance.",
+          "The badge stays 'Updating\u2026' across the 15-minute auto-refresh and clears itself once this dashboard rebuilds at the new version, or after a 30-minute safety timeout.",
+          "Clicking the 'Updating\u2026' badge opens the repo's pull requests so you can approve the checks and merge the update PR that finishes the upgrade."
+        ]
+      },
+      {
+        "version": "1.7.13",
+        "date": "2026-06-16",
+        "title": "What's New spells out the approve-and-merge steps after Update now",
+        "summary": "The What's New / update dialog now lays out every action an update requires, so it can't silently stall waiting on a step you didn't know about. A numbered 'what happens next' checklist is shown up front, and the pull request's workflow-approval gate is called out as its own highlighted step: because the update PR is opened by automation, GitHub holds its checks for your approval and marks them 'Action required', and nothing merges until you open the PR (or the Actions tab) and click 'Approve and run'. The status messages after Update now were updated to match \u2014 they now tell you to approve the checks and then merge, instead of only 'merge it to finish'.",
+        "highlights": [
+          "Added a numbered 'what happens next' checklist to the update dialog, with the workflow-approval gate as its own highlighted step.",
+          "Calls out that GitHub marks the update PR's checks 'Action required' and that you must click 'Approve and run' before they start \u2014 the step that was previously undocumented.",
+          "Post-dispatch status messages now point you to approve the checks first, then merge, so an opened update PR no longer sits unmerged because its checks were paused for approval."
+        ]
+      },
       {
         "version": "1.7.12",
         "date": "2026-06-16",
