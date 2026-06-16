@@ -1,11 +1,47 @@
 {
   "schemaVersion": 1,
-  "version": "1.7.5",
+  "version": "1.7.8",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
     "releases": [
+      {
+        "version": "1.7.8",
+        "date": "2026-06-15",
+        "title": "VIDiff again shows what changed in every revision",
+        "summary": "Clicking a revision's VIDiff 'diff' badge opens the VI Browser filtered to the VIs that changed in that revision, each linking to its side-by-side comparison report. That view had stopped finding any changes \u2014 every revision looked unchanged \u2014 because it only knew about the single most recent snapshot commit and so never had a previous revision to compare against. It now reads the full project revision list (files.json), so it can pick the correct previous revision and highlight exactly the VIs that changed, with their diff reports, for every revision. Revisions whose snapshots have not been rendered still list their changed VIs by falling back to the same per-revision VI fingerprints, and any VI a container's VIDiff run flagged is always shown.",
+        "highlights": [
+          "The VIDiff / 'Changed VIs only' view now reads the full project revision history (files.json), so it finds the correct previous revision and no longer reports 'no changes' for revisions that did change a VI.",
+          "Each changed VI links to its Windows/Linux side-by-side comparison report, with the Linux \u2194 Windows toggle, exactly as before.",
+          "Revisions without rendered snapshots still resolve their changed VIs from the per-revision VI fingerprints, so the tree and change badges work for every revision in the dropdown.",
+          "Any VI flagged by a container's VIDiff run is surfaced even when the fingerprint comparison alone would miss it (for example the very first revision)."
+        ]
+      },
+      {
+        "version": "1.7.7",
+        "date": "2026-06-15",
+        "title": "See a queued run's place in line, and cancel it from the dashboard",
+        "summary": "When you queue several runs with Run now, each Queued cell now shows a small position number (#1, #2, ...) so you can see the order they are lined up in. Clicking a Queued badge no longer jumps straight to GitHub - it opens a small dialog where you can either follow the run on GitHub Actions or cancel it. Cancel stops the run for you from the browser, using the same fine-grained token that queued it (Actions: Read and write): the dialog finds the run the dispatch created, cancels every platform it launched, and clears the cell so it is ready to run again. If no token is available it points you to the run on GitHub so you can stop it there.",
+        "highlights": [
+          "Queued cells show a #N place-in-line chip (oldest first) when more than one run is waiting, so a batch of dispatches is easy to read at a glance.",
+          "Clicking a Queued badge opens a manage dialog instead of leaving the dashboard: view the run on GitHub Actions, or cancel it.",
+          "Cancel stops the queued run(s) straight from the browser - including both platforms when you launched Windows and Linux - then restores the cell's run button.",
+          "Uses the same browser-stored token as Run now; a token-free path links you to the run on GitHub to stop it manually."
+        ]
+      },
+      {
+        "version": "1.7.6",
+        "date": "2026-06-15",
+        "title": "Update now starts the update from the dialog",
+        "summary": "The What's New dialog's 'Update now' button now starts the update for you instead of sending you to the Actions page to find and click 'Run workflow'. Like the dashboard's 'Run now', it dispatches the update workflow straight from the browser; the first time, the dialog walks you through creating a one-time fine-grained token (Actions: Read and write) stored only in this browser \u2014 the same token 'Run now' uses, so if you already set that up there is nothing to do. After it dispatches, the dialog watches for the pull request the workflow opens and shows a direct 'review & merge' link, so you always know the next step (the update still finishes when you merge that PR). A token-free 'Open the workflow on GitHub' link remains for anyone who prefers the manual route.",
+        "highlights": [
+          "'Update now' dispatches the Apply LabVIEW CI update workflow from the dialog (browser \u2192 api.github.com), so the update starts with one click instead of navigating to the Actions tab and clicking Run workflow.",
+          "First use walks you through creating a fine-grained token with Actions: Read and write, stored only in this browser and shared with the dashboard's 'Run now' \u2014 set it up once for both.",
+          "After dispatching, the dialog polls for the pull request the workflow opens and surfaces a direct 'review & merge it' link, making the required merge step obvious (previously you landed on a runs list with no clear next step).",
+          "Clear 401/403/404 guidance with an 'Update token' shortcut, plus a token-free 'Open the workflow on GitHub' fallback and the existing CLI command."
+        ]
+      },
       {
         "version": "1.7.5",
         "date": "2026-06-15",
