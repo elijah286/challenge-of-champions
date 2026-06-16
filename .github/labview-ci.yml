@@ -13,10 +13,10 @@
 # released, add its id to `activities` below and retire the matching vendored
 # workflow — that is the "upgrade a capability" step we want to exercise here.
 schemaVersion: 1
-installedVersion: 1.9.3
+installedVersion: 1.10.1
 source:
   repo: elijah286/LabVIEW-CI-with-Containers
-  ref: v1.9.3
+  ref: v1.10.1
 config:
   labviewVersion: "2026"
   os: [windows, linux]

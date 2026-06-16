@@ -1,11 +1,43 @@
 {
   "schemaVersion": 1,
-  "version": "1.9.3",
+  "version": "1.10.1",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
     "releases": [
+      {
+        "version": "1.10.1",
+        "date": "2026-06-16",
+        "title": "Apply to New Repo selects every capability by default",
+        "summary": "The Apply to New Repo configurator now pre-selects all available capabilities (mass compile, VI Analyzer, VIDiff, VI snapshots/VI Browser, the shared container image, and the dashboard) instead of only the recommended ones, so a new install gets the full pipeline by default. Uncheck anything you don't want before installing; capabilities still marked Coming soon stay disabled.",
+        "highlights": [
+          "All non-planned capabilities are checked by default in the configurator \u2014 the VI snapshots/VI Browser and shared container image capabilities are no longer off by default.",
+          "The capabilities hint now reads \u201cAll available capabilities are selected by default \u2014 uncheck any you don't want.\u201d"
+        ]
+      },
+      {
+        "version": "1.10.0",
+        "date": "2026-06-16",
+        "title": "Re-run a VI Analyzer report for its revision \u2014 right from the report",
+        "summary": "A VI Analyzer report now has a \u201cRe-run analysis for this revision\u201d button that dispatches a fresh analyzer run for exactly that commit, without hunting for the workflow on GitHub. It reuses the same one-time fine-grained token the dashboard's Run now uses (stored only in your browser), and the moment the run is queued the matching cell on the dashboard shows a working/\u201cQueued\u201d spinner \u2014 even if that cell already had a pass/fail result \u2014 then settles back to the new result when the run finishes. The report and dashboard share that signal because both are served from the same Pages site.",
+        "highlights": [
+          "New \u201c\u21bb Re-run analysis for this revision\u201d button in the VI Analyzer report dispatches run-vi-analyzer for that exact commit (same platform that produced the report), with an inline token prompt and clear 401/403/404 guidance.",
+          "The dashboard cell for that revision immediately shows a \u201cQueued\u201d spinner via the same optimistic overlay as Run now \u2014 now able to overlay a cell that already holds a result \u2014 and self-clears once a newer result lands or the run reports in.",
+          "Re-uses the dashboard's lvci_dispatch_token and queued-runs bridge (report and dashboard are same-origin on Pages), so no new token or setup is needed if you've already used Run now."
+        ]
+      },
+      {
+        "version": "1.9.4",
+        "date": "2026-06-16",
+        "title": "Update now never leaves you with a conflicting pull request",
+        "summary": "Clicking Update now used to open a new per-version pull request each time, so unmerged ones piled up; once your default branch moved on, those stale branches collided on catalog.json and labview-ci.yml and showed a merge conflict \u2014 even though the update overwrites those files wholesale and there was nothing real to resolve. The update workflow now keeps exactly one open update pull request: when it opens or refreshes the newest one, it automatically closes every older update PR and deletes its branch. The pull request body also explains the self-heal: if an update PR ever shows a conflict, click Update now again and the branch is rebuilt from the latest default branch, which clears it.",
+        "highlights": [
+          "The Apply update workflow auto-closes superseded update PRs (older ci/adopt-tooling-* branches) and deletes them, so only the newest update PR \u2014 always based on the current default branch \u2014 remains.",
+          "A merge conflict on an update PR is no longer something to hand-resolve: re-running Update now rebuilds the branch from the latest default branch and clears it.",
+          "The update PR body now spells this out, so a stale or conflicting update PR is self-explanatory instead of a dead end."
+        ]
+      },
       {
         "version": "1.9.3",
         "date": "2026-06-16",
