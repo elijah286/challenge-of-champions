@@ -1,11 +1,44 @@
 {
   "schemaVersion": 1,
-  "version": "1.7.9",
+  "version": "1.7.12",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
     "releases": [
+      {
+        "version": "1.7.12",
+        "date": "2026-06-16",
+        "title": "Configure Workers no longer shows update notices \u2014 it's purely for configuration",
+        "summary": "The Configure Workers dialog no longer evaluates or displays tooling-update or new-capability notices. That responsibility belongs to the version badge and the What's New dialog; the Configure dialog is solely for maintaining how the CI actions and worker containers behave. The 'Update available' / 'New capabilities' banner has been removed entirely, along with the version comparison it ran on open, so the dialog stays focused on configuration regardless of which repo it is opened from.",
+        "highlights": [
+          "Removed the update/new-capability banner and the version-compare logic (showUpdateStatus, cmpVer, installedVersion parsing) from the Configure dialog.",
+          "Update awareness stays where it belongs \u2014 the version badge and What's New dialog \u2014 so there is no duplicated or conflicting update messaging.",
+          "Supersedes the 1.7.11 source-repo banner suppression: with the banner gone, the dialog is clean on every repo (source and clients alike)."
+        ]
+      },
+      {
+        "version": "1.7.11",
+        "date": "2026-06-16",
+        "title": "No bogus 'update available' notice on the source repo's own Configure dialog",
+        "summary": "When you open Configure Workers on the tooling's own source repository, it no longer shows an 'Update available' / 'New capabilities' banner. The source repo IS the source of updates, so comparing the catalog version against its placeholder installedVersion (kept at a stub value because only real consumers get a stamped one) produced a confusing notice telling the source to update from itself. The banner is now suppressed whenever the repo being configured is the catalog's own source repo; client repositories still see update and new-capability notices exactly as before.",
+        "highlights": [
+          "The Configure dialog detects when it is configuring the catalog's source repo and hides the update banner entirely (the source can't update from itself).",
+          "Fixes the 'is on v1.7.10, this repo is on v1.0.0' message seen on the source dashboard, caused by the source repo's placeholder installedVersion.",
+          "Client repositories are unaffected \u2014 they still get 'Update available' and 'New capabilities' notices when their installed version trails the source."
+        ]
+      },
+      {
+        "version": "1.7.10",
+        "date": "2026-06-16",
+        "title": "Configure Workers is scoped to the repo you launch it from",
+        "summary": "The Configure Workers dialog no longer asks you to type a repository at the top. It is always opened from a specific repository's dashboard, so it now detects that repository automatically and applies every setting to it. The old 'Repository' section (owner/name, branch, and 'Load current settings') is gone; the dialog shows which repo it is configuring read-only and loads that repo's current settings on open.",
+        "highlights": [
+          "Removed the manual 'Repository' input section \u2014 the repo is detected from the dashboard you opened the dialog from (the ?repo= the dashboard now passes, falling back to the GitHub Pages URL, then the source repo).",
+          "The dialog header now shows 'Configuring <owner/repo>' read-only so you can confirm the scope at a glance.",
+          "The Reconfigure command and 'Load current settings' now always target the detected repository, removing the chance of editing the wrong repo's config."
+        ]
+      },
       {
         "version": "1.7.9",
         "date": "2026-06-16",
