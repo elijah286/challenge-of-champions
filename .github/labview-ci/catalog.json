@@ -1,11 +1,34 @@
 {
   "schemaVersion": 1,
-  "version": "1.6.0",
+  "version": "1.7.1",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
     "releases": [
+      {
+        "version": "1.7.1",
+        "date": "2026-06-15",
+        "title": "Dashboard delivered through the shared action (run buttons reach every repo)",
+        "summary": "The dashboard is now built by the shared composite action at the version a repository has opted into (.github/labview-ci.yml: source.ref), instead of a per-repo vendored copy of the generator. That collapses three drifting copies into one source of truth, so the v1.7.0 empty-cell run buttons — and every future dashboard improvement — reach a repository the moment it opts into this version, with no workflow-file edits. The VI Browser's file tree (files.json) is now part of the shared action too.",
+        "highlights": [
+          "The dashboard build logic moved into the shared dashboard action; the source repo and the thin dashboard caller both run it via the opted-in source.ref, so the run buttons render everywhere instead of only where a vendored generator happened to carry them.",
+          "Ported the VI Browser file tree (vi-snapshots/files.json) into the shared action so the snapshot-independent file hierarchy works for every consumer, not just vendored ones.",
+          "The thin dashboard caller now checks out the tooling at source.ref and runs the local action (./_lvci/actions/dashboard), matching the capability jobs — so 'Update now' moves the dashboard version along with everything else."
+        ]
+      },
+      {
+        "version": "1.7.0",
+        "date": "2026-06-15",
+        "title": "Run a capability straight from an empty dashboard cell",
+        "summary": "Empty cells in the dashboard now carry a small run glyph. Clicking it opens a dialog that enqueues that capability for that exact commit — with a Windows/Linux picker for capabilities that have both — by surfacing a copyable `gh workflow run` command (pre-filled with the commit SHA) and a link to the workflow's Run page. It uses your own GitHub auth, so no tokens ever touch the browser. The dashboard's 'Include CI-only revisions' toggle is also honored strictly again.",
+        "highlights": [
+          "Each empty, re-runnable cell (Mass Compile, VI Analyzer, VIDiff, VI Snapshots) shows an unobtrusive play glyph that brightens on hover.",
+          "Capabilities with separate Windows and Linux workers show a platform picker so you can launch one or both; single-target capabilities skip straight to the command.",
+          "The dialog generates a ready-to-run `gh workflow run <workflow> -f commit_sha=<sha>` command (VIDiff uses head + base SHAs) plus a direct link to the workflow's Run page — token-free, using your own GitHub login.",
+          "Fixed the 'Include CI-only revisions' toggle so CI/tooling commits stay hidden while it is unchecked, even during a long tooling sprint."
+        ]
+      },
       {
         "version": "1.6.0",
         "date": "2026-06-15",
