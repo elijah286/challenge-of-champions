@@ -41,7 +41,7 @@
 </head>
 <body>
   <div style="position:fixed;top:14px;right:16px;z-index:30;display:flex;align-items:center;gap:8px">
-    <div id="lvci-version" title="Installed LabVIEW CI tooling version" style="position:relative;display:inline-flex;align-items:center;gap:6px;background:rgba(110,118,129,.15);color:var(--fg-muted);border:1px solid rgba(110,118,129,.35);padding:8px 12px;border-radius:6px;font-size:.78em;font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none"><span>v1.7.3</span><span id="lvci-update-dot" aria-hidden="true"></span></div>
+    <div id="lvci-version" title="Installed LabVIEW CI tooling version" style="position:relative;display:inline-flex;align-items:center;gap:6px;background:rgba(110,118,129,.15);color:var(--fg-muted);border:1px solid rgba(110,118,129,.35);padding:8px 12px;border-radius:6px;font-size:.78em;font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none"><span>v1.7.4</span><span id="lvci-update-dot" aria-hidden="true"></span></div>
     <button onclick="lvciOpen('configure.html','Configure Workers')" title="Configure the behavior of this repository's automated CI activities" style="background:#1f6feb;color:#fff;border:0;padding:8px 14px;border-radius:6px;font-size:.82em;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.35)">⚙ Configure Workers</button>
     <button onclick="lvciOpen('integrate.html','Apply to New Repo')" title="Install these CI capabilities into another repository" style="background:#238636;color:#fff;border:0;padding:8px 14px;border-radius:6px;font-size:.82em;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.35)">➕ Apply to New Repo</button>
   </div>
@@ -68,7 +68,7 @@
     }
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lvciClose(); });
   </script>
-  <style>#lvci-version.lvci-clickable{cursor:pointer;color:var(--fg)}#lvci-version.lvci-clickable:hover{background:rgba(110,118,129,.25)}#lvci-version.lvci-has-update{cursor:pointer;color:var(--fg);border-color:#d29922;background:rgba(210,153,34,.13)}#lvci-version.lvci-has-update:hover{background:rgba(210,153,34,.22)}#lvci-update-dot{display:none}#lvci-update-dot.on{display:block;position:absolute;top:-5px;right:-5px;width:11px;height:11px;border-radius:50%;background:#d29922;box-shadow:0 0 0 2px var(--bg);animation:lvci-pulse 1.7s ease-out infinite}@keyframes lvci-pulse{0%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,.5)}70%{box-shadow:0 0 0 2px var(--bg),0 0 0 7px rgba(210,153,34,0)}100%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,0)}}</style><script>(function(){var C={"version": "1.7.3", "sourceRepo": "elijah286/LabVIEW-CI-with-Containers", "sourceRef": "main", "isSource": false, "repo": "elijah286/challenge-of-champions"};function cmp(a,b){var p=String(a||"0").split("."),q=String(b||"0").split(".");for(var i=0;i<Math.max(p.length,q.length);i++){var d=(parseInt(p[i],10)||0)-(parseInt(q[i],10)||0);if(d)return d;}return 0;}if(!C.version)return;var b=document.getElementById("lvci-version");if(!b)return;var src=C.sourceRepo||C.repo;var go=function(){lvciOpen("whats-new.html?repo="+encodeURIComponent(C.repo)+"&from="+encodeURIComponent(C.version)+"&src="+encodeURIComponent(src)+"&ref="+encodeURIComponent(C.sourceRef),"What\u2019s New");};b.classList.add("lvci-clickable");b.setAttribute("role","button");b.setAttribute("tabindex","0");b.title="LabVIEW CI v"+C.version+" \u2014 click for release notes";b.addEventListener("click",go);b.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});if(C.isSource||!C.sourceRepo)return;var u="https://raw.githubusercontent.com/"+C.sourceRepo+"/"+C.sourceRef+"/.github/labview-ci/catalog.json";fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(cat){if(!cat||!cat.version||cmp(cat.version,C.version)<=0)return;var d=document.getElementById("lvci-update-dot");b.classList.remove("lvci-clickable");b.classList.add("lvci-has-update");if(d)d.classList.add("on");b.title="Update available: v"+C.version+" \u2192 v"+cat.version+" \u2014 click to see what\u2019s new";}).catch(function(){});})();</script>
+  <style>#lvci-version.lvci-clickable{cursor:pointer;color:var(--fg)}#lvci-version.lvci-clickable:hover{background:rgba(110,118,129,.25)}#lvci-version.lvci-has-update{cursor:pointer;color:var(--fg);border-color:#d29922;background:rgba(210,153,34,.13)}#lvci-version.lvci-has-update:hover{background:rgba(210,153,34,.22)}#lvci-update-dot{display:none}#lvci-update-dot.on{display:block;position:absolute;top:-5px;right:-5px;width:11px;height:11px;border-radius:50%;background:#d29922;box-shadow:0 0 0 2px var(--bg);animation:lvci-pulse 1.7s ease-out infinite}@keyframes lvci-pulse{0%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,.5)}70%{box-shadow:0 0 0 2px var(--bg),0 0 0 7px rgba(210,153,34,0)}100%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,0)}}</style><script>(function(){var C={"version": "1.7.4", "sourceRepo": "elijah286/LabVIEW-CI-with-Containers", "sourceRef": "main", "isSource": false, "repo": "elijah286/challenge-of-champions"};function cmp(a,b){var p=String(a||"0").split("."),q=String(b||"0").split(".");for(var i=0;i<Math.max(p.length,q.length);i++){var d=(parseInt(p[i],10)||0)-(parseInt(q[i],10)||0);if(d)return d;}return 0;}if(!C.version)return;var b=document.getElementById("lvci-version");if(!b)return;var src=C.sourceRepo||C.repo;var go=function(){lvciOpen("whats-new.html?repo="+encodeURIComponent(C.repo)+"&from="+encodeURIComponent(C.version)+"&src="+encodeURIComponent(src)+"&ref="+encodeURIComponent(C.sourceRef),"What\u2019s New");};b.classList.add("lvci-clickable");b.setAttribute("role","button");b.setAttribute("tabindex","0");b.title="LabVIEW CI v"+C.version+" \u2014 click for release notes";b.addEventListener("click",go);b.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});if(C.isSource||!C.sourceRepo)return;var u="https://raw.githubusercontent.com/"+C.sourceRepo+"/"+C.sourceRef+"/.github/labview-ci/catalog.json";fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(cat){if(!cat||!cat.version||cmp(cat.version,C.version)<=0)return;var d=document.getElementById("lvci-update-dot");b.classList.remove("lvci-clickable");b.classList.add("lvci-has-update");if(d)d.classList.add("on");b.title="Update available: v"+C.version+" \u2192 v"+cat.version+" \u2014 click to see what\u2019s new";}).catch(function(){});})();</script>
 
   <div id="cidash-run-modal" onclick="if(event.target===this)cidashRunClose()" style="display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55)">
     <div role="dialog" aria-modal="true" aria-labelledby="cidash-run-title" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 48px rgba(0,0,0,.5)">
@@ -139,8 +139,16 @@
           var n=results.length;
           setStatus('\u2713 Queued '+n+' run'+(n>1?'s':'')+'. <a href="https://github.com/'+REPO+'/actions" target="_blank" rel="noopener" style="color:var(--link)">View runs \u2197</a>', 'ok');
         } else {
-          var parts = results.map(function(r){ return (RT[state.cap].platforms[r.plat]&&Object.keys(RT[state.cap].platforms).length>1?cap(r.plat)+': ':'') + (r.ok?'queued':('HTTP '+r.status)); });
-          setStatus(parts.join(' \u00b7 ') + ' \u2014 a 403/404 usually means the token lacks <strong>Actions: write</strong> or access to this repo.', 'err');
+          var multi = Object.keys(RT[state.cap].platforms).length > 1;
+          var parts = results.map(function(r){ return (multi?cap(r.plat)+': ':'') + (r.ok?'queued':('HTTP '+r.status)); });
+          var has403 = results.some(function(r){return r.status===403;});
+          var has404 = results.some(function(r){return r.status===404;});
+          var hint;
+          if (has403) hint = ' \u2014 <strong>403</strong>: the token is missing the <strong>Actions: Read and write</strong> permission. On the token page open <strong>Permissions \u2192 Repository permissions \u2192 Actions \u2192 Read and write</strong> (selecting the repository is not enough), then <strong>Update</strong> and run again.';
+          else if (has404) hint = ' \u2014 <strong>404</strong>: the token cannot see <code>'+esc(REPO)+'</code>. Grant it <strong>Repository access</strong> to this repo AND the <strong>Actions: Read and write</strong> permission.';
+          else hint = ' \u2014 check the token has <strong>Actions: Read and write</strong> on this repository.';
+          setStatus(parts.join(' \u00b7 ') + hint + ' <a href="#" id="cidash-fixtok" style="color:var(--link);white-space:nowrap">Update token \u2192</a>', 'err');
+          var ft=$("cidash-fixtok"); if(ft) ft.addEventListener('click', function(e){ e.preventDefault(); showTokenPanel(); });
         }
       });
     }
@@ -164,7 +172,14 @@
       }
       // One-time token setup panel (hidden until needed).
       h += '<div id="cidash-tok-panel" style="display:none;border:1px solid var(--border);border-radius:8px;padding:12px;background:var(--surface);margin:0 0 12px">';
-      h += '<div style="font-size:.8em;color:var(--fg-muted);margin-bottom:8px">One-time setup. Paste a GitHub token with <strong>Actions: Read and write</strong> on <code>'+esc(REPO)+'</code>. It is stored only in this browser and sent only to api.github.com. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--link)">Create a fine-grained token \u2197</a></div>';
+      h += '<div style="font-size:.82em;color:var(--fg);font-weight:600;margin-bottom:6px">One-time setup \u2014 a token to queue runs</div>';
+      h += '<ol style="font-size:.8em;color:var(--fg-muted);margin:0 0 8px;padding-left:18px;line-height:1.6">';
+      h += '<li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--link)">Create a fine-grained token \u2197</a></li>';
+      h += '<li><strong>Repository access</strong> \u2192 Only select repositories \u2192 add <code>'+esc(REPO)+'</code>.</li>';
+      h += '<li><strong>Permissions \u2192 Repository permissions \u2192 Actions \u2192 Read and write</strong>. Required \u2014 selecting the repo alone gives a 403.</li>';
+      h += '<li>Generate, then paste it below.</li>';
+      h += '</ol>';
+      h += '<div style="font-size:.76em;color:var(--fg-muted);margin-bottom:8px">Stored only in this browser (localStorage); sent only to api.github.com \u2014 never to the repo, the page, or CI.</div>';
       h += '<div style="display:flex;gap:8px;flex-wrap:wrap"><input id="cidash-tok-input" type="password" autocomplete="off" placeholder="github_pat_\u2026 or ghp_\u2026" style="flex:1 1 240px;min-width:180px;padding:7px 10px;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:6px;font-family:ui-monospace,Menlo,monospace;font-size:.8em">';
       h += '<button class="cidash-btn cidash-go" id="cidash-tok-save">Save &amp; run</button>';
       h += '<button class="cidash-btn cidash-ghost" id="cidash-tok-cancel">Cancel</button></div></div>';
@@ -215,7 +230,7 @@
   })();
   </script>
   <h1>CI Dashboard — challenge-of-champions</h1>
-  <div class="sub">Last updated: 2026-06-16 03:27 UTC &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
+  <div class="sub">Last updated: 2026-06-16 03:41 UTC &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
   <div class="nav">
     <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/">VI Browser</a>
     <a href="https://github.com/elijah286/challenge-of-champions">GitHub</a>
@@ -238,6 +253,21 @@
       </tr>
     </thead>
     <tbody>
+    <tr data-project="false">
+      <td style="padding:8px;font-family:monospace;font-size:.85em">
+        <a href="https://github.com/elijah286/challenge-of-champions/commit/b83d41e5f8f5ea5dc63ad64e1aa9b91b2e490d3c" style="color:var(--link)">b83d41e</a>
+      </td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="ci(dashboard): opt into v1.7.4 — clearer Run now token guidance"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=b83d41e5f8f5ea5dc63ad64e1aa9b91b2e490d3c" style="color:var(--fg)">ci(dashboard): opt into v1.7.4 — clearer Run now token guidance</a></td>
+      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">github-actions[bot]</td>
+      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-16</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+    </tr>
+
     <tr data-project="false">
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://github.com/elijah286/challenge-of-champions/commit/47d893783c1635c2ad3da211bbc8c1195248c897" style="color:var(--link)">47d8937</a>
@@ -1713,21 +1743,6 @@
         <a href="https://github.com/elijah286/challenge-of-champions/commit/5b7d5746a75a525059bc8d7ec73deb63dde6d5ef" style="color:var(--link)">5b7d574</a>
       </td>
       <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="ci: expand abbreviated SHAs via GitHub API before checkout"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=5b7d5746a75a525059bc8d7ec73deb63dde6d5ef" style="color:var(--fg)">ci: expand abbreviated SHAs via GitHub API before checkout</a></td>
-      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
-      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-03</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-    </tr>
-
-    <tr data-project="false">
-      <td style="padding:8px;font-family:monospace;font-size:.85em">
-        <a href="https://github.com/elijah286/challenge-of-champions/commit/6f8e0a7833e09e623370220f5233156585c62c39" style="color:var(--link)">6f8e0a7</a>
-      </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="ci: add dashboard link to README; honor light/dark mode in dashboard"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=6f8e0a7833e09e623370220f5233156585c62c39" style="color:var(--fg)">ci: add dashboard link to README; honor light/dark mode in dashboard</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-03</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
