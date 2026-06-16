@@ -36,21 +36,20 @@
     .run-badge a:hover{text-decoration:underline}
     .run-spin{width:9px;height:9px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;display:inline-block;animation:cidash-spin .7s linear infinite}
     @keyframes cidash-spin{to{transform:rotate(360deg)}}
+    .cidash-run{display:inline-block;color:var(--fg-muted);font-size:.95em;line-height:1;text-decoration:none;opacity:.5;transition:opacity .12s,color .12s}.cidash-run:hover{opacity:1;color:var(--link);text-decoration:none}tr:hover .cidash-run{opacity:.85}
   </style>
 </head>
 <body>
   <div style="position:fixed;top:14px;right:16px;z-index:30;display:flex;align-items:center;gap:8px">
-    <div id="lvci-version" title="Installed LabVIEW CI tooling version" style="position:relative;display:inline-flex;align-items:center;gap:6px;background:rgba(110,118,129,.15);color:var(--fg-muted);border:1px solid rgba(110,118,129,.35);padding:8px 12px;border-radius:6px;font-size:.78em;font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none"><span>v1.6.0</span><span id="lvci-update-dot" aria-hidden="true"></span></div>
-    <button onclick="lvciOpen('configure.html?repo=elijah286/challenge-of-champions','Configure Workers')" title="Configure the behavior of this repository's automated CI activities" style="background:#1f6feb;color:#fff;border:0;padding:8px 14px;border-radius:6px;font-size:.82em;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.35)">⚙ Configure Workers</button>
+    <div id="lvci-version" title="Installed LabVIEW CI tooling version" style="position:relative;display:inline-flex;align-items:center;gap:6px;background:rgba(110,118,129,.15);color:var(--fg-muted);border:1px solid rgba(110,118,129,.35);padding:8px 12px;border-radius:6px;font-size:.78em;font-weight:600;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;user-select:none"><span>v1.7.1</span><span id="lvci-update-dot" aria-hidden="true"></span></div>
+    <button onclick="lvciOpen('configure.html','Configure Workers')" title="Configure the behavior of this repository's automated CI activities" style="background:#1f6feb;color:#fff;border:0;padding:8px 14px;border-radius:6px;font-size:.82em;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.35)">⚙ Configure Workers</button>
     <button onclick="lvciOpen('integrate.html','Apply to New Repo')" title="Install these CI capabilities into another repository" style="background:#238636;color:#fff;border:0;padding:8px 14px;border-radius:6px;font-size:.82em;font-weight:600;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.35)">➕ Apply to New Repo</button>
   </div>
-  <div id="lvci-modal" onclick="if(event.target===this)lvciCancel()" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55)">
+  <div id="lvci-modal" onclick="if(event.target===this)lvciClose()" style="display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55)">
     <div style="position:absolute;inset:24px;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 48px rgba(0,0,0,.5)">
-      <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface)">
         <strong id="lvci-modal-title" style="font-size:.95em">Configure Workers</strong>
-        <span id="lvci-status" style="flex:1;font-size:.8em;color:var(--fg-muted)"></span>
-        <button id="lvci-save-btn" onclick="lvciSave()" style="background:#238636;color:#fff;border:1px solid transparent;padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.82em;font-weight:600">Save and apply</button>
-        <button onclick="lvciCancel()" style="background:transparent;border:1px solid var(--border);color:var(--fg);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.82em">Cancel</button>
+        <button onclick="lvciClose()" style="background:transparent;border:1px solid var(--border);color:var(--fg);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.82em">✕ Close</button>
       </div>
       <iframe id="lvci-frame" title="LabVIEW CI dialog" src="about:blank" style="border:0;width:100%;flex:1;min-height:0"></iframe>
     </div>
@@ -59,43 +58,104 @@
     function lvciOpen(src, title) {
       document.getElementById('lvci-frame').src = src;
       document.getElementById('lvci-modal-title').textContent = title;
-      document.getElementById('lvci-save-btn').style.display = (String(src).indexOf('configure.html') === 0) ? '' : 'none';
-      lvciShowStatus('', null);
       document.getElementById('lvci-modal').style.display = 'block';
       document.body.style.overflow = 'hidden';
     }
     function lvciClose() {
       document.getElementById('lvci-modal').style.display = 'none';
       document.getElementById('lvci-frame').src = 'about:blank';
-      lvciShowStatus('', null);
       document.body.style.overflow = '';
     }
-    function lvciCancel() {
-      var f = document.getElementById('lvci-frame');
-      try {
-        var w = f && f.contentWindow;
-        if (w && typeof w.lvciRequestCancel === 'function') { if (w.lvciRequestCancel()) lvciClose(); return; }
-      } catch (e) {}
-      lvciClose();
-    }
-    function lvciSave() {
-      var f = document.getElementById('lvci-frame');
-      try {
-        var w = f && f.contentWindow;
-        if (w && typeof w.lvciRequestSave === 'function') { w.lvciRequestSave(); }
-      } catch (e) {}
-    }
-    function lvciShowStatus(text, ok) {
-      var s = document.getElementById('lvci-status');
-      if (!s) return;
-      s.textContent = text || '';
-      s.style.color = (ok === true) ? '#3fb950' : ((ok === false) ? '#f85149' : 'var(--fg-muted)');
-    }
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lvciCancel(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lvciClose(); });
   </script>
-  <style>#lvci-version.lvci-clickable{cursor:pointer;color:var(--fg)}#lvci-version.lvci-clickable:hover{background:rgba(110,118,129,.25)}#lvci-version.lvci-has-update{cursor:pointer;color:var(--fg);border-color:#d29922;background:rgba(210,153,34,.13)}#lvci-version.lvci-has-update:hover{background:rgba(210,153,34,.22)}#lvci-update-dot{display:none}#lvci-update-dot.on{display:block;position:absolute;top:-5px;right:-5px;width:11px;height:11px;border-radius:50%;background:#d29922;box-shadow:0 0 0 2px var(--bg);animation:lvci-pulse 1.7s ease-out infinite}@keyframes lvci-pulse{0%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,.5)}70%{box-shadow:0 0 0 2px var(--bg),0 0 0 7px rgba(210,153,34,0)}100%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,0)}}</style><script>(function(){var C={"version": "1.6.0", "sourceRepo": "elijah286/LabVIEW-CI-with-Containers", "sourceRef": "main", "isSource": false, "repo": "elijah286/challenge-of-champions"};function cmp(a,b){var p=String(a||"0").split("."),q=String(b||"0").split(".");for(var i=0;i<Math.max(p.length,q.length);i++){var d=(parseInt(p[i],10)||0)-(parseInt(q[i],10)||0);if(d)return d;}return 0;}if(!C.version)return;var b=document.getElementById("lvci-version");if(!b)return;var src=C.sourceRepo||C.repo;var go=function(){lvciOpen("whats-new.html?repo="+encodeURIComponent(C.repo)+"&from="+encodeURIComponent(C.version)+"&src="+encodeURIComponent(src)+"&ref="+encodeURIComponent(C.sourceRef),"What\u2019s New");};b.classList.add("lvci-clickable");b.setAttribute("role","button");b.setAttribute("tabindex","0");b.title="LabVIEW CI v"+C.version+" \u2014 click for release notes";b.addEventListener("click",go);b.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});if(C.isSource||!C.sourceRepo)return;var u="https://raw.githubusercontent.com/"+C.sourceRepo+"/"+C.sourceRef+"/.github/labview-ci/catalog.json";fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(cat){if(!cat||!cat.version||cmp(cat.version,C.version)<=0)return;var d=document.getElementById("lvci-update-dot");b.classList.remove("lvci-clickable");b.classList.add("lvci-has-update");if(d)d.classList.add("on");b.title="Update available: v"+C.version+" \u2192 v"+cat.version+" \u2014 click to see what\u2019s new";}).catch(function(){});})();</script>
+  <style>#lvci-version.lvci-clickable{cursor:pointer;color:var(--fg)}#lvci-version.lvci-clickable:hover{background:rgba(110,118,129,.25)}#lvci-version.lvci-has-update{cursor:pointer;color:var(--fg);border-color:#d29922;background:rgba(210,153,34,.13)}#lvci-version.lvci-has-update:hover{background:rgba(210,153,34,.22)}#lvci-update-dot{display:none}#lvci-update-dot.on{display:block;position:absolute;top:-5px;right:-5px;width:11px;height:11px;border-radius:50%;background:#d29922;box-shadow:0 0 0 2px var(--bg);animation:lvci-pulse 1.7s ease-out infinite}@keyframes lvci-pulse{0%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,.5)}70%{box-shadow:0 0 0 2px var(--bg),0 0 0 7px rgba(210,153,34,0)}100%{box-shadow:0 0 0 2px var(--bg),0 0 0 0 rgba(210,153,34,0)}}</style><script>(function(){var C={"version": "1.7.1", "sourceRepo": "elijah286/LabVIEW-CI-with-Containers", "sourceRef": "main", "isSource": false, "repo": "elijah286/challenge-of-champions"};function cmp(a,b){var p=String(a||"0").split("."),q=String(b||"0").split(".");for(var i=0;i<Math.max(p.length,q.length);i++){var d=(parseInt(p[i],10)||0)-(parseInt(q[i],10)||0);if(d)return d;}return 0;}if(!C.version)return;var b=document.getElementById("lvci-version");if(!b)return;var src=C.sourceRepo||C.repo;var go=function(){lvciOpen("whats-new.html?repo="+encodeURIComponent(C.repo)+"&from="+encodeURIComponent(C.version)+"&src="+encodeURIComponent(src)+"&ref="+encodeURIComponent(C.sourceRef),"What\u2019s New");};b.classList.add("lvci-clickable");b.setAttribute("role","button");b.setAttribute("tabindex","0");b.title="LabVIEW CI v"+C.version+" \u2014 click for release notes";b.addEventListener("click",go);b.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}});if(C.isSource||!C.sourceRepo)return;var u="https://raw.githubusercontent.com/"+C.sourceRepo+"/"+C.sourceRef+"/.github/labview-ci/catalog.json";fetch(u,{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(cat){if(!cat||!cat.version||cmp(cat.version,C.version)<=0)return;var d=document.getElementById("lvci-update-dot");b.classList.remove("lvci-clickable");b.classList.add("lvci-has-update");if(d)d.classList.add("on");b.title="Update available: v"+C.version+" \u2192 v"+cat.version+" \u2014 click to see what\u2019s new";}).catch(function(){});})();</script>
+
+  <div id="cidash-run-modal" onclick="if(event.target===this)cidashRunClose()" style="display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.55)">
+    <div role="dialog" aria-modal="true" aria-labelledby="cidash-run-title" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 48px rgba(0,0,0,.5)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface)">
+        <strong id="cidash-run-title" style="font-size:.95em">Run</strong>
+        <button onclick="cidashRunClose()" style="background:transparent;border:1px solid var(--border);color:var(--fg);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.82em">&#10005; Close</button>
+      </div>
+      <div id="cidash-run-body" style="padding:16px"></div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var RT = {"masscompile": {"label": "Mass Compile", "platforms": {"windows": {"wf": "masscompile-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}, "linux": {"wf": "masscompile-linux-container.yml", "inputs": {"commit_sha": "{sha}"}}}}, "vi-analyzer": {"label": "VI Analyzer", "platforms": {"windows": {"wf": "run-vi-analyzer-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}, "linux": {"wf": "run-vi-analyzer-linux-container.yml", "inputs": {"commit_sha": "{sha}"}}}}, "vidiff": {"label": "VIDiff", "platforms": {"windows": {"wf": "vidiff-windows-container.yml", "inputs": {"head_sha": "{sha}", "base_sha": "{parent}"}}, "linux": {"wf": "vidiff-linux-container.yml", "inputs": {"head_sha": "{sha}", "base_sha": "{parent}"}}}}, "snapshots": {"label": "VI Snapshots", "platforms": {"all": {"wf": "vi-snapshots.yml", "inputs": {"mode": "head"}}}}};
+    var REPO = "elijah286/challenge-of-champions";
+    var BRANCH = "main";
+    var state = {cap:null, sha:'', parent:'', short:''};
+    function $(id){ return document.getElementById(id); }
+    function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+    function fill(t){ return String(t).replace(/\{sha\}/g, state.sha).replace(/\{parent\}/g, state.parent||''); }
+    function ghCmd(wf, inputs){
+      var s = "gh workflow run " + wf + " --ref " + BRANCH;
+      Object.keys(inputs).forEach(function(k){ s += " -f " + k + "=" + fill(inputs[k]); });
+      return s;
+    }
+    function actionsUrl(wf){ return "https://github.com/" + REPO + "/actions/workflows/" + wf; }
+    function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+    function selectedPlats(def){
+      var keys = Object.keys(def.platforms);
+      if (keys.length === 1) return keys;
+      var boxes = keys.map(function(k){ return $("cidash-plat-"+k); });
+      if (boxes.every(function(b){ return !b; })) return keys.slice();
+      return keys.filter(function(k){ var b = $("cidash-plat-"+k); return b && b.checked; });
+    }
+    function render(){
+      var def = RT[state.cap]; if(!def) return;
+      var keys = Object.keys(def.platforms);
+      var multi = keys.length > 1;
+      var sel = selectedPlats(def);
+      var cmds = sel.map(function(k){ return ghCmd(def.platforms[k].wf, def.platforms[k].inputs); });
+      var h = '';
+      h += '<p style="margin:0 0 12px;color:var(--fg-muted);font-size:.85em">Enqueue the <strong>'+esc(def.label)+'</strong> run for commit <code style="font-family:monospace">'+esc(state.short)+'</code>. Uses your own GitHub auth &mdash; no tokens in the browser.</p>';
+      if (multi){
+        h += '<div style="display:flex;gap:18px;margin:0 0 14px;font-size:.9em">';
+        keys.forEach(function(k){
+          h += '<label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" class="cidash-plat" id="cidash-plat-'+k+'" '+(sel.indexOf(k)>=0?'checked':'')+' style="accent-color:var(--link)">'+esc(cap(k))+'</label>';
+        });
+        h += '</div>';
+      }
+      if (!cmds.length){
+        h += '<p style="color:#bb8009;font-size:.85em;margin:0">Select at least one platform.</p>';
+      } else {
+        h += '<div style="position:relative;margin:0 0 12px"><pre id="cidash-run-cmd" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8em;white-space:pre-wrap;word-break:break-word">'+esc(cmds.join("\n"))+'</pre>';
+        h += '<button onclick="cidashRunCopy()" style="position:absolute;top:8px;right:8px;background:var(--bg);border:1px solid var(--border);color:var(--fg);border-radius:6px;padding:4px 10px;font-size:.74em;cursor:pointer">Copy</button></div>';
+        h += '<div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:.85em">';
+        sel.forEach(function(k){
+          h += '<a href="'+actionsUrl(def.platforms[k].wf)+'" target="_blank" rel="noopener" style="color:var(--link)">Open '+esc(multi?cap(k):def.label)+' workflow &#8599;</a>';
+        });
+        h += '</div>';
+        h += '<p style="color:var(--fg-muted);font-size:.78em;margin:14px 0 0">Run the command with the <a href="https://cli.github.com/" target="_blank" rel="noopener" style="color:var(--link)">GitHub CLI</a> to enqueue immediately, or open the workflow and use <strong>Run workflow</strong> (enter the SHA above).</p>';
+      }
+      $("cidash-run-body").innerHTML = h;
+      Array.prototype.forEach.call(document.querySelectorAll('.cidash-plat'), function(b){ b.addEventListener('change', render); });
+    }
+    window.cidashRunCopy = function(){
+      var pre = $("cidash-run-cmd"); if(!pre || !navigator.clipboard) return;
+      navigator.clipboard.writeText(pre.textContent);
+    };
+    window.cidashRunClose = function(){ var m=$("cidash-run-modal"); if(m){ m.style.display='none'; document.body.style.overflow=''; } };
+    function openRun(c, sha, parent, short){
+      if(!RT[c]) return;
+      state = {cap:c, sha:sha||'', parent:parent||'', short:short||''};
+      $("cidash-run-title").textContent = "Run " + RT[c].label;
+      render();
+      $("cidash-run-modal").style.display='block';
+      document.body.style.overflow='hidden';
+    }
+    document.addEventListener('click', function(e){
+      var a = e.target.closest ? e.target.closest('a.cidash-run') : null;
+      if(!a) return;
+      e.preventDefault();
+      openRun(a.getAttribute('data-cap'), a.getAttribute('data-sha'), a.getAttribute('data-parent'), a.getAttribute('data-short'));
+    });
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') cidashRunClose(); });
+  })();
+  </script>
   <h1>CI Dashboard — challenge-of-champions</h1>
-  <div class="sub">LabVIEW CI v1.6.0 &middot; deployed 2026-06-16 00:08 UTC  &middot; <a href="https://github.com/elijah286/challenge-of-champions/commit/350513f82ee5dbf7c0307126c3bbb9be9da1b565" title="Source commit this dashboard was built from">350513f</a> &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
+  <div class="sub">Last updated: 2026-06-16 02:16 UTC &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
   <div class="nav">
     <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/">VI Browser</a>
     <a href="https://github.com/elijah286/challenge-of-champions">GitHub</a>
@@ -118,6 +178,21 @@
       </tr>
     </thead>
     <tbody>
+    <tr data-project="false">
+      <td style="padding:8px;font-family:monospace;font-size:.85em">
+        <a href="https://github.com/elijah286/challenge-of-champions/commit/69bdd3ab760b916292fa40c5d6bf742cf0b053ee" style="color:var(--link)">69bdd3a</a>
+      </td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="ci(dashboard): config-driven caller — opt into v1.7.1 (run buttons + consolidati"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=69bdd3ab760b916292fa40c5d6bf742cf0b053ee" style="color:var(--fg)">ci(dashboard): config-driven caller — opt into v1.7.1 (run buttons + consolidati</a></td>
+      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">github-actions[bot]</td>
+      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-16</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+    </tr>
+
     <tr data-project="false">
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://github.com/elijah286/challenge-of-champions/commit/350513f82ee5dbf7c0307126c3bbb9be9da1b565" style="color:var(--link)">350513f</a>
@@ -1595,44 +1670,36 @@
       <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="minor improvements"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712" style="color:var(--fg)">minor improvements</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">Elijah Kerry</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2025-04-27</td>
-      <td style="text-align:center"><span title="199/222 project VIs compiled" style="background:#bb8009;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?title=Mass%20Compile%20%C2%B7%200d83d34&src=..%2Fmasscompile%2F0d83d346da3d3fe1fc36ee40fb283da0ef857712%2Findex.html&sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712" style="color:inherit">⚠️ 90%</a></span></td>
+      <td style="text-align:center"><span title="199/222 project VIs compiled" style="background:#bb8009;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/masscompile/0d83d346da3d3fe1fc36ee40fb283da0ef857712/index.html" style="color:inherit">⚠️ 90%</a></span></td>
       <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-analyzer/0d83d346da3d3fe1fc36ee40fb283da0ef857712/index.html" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&plat=windows&changed=1" style="color:var(--link)">Win(1)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&plat=linux&changed=1" style="color:var(--link)">Linux(1)</a></td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-    </tr>
-
-    <tr data-project="true">
-      <td style="padding:8px;font-family:monospace;font-size:.85em">
-        <a href="https://github.com/elijah286/challenge-of-champions/commit/fed86b42317e8d798cd98d7a312c8d8c49a96b4b" style="color:var(--link)">fed86b4</a>
-      </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Added ability to highlight winner"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b" style="color:var(--fg)">Added ability to highlight winner</a></td>
-      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">Elijah Kerry</td>
-      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2025-04-26</td>
-      <td style="text-align:center"><span title="199/222 project VIs compiled" style="background:#bb8009;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?title=Mass%20Compile%20%C2%B7%20fed86b4&src=..%2Fmasscompile%2Ffed86b42317e8d798cd98d7a312c8d8c49a96b4b%2Findex.html&sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b" style="color:inherit">⚠️ 90%</a></span></td>
-      <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-analyzer/fed86b42317e8d798cd98d7a312c8d8c49a96b4b/index.html" style="color:inherit">✅ analyze</a></span></td>
-      <td style="text-align:center"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b&changed=1" style="color:inherit">✅ diff</a></span></td>
-      <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b&plat=windows&changed=1" style="color:var(--link)">Win(11)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b&plat=linux&changed=1" style="color:var(--link)">Linux(11)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
     </tr></tbody>
   </table>
+  <div id="empty-state" style="display:none;padding:18px;text-align:center;color:var(--fg-muted);font-size:.9em">
+    No project revisions in the recent window. <a href="#" onclick="document.getElementById('show-nonproject').click();return false" style="color:var(--link)">Include CI-only revisions</a> to see CI&nbsp;/&nbsp;tooling commits.
+  </div>
   <script>
     (() => {
       const checkbox = document.getElementById('show-nonproject');
       const rows = document.querySelectorAll('tbody tr[data-project]');
-      // When the fetched window has too few project revisions, fall back to
-      // showing every revision so the table is never blank — even though the
-      // checkbox stays unchecked. The user can still toggle it; once checked,
-      // all rows show regardless of the fallback.
-      const fewProjects = true;
+      const emptyState = document.getElementById('empty-state');
+      // Honor the toggle strictly: while "Include CI-only revisions" is
+      // unchecked, only project revisions show. If that hides every row,
+      // reveal an inline prompt (rather than silently showing CI-only rows
+      // or leaving a blank table) inviting the user to enable the toggle.
       const applyFilter = () => {
-        const showNonProject = checkbox.checked || fewProjects;
+        const showNonProject = checkbox.checked;
+        let visible = 0;
         rows.forEach((row) => {
           const isProject = row.getAttribute('data-project') === 'true';
-          row.style.display = (isProject || showNonProject) ? '' : 'none';
+          const show = isProject || showNonProject;
+          row.style.display = show ? '' : 'none';
+          if (show) visible++;
         });
+        if (emptyState) emptyState.style.display = visible ? 'none' : '';
       };
       checkbox.addEventListener('change', applyFilter);
       applyFilter();

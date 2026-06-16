@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CI Report — challenge-of-champions</title>
+  <title>CI Report — LabVIEW-CI-with-Containers</title>
   <!--
     Framed report viewer. The CI Dashboard links its Mass Compile badge here so a
     report opens *inside* a chrome bar (with a "← CI Dashboard" back link, the
@@ -92,14 +92,14 @@
       const sha = decode(params.get('sha'), '');
       const back = safeRel(params.get('back')) || '../';
 
-      document.title = title + ' — challenge-of-champions';
+      document.title = title + ' — LabVIEW-CI-with-Containers';
       document.getElementById('title').textContent = title;     // textContent: no HTML injection
       document.getElementById('back').setAttribute('href', back);
 
       const shaEl = document.getElementById('sha');
       if (sha) {
         const a = document.createElement('a');
-        a.href = 'https://github.com/elijah286/challenge-of-champions/commit/' + encodeURIComponent(sha);
+        a.href = 'https://github.com/elijah286/LabVIEW-CI-with-Containers/commit/' + encodeURIComponent(sha);
         a.textContent = sha.slice(0, 7);
         shaEl.appendChild(a);
       }
