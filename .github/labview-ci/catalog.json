@@ -1,11 +1,33 @@
 {
   "schemaVersion": 1,
-  "version": "1.7.8",
+  "version": "1.7.10",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. Governance for when and how to bump A.B.C lives in .github/labview-ci/VERSIONING.md (use bump-version.py): every push that changes tooling bumps at least PATCH, and each published version is tagged v<version> in the source repo so consumers can pin an update. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest the source repo publishes.",
     "releases": [
+      {
+        "version": "1.7.10",
+        "date": "2026-06-16",
+        "title": "Configure Workers is scoped to the repo you launch it from",
+        "summary": "The Configure Workers dialog no longer asks you to type a repository at the top. It is always opened from a specific repository's dashboard, so it now detects that repository automatically and applies every setting to it. The old 'Repository' section (owner/name, branch, and 'Load current settings') is gone; the dialog shows which repo it is configuring read-only and loads that repo's current settings on open.",
+        "highlights": [
+          "Removed the manual 'Repository' input section \u2014 the repo is detected from the dashboard you opened the dialog from (the ?repo= the dashboard now passes, falling back to the GitHub Pages URL, then the source repo).",
+          "The dialog header now shows 'Configuring <owner/repo>' read-only so you can confirm the scope at a glance.",
+          "The Reconfigure command and 'Load current settings' now always target the detected repository, removing the chance of editing the wrong repo's config."
+        ]
+      },
+      {
+        "version": "1.7.9",
+        "date": "2026-06-16",
+        "title": "The version badge shows when an upgrade is in flight",
+        "summary": "While a tooling upgrade is being applied, the version badge turns into a live 'Updating\u2026' indicator (a spinner) that links straight to the action in progress, instead of silently showing the old version until the rebuild lands. It covers both windows: the moment you click Update now (links to the running 'Apply LabVIEW CI update' workflow), and the gap after you merge the update PR while the dashboard is rebuilding and deploying (links to that build). It clears itself automatically once the new version is live.",
+        "highlights": [
+          "When the update workflow is running, the badge reads 'Updating\u2026' and clicking it opens the running workflow run.",
+          "After the update PR is merged, the badge reads 'Updating to vX\u2026' until the rebuilt dashboard deploys, linking to the in-flight build \u2014 no more wondering why the version still looks old.",
+          "Uses a read-only check against the repo's own Actions + committed config; reuses the Run-now token if present for a higher rate limit, otherwise an unauthenticated public read. No new permissions required."
+        ]
+      },
       {
         "version": "1.7.8",
         "date": "2026-06-15",
