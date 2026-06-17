@@ -23,12 +23,6 @@ jobs:
     if: always()
 
     steps:
-      - name: Checkout (publish helper)
-        uses: actions/checkout@v4
-        with:
-          sparse-checkout: .github/labview
-          sparse-checkout-cone-mode: false
-
       - name: Download VIDiff artifact
         uses: actions/github-script@v7
         id: artifact
@@ -74,23 +68,20 @@ jobs:
           echo "platform=$(echo $META | python3 -c "import sys,json; print(json.load(sys.stdin).get('platform','windows'))")" >> "$GITHUB_OUTPUT"
           echo "outcome=$(echo $META | python3 -c "import sys,json; print(json.load(sys.stdin).get('outcome','unknown'))")" >> "$GITHUB_OUTPUT"
 
-      - name: Deploy VIDiff report to GitHub Pages (concurrent-safe)
+      - name: Deploy VIDiff report to GitHub Pages
         if: steps.artifact.outputs.result != 'null'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PP_SRC: /tmp/vidiff-report
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/vidiff-report
           # push-SHORT_SHA/windows or pr-NUMBER/linux
-          PP_DEST: >-
+          destination_dir: >-
             vidiff/${{
               steps.meta.outputs.pr_number != '' &&
               format('pr-{0}', steps.meta.outputs.pr_number) ||
               format('push-{0}', steps.meta.outputs.head_sha)
             }}/${{ steps.meta.outputs.platform }}
-          PP_MSG: "VIDiff report (${{ steps.meta.outputs.platform }}) for ${{ steps.meta.outputs.head_sha }}"
-        run: |
-          PP_REMOTE="https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
-            bash .github/labview/publish-pages.sh
+          keep_files: true
 
       - name: Build report URL
         if: steps.artifact.outputs.result != 'null'

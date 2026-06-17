@@ -321,7 +321,26 @@ def render(data: dict) -> str:
     blob = json.dumps(data, ensure_ascii=False)
     # Neutralise any sequence that could break out of the <script> blob.
     blob = blob.replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
-    return _TEMPLATE.replace("__VIA_DATA_JSON__", blob)
+    # The shared site header (lvci-header.js, deployed once at the Pages root) reads
+    # this config to render consistent nav + the report's context actions (Re-run
+    # analysis, Native report, This commit). Pages base + commit are known here, so
+    # bake a small config rather than depend on client-side parsing order.
+    m = data.get("meta", {}) or {}
+    pages = (m.get("pages_url") or "").rstrip("/")
+    hdr_cfg = {
+        "context": "vi-analyzer-report",
+        "repo": m.get("repo", ""),
+        "pagesUrl": pages or "../..",
+        "sha": m.get("sha", ""),
+        "short": m.get("short", ""),
+        "platform": m.get("platform", "windows"),
+        "rawUrl": "raw.html",
+    }
+    hdr_src = "../../lvci-header.js"  # reports deploy at vi-analyzer/<sha>/ (two deep)
+    out = _TEMPLATE.replace("__VIA_DATA_JSON__", blob)
+    out = out.replace("__VIA_HEADER_CFG__", json.dumps(hdr_cfg, ensure_ascii=False))
+    out = out.replace("__LVCI_HEADER_SRC__", hdr_src)
+    return out
 
 
 def main() -> None:
@@ -376,6 +395,8 @@ _TEMPLATE = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>VI Analyzer Report — challenge-of-champions</title>
+<script>window.LVCI=__VIA_HEADER_CFG__;</script>
+<script src="__LVCI_HEADER_SRC__" defer></script>
 <style>
 :root{
   --bg:#0d1117;--surface:#161b22;--surface2:#1c2128;--border:#30363d;--row:#21262d;
@@ -498,7 +519,6 @@ h1{font-size:1.35em;margin:0 0 2px}
 <div class="wrap">
   <h1>VI Analyzer Report</h1>
   <div class="sub" id="sub"></div>
-  <div class="nav" id="nav"></div>
 
   <div class="cards" id="cards"></div>
   <div class="bar"><span id="barfill"></span></div>
@@ -549,20 +569,20 @@ let query = '';
 (function header(){
   const m = META;
   const commitMsg = (m.commit && m.commit.message) ? esc(m.commit.message) : '';
-  const shaLink = m.repo && m.sha ? `https://github.com/${m.repo}/commit/${m.sha}` : '';
+  // The commit hash opens this revision's VI snapshots in the VI Browser; the
+  // GitHub commit stays available via the trailing "commit on GitHub" link (and,
+  // on a standalone report, the header's "This commit" action — which the shared
+  // header suppresses when the report is embedded in the report-viewer iframe).
+  const snapLink = m.sha ? SNAP_BASE + 'index.html?sha=' + encodeURIComponent(m.sha) : '';
+  const ghLink   = m.repo && m.sha ? `https://github.com/${m.repo}/commit/${m.sha}` : '';
   document.getElementById('sub').innerHTML =
-    (m.short ? `Commit ${shaLink?`<a href="${shaLink}">${esc(m.short)}</a>`:esc(m.short)} ` : '') +
+    (m.short ? `Commit ${snapLink?`<a href="${snapLink}" target="_blank" rel="noopener" title="Browse this commit's VI snapshots in the VI Browser">${esc(m.short)}</a>`:esc(m.short)} ` : '') +
     (commitMsg ? `&middot; ${commitMsg} ` : '') +
     (m.platform ? `&middot; ${esc(m.platform)} ` : '') +
     (m.analysis_date ? `&middot; ${esc(m.analysis_date)} ` : '') +
     (m.duration ? `&middot; ${esc(m.duration)} ` : '') +
-    `&middot; generated ${esc(m.generated_utc||'')}`;
-  const pages = m.pages_url || '../..';
-  document.getElementById('nav').innerHTML =
-    `<a href="${pages}/">CI Dashboard</a>` +
-    `<a href="${SNAP_BASE}index.html${m.sha?`?sha=${m.sha}`:''}">VI Browser</a>` +
-    `<a href="raw.html">Native report ↗</a>` +
-    (m.repo ? `<a href="https://github.com/${m.repo}">GitHub</a>` : '');
+    `&middot; generated ${esc(m.generated_utc||'')}` +
+    (ghLink ? ` &middot; <a href="${ghLink}" target="_blank" rel="noopener" title="View this commit on GitHub">commit on GitHub &#8599;</a>` : '');
 
   const pct = SUM.tests_run ? Math.round(SUM.passed/SUM.tests_run*1000)/10 : 0;
   // "Failed tests" is VI Analyzer's official count of failed test instances; a
@@ -804,6 +824,9 @@ document.getElementById('collapse').addEventListener('click',()=>{
   if(tab==='vi') document.querySelectorAll('#view-vi .vi, #view-vi .group').forEach(d=>d.open=false);
   else document.querySelectorAll('#view-rule .rule').forEach(d=>d.open=false);
 });
+
+// The site header (lvci-header.js) owns "Re-run analysis" + the token flow now,
+// reading window.LVCI for this commit; nothing report-specific is needed here.
 
 renderVI(); renderRule(); apply();
 </script>

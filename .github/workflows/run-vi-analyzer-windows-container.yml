@@ -26,7 +26,7 @@ on:
 env:
   # Custom CI image (built by build-labview-image.yml). GHCR repository names MUST be
   # lowercase, but github.event.repository.name preserves the repo's original case
-  # (e.g. "LabVIEW-CI-with-Containers"), which `docker pull` rejects ("repository name
+  # (e.g. "challenge-of-champions"), which `docker pull` rejects ("repository name
   # must be lowercase") — so no worker ever ran and the dashboard's Win Worker column
   # stayed empty. The image ref is therefore resolved + lowercased at runtime by the
   # "Resolve container image name" step below (-> $GITHUB_ENV); declared empty here so
@@ -40,11 +40,15 @@ permissions:
   statuses: write
   packages: read
 
-# No workflow-level concurrency group: revisions analyze in parallel, each in its own
-# container (unaware of the others). The gh-pages publish is made concurrency-safe by
-# .github/labview/publish-pages.sh (per-SHA destination + fetch-rebase-retry), so many
-# revisions publish at once without the old "! [rejected] (fetch first)" race that the
-# shared report-pages-deploy group used to prevent by serializing the whole job.
+# Serialize report deploys to gh-pages. peaceiris/actions-gh-pages clones, commits,
+# and pushes the branch; two report jobs pushing at once make the loser's push bounce
+# with "! [rejected] (fetch first)", so its report never deploys (dashboard 404).
+# A shared group across the report-deploy workflows (mass compile + VI Analyzer)
+# makes them queue instead of racing. cancel-in-progress:false so a queued run still
+# publishes rather than being dropped.
+concurrency:
+  group: report-pages-deploy
+  cancel-in-progress: false
 
 jobs:
   vi-analyzer:
@@ -262,17 +266,14 @@ jobs:
           git config --global core.longpaths true
           git config --system core.longpaths true || true
 
-      - name: Deploy report to GitHub Pages (concurrent-safe)
+      - name: Deploy report to GitHub Pages
         if: steps.report.outputs.exists == 'true'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PP_SRC: ${{ github.workspace }}/ci-out/vi-analyzer
-          PP_DEST: vi-analyzer/${{ steps.sha.outputs.sha }}
-          PP_MSG: "VI Analyzer report for ${{ steps.sha.outputs.sha }}"
-        run: |
-          PP_REMOTE="https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
-            bash .github/labview/publish-pages.sh
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/ci-out/vi-analyzer
+          destination_dir: vi-analyzer/${{ steps.sha.outputs.sha }}
+          keep_files: true
 
       - name: Post commit status
         if: always()

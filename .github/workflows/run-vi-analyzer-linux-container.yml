@@ -140,16 +140,13 @@ jobs:
           path: ${{ github.workspace }}/ci-out/vi-analyzer/
           if-no-files-found: warn
 
-      - name: Deploy report to GitHub Pages (concurrent-safe)
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PP_SRC: ${{ github.workspace }}/ci-out/vi-analyzer
-          PP_DEST: vi-analyzer-linux/${{ steps.sha.outputs.sha }}
-          PP_MSG: "VI Analyzer (linux) report for ${{ steps.sha.outputs.sha }}"
-        run: |
-          PP_REMOTE="https://x-access-token:${GH_TOKEN}@${GITHUB_SERVER_URL#https://}/${GITHUB_REPOSITORY}.git" \
-            bash .github/labview/publish-pages.sh
+      - name: Deploy report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/ci-out/vi-analyzer
+          destination_dir: vi-analyzer-linux/${{ steps.sha.outputs.sha }}
+          keep_files: true
 
       - name: Publish worker manifest to GitHub Pages
         if: steps.worker.outputs.version != ''

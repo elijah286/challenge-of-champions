@@ -86,7 +86,46 @@ printed next steps (enable Pages, set Actions permissions, commit & push).
 | `--repo owner/name` | Target repo (default: inferred from the git remote) |
 | `--dry-run` | Show what would change without writing |
 | `--force` | Overwrite files that already exist |
+| `--update` | Re-pull the latest tooling for an existing install (overwrites tooling, preserves your config) |
 | `--list` | List capabilities and exit |
+
+## Updating an existing install
+
+A copy install is a snapshot. To pull later improvements **without losing your
+config**, re-run the bootstrapper (or `install.py`) with `--update`:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/elijah286/challenge-of-champions/main/.github/labview-ci/install.sh \
+  | bash -s -- --update
+```
+
+`--update` reads `.github/labview-ci.yml` to recover what was installed, refreshes
+every tooling file, and **never overwrites** the files listed under `userConfig`
+in [`catalog.json`](catalog.json) (e.g. your `ci-tooling.packages.json`). Review
+with `git diff`, then commit.
+
+For true *ongoing* updates (auto-PRs via Dependabot), graduate to the standalone
+dependency model — see [Going standalone](#going-standalone).
+
+## Reconfiguring a repo
+
+Settings live in `labview-ci.yml` (pipeline) + `ci-tooling.packages.json`
+(container dependencies). Change them two ways:
+
+- **Configure tool** ([`../pages/configure.html`](../pages/configure.html), the
+  dashboard's **⚙ Configure** button) — edit LabVIEW version, OS, activities,
+  runner count, and dependencies/Antidoc; download the files or copy a
+  `gh workflow run reconfigure.yml` command.
+- **Reconfigure workflow** ([`../workflows/reconfigure.yml`](../workflows/reconfigure.yml))
+  — a `workflow_dispatch` form that writes the config and **opens a PR**
+  (GitHub-native auth, fully reviewable).
+
+## Going standalone
+
+To let many repos share this tooling and receive updates by version, extract it
+into its own repo and reference it by tag (`@v1`) with Dependabot auto-bumps. A
+ready-to-extract template + step-by-step guide lives in
+[`standalone/`](standalone/README.md).
 
 ## Adding a capability
 
@@ -123,10 +162,11 @@ presentation: `stable`, `advanced` (opt-in), or `planned` (shown but disabled).
 
 | File | Role |
 |---|---|
-| `catalog.json` | Capability registry — the single source of truth |
-| `install.py` | Installer brain (stdlib-only Python) |
+| `catalog.json` | Capability registry + version + userConfig — the single source of truth |
+| `install.py` | Installer brain (stdlib-only Python); supports `--update` |
 | `install.sh` / `install.ps1` | Bootstrappers for `curl \| bash` / PowerShell |
 | `config.example.yml` | Documented configuration/manifest schema |
+| `standalone/` | Template + guide for the versioned-dependency (own-repo) model |
 | `README.md` | This document |
 
 The configurator UI lives at [`.github/pages/integrate.html`](../pages/integrate.html)
