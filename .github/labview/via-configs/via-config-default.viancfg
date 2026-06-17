@@ -16,6 +16,12 @@
 			<Removed>FALSE</Removed>
 		</Item>
 	</ItemsToAnalyze>
+	<!--
+	  TestConfigData is intentionally empty. The CI runner (run-vi-analyzer.ps1)
+	  does NOT pass this file to LabVIEWCLI; it analyzes the workspace DIRECTORY
+	  directly, which runs the full default VI Analyzer test suite. This file is
+	  kept only as a template/reference for config-file-based analysis.
+	-->
 	<TestConfigData>
 	</TestConfigData>
 	<ExclusionData>

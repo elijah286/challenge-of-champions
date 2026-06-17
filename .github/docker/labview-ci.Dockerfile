@@ -43,12 +43,16 @@ ARG CI_WORKER_VERSION=dev
 # .vipc staged the VIPM hook below is a no-op.
 COPY .github/labview/vipm/ C:/vipm/
 
-# Install the VI Analyzer support package at image build-time. nipkg install is
-# idempotent — if the package is already present it exits cleanly.
+# Install the VI Analyzer support package (ni-viawin-labview-support). This package
+# makes the full default VI Analyzer test configuration available to the analyzer,
+# which run-vi-analyzer.ps1 invokes in "directory mode" (passing the workspace
+# directory as -ConfigPath runs that full default suite against every VI). nipkg
+# install is idempotent — if the package is already present in the base image it
+# exits cleanly.
 RUN if (-not (Get-Command nipkg -ErrorAction SilentlyContinue)) { throw 'nipkg was not found in the LabVIEW base image.' }; `
     nipkg feed-add --name=$env:NIPM_FEED_NAME $env:NIPM_FEED_URL; `
     nipkg update; `
-    nipkg install --accept-eulas -y --passive $env:VIA_SUPPORT_PACKAGE; `
+    nipkg install --accept-eulas -y $env:VIA_SUPPORT_PACKAGE; `
     if (Test-Path 'C:\ProgramData\National Instruments\NI Package Manager\cache') { `
       Remove-Item -Path 'C:\ProgramData\National Instruments\NI Package Manager\cache\*' -Force -Recurse -ErrorAction SilentlyContinue `
     }

@@ -57,7 +57,13 @@ param(
     [string]$Image             = 'nationalinstruments/labview:latest-windows',
     [int]   $MaxCommits        = 0,
     [int]   $MaxVIs            = 0,
-    [int]   $TimeBudgetMinutes = 300
+    [int]   $TimeBudgetMinutes = 300,
+    # Directory holding render-snapshots.ps1 + build-gallery.py. Defaults to the
+    # in-repo location; a composite action passes its own bundled directory so the
+    # consumer repo needs no copy of these scripts.
+    [string]$OpsDir            = '',
+    # Directory holding the VI Browser page assets (vi-browser.html, vi-interactive.html).
+    [string]$PagesDir          = ''
 )
 
 # NOTE: 'Continue' (not 'Stop') is deliberate. This orchestrator drives native
@@ -74,8 +80,9 @@ $ProgressPreference    = 'SilentlyContinue'
 $WorkspaceRoot = (Resolve-Path $WorkspaceRoot).Path
 if ($OutDir -eq '') { $OutDir = Join-Path $WorkspaceRoot 'ci-out\vi-snapshots' }
 $ByBlobDir = Join-Path $OutDir 'by-blob'
-$OpsHost   = Join-Path $WorkspaceRoot '.github\labview'
-$PagesDir  = Join-Path $WorkspaceRoot '.github\pages'
+if ($OpsDir   -eq '') { $OpsDir   = Join-Path $WorkspaceRoot '.github\labview' }
+if ($PagesDir -eq '') { $PagesDir = Join-Path $WorkspaceRoot '.github\pages' }
+$OpsHost   = $OpsDir
 
 $TempRoot = if ($env:RUNNER_TEMP) { $env:RUNNER_TEMP } else { [System.IO.Path]::GetTempPath() }
 $WorkTreesHost = Join-Path $TempRoot 'lvci-wt'

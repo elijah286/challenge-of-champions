@@ -21,7 +21,9 @@ on:
         default: false
 
 env:
-  # Image name derives from the repo in the resolve step below (-> $GITHUB_ENV).
+  # IMAGE_NAME is populated at runtime by the resolve step below (-> $GITHUB_ENV);
+  # declared here as empty so it is an always-defined env key.
+  IMAGE_NAME: ''
   DEFAULT_TAG: linux-${{ vars.LABVIEW_VERSION || '2026' }}
 
 permissions:

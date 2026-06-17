@@ -22,8 +22,11 @@ on:
         default: false
 
 env:
-  # Image name + Pages URL derive from the repo in the resolve step below (-> $GITHUB_ENV).
+  # IMAGE_NAME and PAGES_URL are populated at runtime by the resolve step below
+  # (-> $GITHUB_ENV); declared here as empty so they are always-defined env keys.
   # Tag = LabVIEW version; override via Actions vars LABVIEW_VERSION / LABVIEW_IMAGE_NAME / PAGES_URL.
+  IMAGE_NAME: ''
+  PAGES_URL: ''
   DEFAULT_TAG: ${{ vars.LABVIEW_VERSION || '2026' }}
 
 permissions:
