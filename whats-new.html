@@ -143,8 +143,10 @@
         <li>Click <strong>Update now</strong> below. The first time, paste a one-time token &mdash; the dialog walks you
           through it (the same token the dashboard&rsquo;s &ldquo;Run now&rdquo; uses).</li>
         <li>The <strong>Apply LabVIEW CI update</strong> workflow runs and opens a <strong>pull request</strong> that adopts the new version.</li>
-        <li><strong>Workflow and checks run automatically.</strong>
-          <small>The pull request is automatically approved by the system, so its checks start immediately without requiring manual approval. You can click <strong>View workflow runs</strong> above to monitor progress in real-time.</small></li>
+        <li class="key"><strong>Approve the pull request&rsquo;s checks.</strong>
+          <small>Because the pull request is opened automatically, GitHub holds its checks for your approval and marks
+          them <em>&ldquo;Action required.&rdquo;</em> Open the PR (or the <strong>Actions</strong> tab), and on the paused run
+          click <strong>Approve and run</strong>. Until you do, the checks never start and the update cannot complete.</small></li>
         <li><strong>Merge the pull request</strong> once its checks pass.</li>
         <li>On the next refresh, the dashboard badge turns green and shows the new version.</li>
       </ol>
@@ -168,7 +170,6 @@
         <button type="button" class="primary" id="updateNowBtn">&#11014; Update now</button>
         <a class="ghost" id="openOnGh" target="_blank" rel="noopener">Open the workflow on GitHub &#8599;</a>
         <button type="button" class="ghost" id="viewRelease">View this release in the source repo</button>
-        <button type="button" class="ghost" id="viewRunsBtn">View workflow runs</button>
         <button type="button" class="ghost" id="tokForget" style="display:none" title="Remove the token saved in this browser">Forget token</button>
       </div>
       <div class="status" id="cmdStatus" style="margin-bottom:4px"></div>
@@ -203,7 +204,7 @@
   <script>
   (() => {
     "use strict";
-    const SOURCE_FALLBACK = { repo: "elijah286/challenge-of-champions", ref: "main" };
+    const SOURCE_FALLBACK = { repo: "elijah286/LabVIEW-CI-with-Containers", ref: "main" };
     const qp = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
 
@@ -535,10 +536,6 @@
       $("viewRelease").addEventListener("click", () => {
         const tag = "v" + state.target;
         const url = `https://github.com/${state.srcRepo}/releases/tag/${encodeURIComponent(tag)}`;
-        window.open(url, "_blank", "noopener");
-      });
-      $("viewRunsBtn").addEventListener("click", () => {
-        const url = `https://github.com/${state.repo}/actions/workflows/apply-tooling-update.yml`;
         window.open(url, "_blank", "noopener");
       });
       $("updateNowBtn").addEventListener("click", dispatchUpdate);
