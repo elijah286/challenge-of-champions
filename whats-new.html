@@ -21,6 +21,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>What's New — LabVIEW CI</title>
+  <script>window.LVCI={context:'whats-new'};</script>
+  <script src="lvci-header.js" defer></script>
   <style>
     :root{
       --bg:#0d1117;--surface:#161b22;--surface2:#0d1117;--border:#30363d;
@@ -152,8 +154,8 @@
       <div class="tokpanel" id="tokPanel" style="display:none">
         <h3>One-time setup &mdash; a token to start the update</h3>
         <ol>
-          <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a fine-grained token &#8599;</a></li>
-          <li><strong>Repository access</strong> &rarr; Only select repositories &rarr; add <code id="tokRepo"></code>.</li>
+          <li><a id="tokCreate" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a fine-grained token &#8599;</a> &mdash; opens with the name, resource owner, and <strong>Actions: Read and write</strong> already filled in.</li>
+          <li><strong>Repository access</strong> &rarr; Only select repositories &rarr; add <code id="tokRepo"></code>. <span class="note">(This is the one step GitHub can&rsquo;t pre-fill from a link.)</span></li>
           <li><strong>Permissions &rarr; Repository permissions &rarr; Actions &rarr; Read and write</strong>. Required &mdash; selecting the repo alone gives a 403.</li>
           <li>Generate, then paste it below.</li>
         </ol>
@@ -202,7 +204,7 @@
   <script>
   (() => {
     "use strict";
-    const SOURCE_FALLBACK = { repo: "elijah286/LabVIEW-CI-with-Containers", ref: "main" };
+    const SOURCE_FALLBACK = { repo: "elijah286/challenge-of-champions", ref: "main" };
     const qp = new URLSearchParams(location.search);
     const $ = (id) => document.getElementById(id);
 
@@ -397,15 +399,17 @@
             "X-GitHub-Api-Version": "2022-11-28",
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ ref: branch, inputs: { target_version: ver } })
+          // The workflow accepts `source_ref` (the source ref/tag to pull); pin
+          // it to the advertised release tag so the PR adopts exactly that version.
+          body: JSON.stringify({ ref: branch, inputs: { source_ref: "v" + ver } })
         });
-      }).then((r) => {
+      }).then(async (r) => {
         if (btn) btn.disabled = false;
         if (r.status === 204) {
           // Optimistically flag the in-flight update so the dashboard's version
           // badge shows "Updating…" immediately and across its auto-refresh — the
           // update workflow is too brief to be caught by the badge's on-load poll.
-          try { localStorage.setItem("lvci_updating", JSON.stringify({ v: ver, ts: Date.now() })); } catch (_) {}
+          try { localStorage.setItem("lvci_updating", JSON.stringify({ v: ver, ts: Date.now(), repo: state.repo })); } catch (_) {}
           try { if (window.parent && window.parent !== window && window.parent.lvciMarkUpdating) window.parent.lvciMarkUpdating(ver); } catch (_) {}
           setCmdStatus(`&#10003; Update started &mdash; opening a pull request to adopt <code>v${esc(ver)}</code>. ` +
             `Two steps remain (see above): <strong>approve the PR&rsquo;s checks</strong> &mdash; GitHub marks them ` +
@@ -414,10 +418,12 @@
           return;
         }
         if (r.status === 401) { clearTok(); refreshTokForget(); setCmdStatus("That token was rejected (401). Paste a valid one.", "err"); showTokenPanel(); return; }
+        let ghMsg = ""; try { const j = await r.json(); ghMsg = (j && j.message) || ""; } catch (_) {}
         let hint;
         if (r.status === 403) hint = `<strong>403</strong>: the token is missing the <strong>Actions: Read and write</strong> permission. On the token page open <strong>Permissions &rarr; Repository permissions &rarr; Actions &rarr; Read and write</strong> (selecting the repository is not enough), then <strong>Update</strong> and try again.`;
         else if (r.status === 404) hint = `<strong>404</strong>: the token cannot see <code>${esc(state.repo)}</code> (or the update workflow is not installed). Grant it <strong>Repository access</strong> to this repo AND the <strong>Actions: Read and write</strong> permission.`;
-        else hint = `HTTP ${r.status} &mdash; check the token has <strong>Actions: Read and write</strong> on this repository.`;
+        else if (r.status === 422) hint = `<strong>422</strong>: GitHub couldn&rsquo;t start the update${ghMsg ? ` &mdash; <em>${esc(ghMsg)}</em>` : ""}. This is a workflow issue, not your token &mdash; make sure this repo&rsquo;s update workflow is current (re-run the installer to refresh the tooling), then try again.`;
+        else hint = `HTTP ${r.status}${ghMsg ? ` &mdash; ${esc(ghMsg)}` : ""}. If this persists, check the token has <strong>Actions: Read and write</strong> on this repository.`;
         setCmdStatus(hint + ` <a href="#" id="cmdFixTok">Update token &rarr;</a>`, "err");
         const ft = $("cmdFixTok"); if (ft) ft.addEventListener("click", (e) => { e.preventDefault(); showTokenPanel(); });
       }).catch((e) => {
@@ -475,6 +481,21 @@
       btn.innerHTML = "&#11014; Update to v" + esc(ver);
       const gh = $("openOnGh"); if (gh) gh.href = ghUrl;
       const tr = $("tokRepo"); if (tr) tr.textContent = state.repo;
+      // Pre-fill the token-creation form: name, resource owner, and the one
+      // permission a dispatch needs (Actions: write). GitHub has no URL param to
+      // pre-select the specific repository, so step 2 (Repository access) stays
+      // manual. Same shape the dashboard's "Run now" and the report header use.
+      const tc = $("tokCreate");
+      if (tc) {
+        const owner = (state.repo || "").split("/")[0];
+        const qp = new URLSearchParams({
+          name: "LabVIEW CI dispatch",
+          description: "Queue LabVIEW CI runs for " + (state.repo || "this repo") + " (Run now / Re-run / Update).",
+          actions: "write"
+        });
+        if (owner) qp.set("target_name", owner);
+        tc.href = "https://github.com/settings/personal-access-tokens/new?" + qp.toString();
+      }
       refreshTokForget();
       $("updateHowto").innerHTML =
         `<strong>Update now</strong> starts the <strong>Apply LabVIEW CI update</strong> workflow for you and opens a ` +
