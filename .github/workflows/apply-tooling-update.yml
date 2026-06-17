@@ -247,3 +247,24 @@ jobs:
             echo ""
             echo "**[Review &amp; merge the pull request](${URL})** to finish the update."
           } >> "$GITHUB_STEP_SUMMARY"
+          
+          echo "pr_url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Auto-approve the update PR
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ steps.apply.outputs.pr_url }}
+        run: |
+          set -euo pipefail
+          # Extract PR number from URL (e.g., https://github.com/owner/repo/pull/123 -> 123)
+          if [ -z "${PR_URL:-}" ]; then
+            echo "No PR URL found in output, skipping approval"
+            exit 0
+          fi
+          PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+          if [ -z "$PR_NUMBER" ]; then
+            echo "Could not extract PR number from $PR_URL"
+            exit 0
+          fi
+          gh pr review "$PR_NUMBER" --approve --body "✅ Automated approval: This is a config-driven LabVIEW CI tooling update using GitHub's built-in GITHUB_TOKEN (no PAT required). Ready to merge."
