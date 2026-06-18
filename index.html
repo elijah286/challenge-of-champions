@@ -33,20 +33,37 @@
     a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}
     .nav{margin-bottom:16px;font-size:.9em}
     .nav a{margin-right:16px;color:var(--link)}
-    .controls{margin:0 0 12px;display:flex;align-items:center;gap:8px;color:var(--fg-muted);font-size:.85em}
+    .controls{margin:0 0 12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:var(--fg-muted);font-size:.85em}
     .controls input{margin:0;accent-color:var(--link)}
+    .cidash-check{display:inline-flex;align-items:center;gap:6px}
+    /* Column-visibility menu (standard "Columns" dropdown of checkboxes). */
+    .cidash-colmenu{position:relative;display:inline-block}
+    .cidash-colbtn{background:var(--surface);border:1px solid var(--border);color:var(--fg);padding:5px 11px;border-radius:6px;cursor:pointer;font-size:1em;line-height:1.2;display:inline-flex;align-items:center;gap:6px}
+    .cidash-colbtn:hover{background:var(--hover)}
+    .cidash-colpanel{position:absolute;top:calc(100% + 6px);left:0;z-index:120;min-width:200px;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.35);padding:6px}
+    .cidash-colpanel[hidden]{display:none}
+    .cidash-colpanel .hd{font-size:.72em;color:var(--fg-muted);padding:4px 8px 6px;text-transform:uppercase;letter-spacing:.05em}
+    .cidash-colopt{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:5px;cursor:pointer;color:var(--fg);white-space:nowrap;font-size:.95em}
+    .cidash-colopt:hover{background:var(--hover)}
+    .cidash-colopt input{margin:0;accent-color:var(--link)}
     .run-badge{display:inline-flex;align-items:center;background:#1f6feb;color:#fff;padding:2px 8px;border-radius:4px;font-size:.75em;font-weight:600}
     .run-badge a:hover{text-decoration:underline}
     /* Optimistic "just queued from this browser" cue: a dashed ring distinguishes
        a client-side queued badge from a server-confirmed running one. */
     .run-badge.cidash-queued{outline:1px dashed rgba(255,255,255,.6);outline-offset:1px}
+    /* A run confirmed FAILED on GitHub: a sticky red badge (no spinner, no dashed
+       "optimistic" ring) so an error shows instead of the cell silently reverting. */
+    .run-badge.cidash-failed{background:#da3633;outline:none}
     .run-spin{width:9px;height:9px;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;display:inline-block;animation:cidash-spin .7s linear infinite}
+    /* The Queued badge places the spinner directly before its label (no flex gap),
+       so give the spinner a small right margin to keep the icon off the "Q". */
+    .run-badge.cidash-queued .run-spin{margin-right:5px}
     @keyframes cidash-spin{to{transform:rotate(360deg)}}
-    .cidash-run{display:inline-block;color:var(--fg-muted);font-size:.95em;line-height:1;text-decoration:none;opacity:.5;transition:opacity .12s,color .12s}.cidash-run:hover{opacity:1;color:var(--link);text-decoration:none}tr:hover .cidash-run{opacity:.85}.cidash-btn{border:1px solid var(--border);border-radius:6px;padding:8px 14px;font-size:.85em;font-weight:600;cursor:pointer;font-family:inherit}.cidash-go{background:#238636;color:#fff;border-color:transparent}.cidash-go:hover{background:#2ea043}.cidash-go:disabled{opacity:.6;cursor:default}.cidash-ghost{background:var(--bg);color:var(--fg)}.cidash-ghost:hover{border-color:var(--link)}.cidash-danger{background:#da3633;color:#fff;border-color:transparent}.cidash-danger:hover{background:#f85149}.cidash-danger:disabled{opacity:.6;cursor:default}.cidash-queued{cursor:pointer}.cidash-queued:hover{filter:brightness(1.13)}.cidash-queued:focus-visible{outline:2px solid var(--link);outline-offset:1px}.cidash-qpos{margin-left:5px;font-weight:700;opacity:.92;font-variant-numeric:tabular-nums}.cidash-qpos:empty{display:none}.lvci-backfill{border:1px solid var(--border);border-left:3px solid #1f6feb;background:var(--surface);border-radius:10px;padding:14px 16px;margin:0 0 18px}.lvci-bf-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.lvci-bf-icon{font-size:1.5em;line-height:1}.lvci-bf-text{flex:1 1 320px;min-width:240px;font-size:.9em;line-height:1.5}.lvci-bf-text strong{display:block;font-size:1.03em;margin-bottom:2px}.lvci-bf-text span{color:var(--fg-muted)}.lvci-bf-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.lvci-bf-tok{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;font-size:.84em;color:var(--fg-muted)}.lvci-bf-status{font-size:.82em;margin-top:10px}.lvci-bf-status:empty{display:none}
+    .cidash-run{display:inline-block;color:var(--fg-muted);font-size:.95em;line-height:1;text-decoration:none;opacity:.5;transition:opacity .12s,color .12s}.cidash-run:hover{opacity:1;color:var(--link);text-decoration:none}tr:hover .cidash-run{opacity:.85}.cidash-btn{border:1px solid var(--border);border-radius:6px;padding:8px 14px;font-size:.85em;font-weight:600;cursor:pointer;font-family:inherit}.cidash-go{background:#238636;color:#fff;border-color:transparent}.cidash-go:hover{background:#2ea043}.cidash-go:disabled{opacity:.6;cursor:default}.cidash-ghost{background:var(--bg);color:var(--fg)}.cidash-ghost:hover{border-color:var(--link)}.cidash-danger{background:#da3633;color:#fff;border-color:transparent}.cidash-danger:hover{background:#f85149}.cidash-danger:disabled{opacity:.6;cursor:default}.cidash-queued{cursor:pointer}.cidash-queued:hover{filter:brightness(1.13)}.cidash-queued:focus-visible{outline:2px solid var(--link);outline-offset:1px}.cidash-qpos{margin-left:5px;font-weight:700;opacity:.92;font-variant-numeric:tabular-nums}.cidash-qpos:empty{display:none}.lvci-backfill{border:1px solid var(--border);border-left:3px solid #1f6feb;background:var(--surface);border-radius:10px;padding:14px 16px;margin:0 0 18px}.lvci-bf-main{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.lvci-bf-icon{font-size:1.5em;line-height:1}.lvci-bf-text{flex:1 1 320px;min-width:240px;font-size:.9em;line-height:1.5}.lvci-bf-text strong{display:block;font-size:1.03em;margin-bottom:2px}.lvci-bf-text span{color:var(--fg-muted)}.lvci-bf-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.lvci-bf-tok{margin-top:12px;border-top:1px solid var(--border);padding-top:12px;font-size:.84em;color:var(--fg-muted)}.lvci-bf-status{font-size:.82em;margin-top:10px}.lvci-bf-status:empty{display:none}.lvci-bf-note{display:block;margin-top:8px}.lvci-bf-info{margin-top:8px;font-size:.92em}.lvci-bf-info>summary{display:inline-block;cursor:pointer;color:var(--link);list-style:none;font-weight:600}.lvci-bf-info>summary::-webkit-details-marker{display:none}.lvci-bf-info>summary:hover{text-decoration:underline}.lvci-bf-info[open]>summary{margin-bottom:8px}.lvci-bf-infobody{color:var(--fg-muted);line-height:1.55;border-left:2px solid #1f6feb;padding-left:12px}.lvci-bf-cfg{display:inline-block;margin-top:8px;color:var(--link);font-weight:600}.cidash-hist-sec{margin:0 0 16px}.cidash-hist-lbl{display:block;font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--fg-muted);margin:0 0 7px}.cidash-hist-scope{display:flex;flex-direction:column;gap:9px}.cidash-hist-radio{display:flex;align-items:center;gap:9px;font-size:.9em;cursor:pointer;user-select:none}.cidash-hist-radio input{accent-color:var(--link);width:15px;height:15px;margin:0;flex:0 0 auto}.cidash-hist-radio .sub{color:var(--fg-muted);font-size:.88em}.cidash-hist-rangerow{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:2px 0 4px 25px}.cidash-hist-rangerow label{display:flex;align-items:center;gap:7px;font-size:.84em;color:var(--fg-muted)}#cidash-hist-from,#cidash-hist-to{padding:7px 9px;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:6px;font-size:.85em;font-family:inherit;max-width:248px}.cidash-hist-spectools{display:flex;gap:14px;margin:2px 0 6px 25px;font-size:.8em}.cidash-hist-spectools a{color:var(--link);cursor:pointer}.cidash-hist-spectools a:hover{text-decoration:underline}.cidash-hist-speclist{display:flex;flex-direction:column;gap:1px;max-height:210px;overflow:auto;margin-left:25px;padding:5px;border:1px solid var(--border);border-radius:7px;background:var(--bg)}.cidash-hist-specitem{display:flex;align-items:center;gap:9px;padding:5px 7px;border-radius:5px;font-size:.84em;cursor:pointer;min-width:0}.cidash-hist-specitem:hover{background:var(--surface)}.cidash-hist-specitem input{accent-color:var(--link);width:14px;height:14px;margin:0;flex:0 0 auto}.cidash-hist-specitem .sh{font-family:ui-monospace,Menlo,monospace;color:var(--fg-muted);flex:0 0 auto}.cidash-hist-specitem .ms{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--fg)}.cidash-hist-acts{display:flex;flex-direction:column;gap:7px}.cidash-hist-act{display:flex;align-items:center;gap:9px;padding:8px 11px;border:1px solid var(--border);border-radius:7px;background:var(--bg);cursor:pointer;font-size:.88em;user-select:none}.cidash-hist-act:hover{border-color:var(--link)}.cidash-hist-act input{accent-color:var(--link);width:15px;height:15px;margin:0;flex:0 0 auto}.cidash-hist-act .cidash-hist-actsub{color:var(--fg-muted);font-size:.85em;margin-left:auto;text-align:right}.cidash-hist-act.disabled{opacity:.45;cursor:default}.cidash-hist-act.disabled:hover{border-color:var(--border)}.cidash-hist-toggle{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:1px solid var(--border);border-left:3px solid #1f6feb;border-radius:8px;background:var(--surface);cursor:pointer;font-size:.88em;user-select:none}.cidash-hist-toggle input{accent-color:var(--link);width:15px;height:15px;margin:2px 0 0;flex:0 0 auto}.cidash-hist-toggle .cidash-hist-tmain{font-weight:600}.cidash-hist-toggle .cidash-hist-tsub{color:var(--fg-muted);font-size:.9em;margin-top:2px;font-weight:400}.cidash-hist-summary{font-size:.84em;color:var(--fg-muted);margin:0 0 12px}.cidash-hist-summary b{color:var(--fg)}
   </style>
 </head>
 <body>
-  <script>window.LVCI={context:'dashboard',repo:'elijah286/challenge-of-champions',pagesUrl:'https://elijah286.github.io/challenge-of-champions'};</script>
+  <script>window.LVCI={context:'dashboard',repo:'elijah286/challenge-of-champions',pagesUrl:'https://elijah286.github.io/challenge-of-champions',isSource:false};</script>
   <script src="lvci-header.js" defer></script>
   <div id="lvci-modal" onclick="if(event.target===this)lvciClose()" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55)">
     <div style="position:absolute;inset:24px;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 48px rgba(0,0,0,.5)">
@@ -90,9 +107,18 @@
       <div id="cidash-q-body" style="padding:16px"></div>
     </div>
   </div>
+  <div id="cidash-hist-modal" onclick="if(event.target===this)cidashHistClose()" style="display:none;position:fixed;inset:0;z-index:310;background:rgba(0,0,0,.55)">
+    <div role="dialog" aria-modal="true" aria-labelledby="cidash-hist-title" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(600px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border);border-radius:10px;box-shadow:0 10px 48px rgba(0,0,0,.5)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface)">
+        <strong id="cidash-hist-title" style="font-size:.95em">Populate dashboard history</strong>
+        <button onclick="cidashHistClose()" style="background:transparent;border:1px solid var(--border);color:var(--fg);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:.82em">&#10005; Close</button>
+      </div>
+      <div id="cidash-hist-body" style="padding:16px"></div>
+    </div>
+  </div>
   <script>
   (function(){
-    var RT = {"masscompile": {"label": "Mass Compile", "platforms": {"windows": {"wf": "masscompile-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}, "linux": {"wf": "masscompile-linux-container.yml", "inputs": {"commit_sha": "{sha}"}}}}, "vi-analyzer": {"label": "VI Analyzer", "platforms": {"windows": {"wf": "run-vi-analyzer-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}, "linux": {"wf": "run-vi-analyzer-linux-container.yml", "inputs": {"commit_sha": "{sha}"}}}}, "vidiff": {"label": "VIDiff", "platforms": {"windows": {"wf": "vidiff-windows-container.yml", "inputs": {"head_sha": "{sha}", "base_sha": "{parent}"}}, "linux": {"wf": "vidiff-linux-container.yml", "inputs": {"head_sha": "{sha}", "base_sha": "{parent}"}}}}, "snapshots": {"label": "VI Snapshots", "platforms": {"all": {"wf": "vi-snapshots.yml", "inputs": {"mode": "head"}}}}};
+    var RT = {"masscompile": {"label": "Mass Compile", "platforms": {"windows": {"wf": "masscompile-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}, "linux": {"wf": "masscompile-linux-container.yml", "inputs": {"commit_sha": "{sha}"}}}}, "vi-analyzer": {"label": "VI Analyzer", "platforms": {"windows": {"wf": "run-vi-analyzer-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}, "linux": {"wf": "run-vi-analyzer-linux-container.yml", "inputs": {"commit_sha": "{sha}"}}}}, "vidiff": {"label": "VIDiff", "platforms": {"windows": {"wf": "vidiff-windows-container.yml", "inputs": {"head_sha": "{sha}", "base_sha": "{parent}"}}, "linux": {"wf": "vidiff-linux-container.yml", "inputs": {"head_sha": "{sha}", "base_sha": "{parent}"}}}}, "snapshots": {"label": "VI Snapshots", "platforms": {"all": {"wf": "vi-snapshots.yml", "inputs": {"mode": "head"}}}}, "unit-tests": {"label": "Unit Tests", "platforms": {"windows": {"wf": "unit-tests-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}}}, "antidoc": {"label": "Antidoc", "platforms": {"windows": {"wf": "run-antidoc-windows-container.yml", "inputs": {"commit_sha": "{sha}"}}}}};
     var REPO = "elijah286/challenge-of-champions";
     var BRANCH = "main";
     var TOK_KEY = "lvci_dispatch_token";
@@ -176,6 +202,17 @@
         + 'title="Queued from this browser \u2014 click to view it on GitHub or cancel it">'
         + '<span class="run-spin"></span>Queued<span class="cidash-qpos"></span></span>';
     }
+    function qPaintFailed(td, c, sha){
+      // A run we CONFIRMED failed on GitHub: replace the spinner with a sticky red
+      // "Failed" badge (same button affordance as Queued, so clicking opens the
+      // manage dialog to view the run or dismiss it). Never reverts on its own.
+      if(!td) return;
+      td.classList.add('cidash-queued-cell');
+      td.setAttribute('data-qcap', c); td.setAttribute('data-qsha', sha);
+      td.innerHTML = '<span class="run-badge cidash-queued cidash-failed" role="button" tabindex="0" '
+        + 'title="This run failed \u2014 click to view it on GitHub or dismiss it">'
+        + '\u2717 Failed</span>';
+    }
     function qArmReload(){
       // While a queued run is still unconfirmed, reload sooner than the lazy
       // meta-refresh so the real status surfaces promptly (mirrors the server's
@@ -184,10 +221,13 @@
       setTimeout(function(){ location.reload(); }, QFAST);
     }
     function qLiveEntries(o){
-      // The non-expired queued entries, oldest first — this IS the queue order.
+      // The still-queued entries, oldest first - this IS the queue order. A failed
+      // entry is terminal (shown as "Failed") so it is no longer "in line". An
+      // entry stays while inside the optimistic window OR while qSync still sees a
+      // real run active (e.activeAt), so a slow backfill keeps its place.
       var now = Date.now();
       return Object.keys(o)
-        .filter(function(k){ var e=o[k]; return e && (now-(e.ts||0))<=QTTL; })
+        .filter(function(k){ var e=o[k]; return e && !e.failed && ((now-(e.ts||0))<=QTTL || (e.activeAt && (now-e.activeAt)<=QTTL)); })
         .map(function(k){ return { key:k, ts:o[k].ts||0 }; })
         .sort(function(a,b){ return a.ts - b.ts; });
     }
@@ -306,32 +346,109 @@
         else { done(); }
       });
     }
+    function captureSnapshotRun(t0, attempt){
+      // The "Populate history" backfill is ONE snapshots run that walks the whole
+      // history, so every "snapshots|<sha>" entry shares it. captureRuns' per-cell
+      // claim would hand the single run to just the first sha, so look it up once
+      // and write it into EVERY snapshot entry still missing a run id.
+      var tok = getTok(); if(!tok) return;
+      t0 = t0 || Date.now(); attempt = attempt || 1;
+      fetch('https://api.github.com/repos/'+REPO+'/actions/workflows/'+encodeURIComponent('vi-snapshots.yml')+'/runs?event=workflow_dispatch&per_page=20',
+        { headers:{ 'Authorization':'Bearer '+tok, 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' } })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){
+          var runs = (j && j.workflow_runs) || [];
+          var run = runs.filter(function(rn){
+            return Date.parse(rn.created_at || rn.run_started_at || 0) >= (t0 - 12000);
+          }).sort(function(a,b){ return Date.parse(b.created_at) - Date.parse(a.created_at); })[0];
+          if(!run){ if(attempt < 4){ setTimeout(function(){ captureSnapshotRun(t0, attempt+1); }, 2500); } return; }
+          var o = qLoad(); var changed = false;
+          Object.keys(o).forEach(function(key){
+            if(key.indexOf('snapshots|') !== 0) return;
+            var e = o[key]; if(!e || (e.runs||[]).length) return;
+            e.runs = [{ wf:'vi-snapshots.yml', plat:'all', id:run.id, url:run.html_url, status:run.status }];
+            changed = true;
+          });
+          if(changed) qSave(o);
+        }).catch(function(){});
+    }
+    function qSync(){
+      // Reconcile the optimistic "Queued" overlays against the REAL run status on
+      // GitHub so a cell never silently reverts to its run glyph: a run still
+      // queued/running keeps its badge alive (so a long backfill held behind
+      // GitHub's concurrency cap does not hit the 20-min TTL and vanish), a run
+      // that FAILED becomes a sticky "Failed" badge (an early failure may never
+      // post a commit status for the server to render), and a finished run is left
+      // for the server result to take over.
+      var tok = getTok(); if(!tok) return;
+      var o = qLoad();
+      var live = Object.keys(o).filter(function(k){ return o[k] && !o[k].failed; });
+      if(!live.length) return;
+      var snapTs = 0, snapNeedsId = false;
+      live.forEach(function(k){
+        if(k.indexOf('snapshots|')===0){ var ts=o[k].ts||0; if(!snapTs||ts<snapTs) snapTs=ts; if(!((o[k].runs||[]).length)) snapNeedsId=true; }
+      });
+      if(snapNeedsId) captureSnapshotRun(snapTs);
+      live.forEach(function(k){
+        var c = k.slice(0, k.indexOf('|')); var sha = k.slice(k.indexOf('|')+1);
+        if(c!=='snapshots' && !((o[k].runs||[]).length)) captureRuns(c, sha);
+      });
+      fetch('https://api.github.com/repos/'+REPO+'/actions/runs?per_page=100',
+        { headers:{ 'Authorization':'Bearer '+tok, 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' } })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){
+          if(!j || !j.workflow_runs) return;
+          var byId = {}; j.workflow_runs.forEach(function(run){ byId[run.id] = run; });
+          var o2 = qLoad(); var changed = false; var now = Date.now();
+          var FAIL = ['failure','timed_out','startup_failure','cancelled'];
+          var ACTIVE = ['queued','in_progress','requested','waiting','pending','action_required'];
+          Object.keys(o2).forEach(function(key){
+            var e = o2[key]; if(!e || e.failed) return;
+            var ids = (e.runs||[]).map(function(r){ return r.id; }).filter(Boolean);
+            if(!ids.length) return;
+            var anyActive = false, anyFail = false, allKnown = true, failUrl = '';
+            ids.forEach(function(id){
+              var run = byId[id]; if(!run){ allKnown = false; return; }
+              if(ACTIVE.indexOf(run.status) >= 0) anyActive = true;
+              else if(run.status === 'completed' && FAIL.indexOf(run.conclusion) >= 0){ anyFail = true; failUrl = failUrl || run.html_url || ''; }
+            });
+            if(anyActive){ e.activeAt = now; changed = true; }
+            else if(anyFail && allKnown){ e.failed = { url: failUrl }; changed = true; }
+          });
+          if(changed){ qSave(o2); applyQueued(); }
+        }).catch(function(){});
+    }
     function applyQueued(){
-      // Re-apply remembered queued badges after each (auto-)reload. An entry is
-      // dropped once the server renders a real status for that cell (its run glyph
-      // is gone) or once it ages out — so the overlay is a short, self-clearing
-      // bridge, never a permanent fake.
+      // Re-apply remembered queued badges after each (auto-)reload. A confirmed
+      // failure stays a sticky "Failed" badge; an entry whose run is still active
+      // is kept alive by qSync (e.activeAt); otherwise it is dropped once the
+      // server renders a real status or it ages out of the optimistic window.
       var o = qLoad(); var now = Date.now(); var changed = false; var live = 0;
       Object.keys(o).forEach(function(key){
         var e = o[key]; var i = key.indexOf('|'); var c = key.slice(0,i); var sha = key.slice(i+1);
-        if(!e || (now - (e.ts||0)) > QTTL){ delete o[key]; changed = true; return; }
+        if(!e){ delete o[key]; changed = true; return; }
         var painted = document.querySelector('td.cidash-queued-cell[data-qcap="'+c+'"][data-qsha="'+sha+'"]');
         var a = document.querySelector('a.cidash-run[data-cap="'+c+'"][data-sha="'+sha+'"]');
+        var rc = document.querySelector('td.cidash-cap-cell[data-cap="'+c+'"][data-sha="'+sha+'"]');
+        if(e.failed){
+          if(rc){
+            var frts = Date.parse(rc.getAttribute('data-ts')||'') || 0;
+            if(frts && frts > (e.ts||0)){ delete o[key]; changed = true; return; }
+          }
+          var ftd = painted || (a ? a.closest('td') : null) || rc;
+          if(ftd){ if(rc && !e.orig){ e.orig = rc.innerHTML; changed = true; } qPaintFailed(ftd, c, sha); }
+          return;
+        }
+        var alive = (now - (e.ts||0)) <= QTTL || (e.activeAt && (now - e.activeAt) <= QTTL);
+        if(!alive){ delete o[key]; changed = true; return; }
         if(painted){ live++; }
         else if(a){ qPaint(a.closest('td'), c, sha); live++; }
-        else {
-          // The cell may already hold a RESULT (re-run from the report, not an
-          // empty cell). Overlay "Queued" on it until a NEWER result lands. A
-          // server-side running spinner has no data-cap, so it falls through to
-          // the delete branch below (the server has taken over).
-          var rc = document.querySelector('td.cidash-cap-cell[data-cap="'+c+'"][data-sha="'+sha+'"]');
-          if(rc){
-            var rts = Date.parse(rc.getAttribute('data-ts')||'') || 0;
-            if(rts && rts > (e.ts||0)){ delete o[key]; changed = true; }   // re-run finished
-            else { if(!e.orig){ e.orig = rc.innerHTML; changed = true; } qPaint(rc, c, sha); live++; }
-          }
-          else { delete o[key]; changed = true; }   // real status / spinner took over
+        else if(rc){
+          var rts = Date.parse(rc.getAttribute('data-ts')||'') || 0;
+          if(rts && rts > (e.ts||0)){ delete o[key]; changed = true; }
+          else { if(!e.orig){ e.orig = rc.innerHTML; changed = true; } qPaint(rc, c, sha); live++; }
         }
+        else { delete o[key]; changed = true; }
       });
       if(changed) qSave(o);
       if(live > 0) qArmReload();
@@ -478,27 +595,31 @@
       var c = qState.cap, sha = qState.sha; if(!c) return;
       var o = qLoad(); var entry = o[c+'|'+sha]; var def = RT[c];
       if(!entry || !def){ cidashQClose(); return; }
+      var failed = !!entry.failed;
       var plats = (entry.plats||[]).map(cap).join(', ');
       var short = entry.short || sha.slice(0,7);
       var live = qLiveEntries(o); var pos = 0;
       live.forEach(function(en, idx){ if(en.key===c+'|'+sha) pos = idx+1; });
       var h = '';
-      h += '<p style="margin:0 0 12px;color:var(--fg-muted);font-size:.85em"><strong>'+esc(def.label)+'</strong> for commit <code style="font-family:monospace">'+esc(short)+'</code>'+(plats?' \u00b7 '+esc(plats):'')+'.</p>';
-      if(live.length>1 && pos){ h += '<p style="margin:0 0 12px;font-size:.85em">Place in queue: <strong>#'+pos+'</strong> <span style="color:var(--fg-muted)">of '+live.length+' queued from this browser (oldest first).</span></p>'; }
+      h += '<p style="margin:0 0 12px;color:var(--fg-muted);font-size:.85em"><strong>'+esc(def.label)+'</strong> for commit <code style="font-family:monospace">'+esc(short)+'</code>'+(plats?' \u00b7 '+esc(plats):'')+(failed?' \u2014 <span style="color:#f85149">this run failed</span>.':'.')+'</p>';
+      if(!failed && live.length>1 && pos){ h += '<p style="margin:0 0 12px;font-size:.85em">Place in queue: <strong>#'+pos+'</strong> <span style="color:var(--fg-muted)">of '+live.length+' queued from this browser (oldest first).</span></p>'; }
       h += '<div id="cidash-q-status" style="font-size:.82em;min-height:1.2em;margin:0 0 12px"></div>';
       h += '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">';
       h += qViewLinks(c, entry);
-      h += '<button class="cidash-btn cidash-danger" id="cidash-q-cancel">\u2715 Cancel run</button>';
+      if(failed){ h += '<button class="cidash-btn cidash-ghost" id="cidash-q-dismiss">Dismiss</button>'; }
+      else { h += '<button class="cidash-btn cidash-danger" id="cidash-q-cancel">\u2715 Cancel run</button>'; }
       h += '</div>';
-      h += '<p style="color:var(--fg-muted);font-size:.76em;margin:12px 0 0"><strong>Cancel run</strong> stops it on GitHub Actions (uses the same token you queued it with). <strong>View</strong> opens it on GitHub, where you can watch it or stop it manually.</p>';
+      if(failed){ h += '<p style="color:var(--fg-muted);font-size:.76em;margin:12px 0 0"><strong>View</strong> opens the failed run on GitHub to see what went wrong. <strong>Dismiss</strong> clears this badge so you can run it again from the dashboard.</p>'; }
+      else { h += '<p style="color:var(--fg-muted);font-size:.76em;margin:12px 0 0"><strong>Cancel run</strong> stops it on GitHub Actions (uses the same token you queued it with). <strong>View</strong> opens it on GitHub, where you can watch it or stop it manually.</p>'; }
       $("cidash-q-body").innerHTML = h;
       var cb=$("cidash-q-cancel"); if(cb) cb.addEventListener('click', function(){ cancelQueued(c, sha); });
+      var db=$("cidash-q-dismiss"); if(db) db.addEventListener('click', function(){ qForget(c, sha); cidashQClose(); });
     }
     function openQ(c, sha){
       if(!RT[c]) return;
       qState = { cap:c, sha:sha };
       var entry = qLoad()[c+'|'+sha];
-      $("cidash-q-title").textContent = "Queued: " + RT[c].label;
+      $("cidash-q-title").textContent = (entry && entry.failed ? "Failed: " : "Queued: ") + RT[c].label;
       renderQ();
       $("cidash-q-modal").style.display='block';
       document.body.style.overflow='hidden';
@@ -614,13 +735,13 @@
     }
     function bfFill(t, sha, parent){ return String(t).replace(/\{sha\}/g, sha).replace(/\{parent\}/g, parent||''); }
     function bfInputs(p, sha, parent){ var o={}; Object.keys(p.inputs).forEach(function(k){ o[k]=bfFill(p.inputs[k], sha, parent); }); return o; }
-    function bfRunAll(){
-      var cells=bfCells();
-      if(!cells.length){ bfStatus('Nothing left to run \u2014 every revision is queued or already has results.', 'ok'); return; }
-      if(!getTok()){ bfTokPanel(true); bfStatus('Add a token (Actions: Read and write) to queue runs.', 'warn'); var i=document.getElementById('lvci-bf-tok-input'); if(i) i.focus(); return; }
-      bfTokPanel(false);
-      var runBtn=document.getElementById('lvci-bf-run'); var disBtn=document.getElementById('lvci-bf-dismiss');
-      if(runBtn) runBtn.disabled=true; if(disBtn) disBtn.disabled=true;
+    // Shared dispatch engine for BOTH the fresh-install backfill card and the
+    // Populate-history dialog: queue a set of empty run-cells, snapshots as ONE
+    // backfill run (the workflow walks the whole history oldest->newest and dedupes)
+    // and the per-revision activities oldest-first, gently throttled so a long
+    // history doesn't trip GitHub's secondary rate limits. Resolves with an
+    // {ok, err, total} tally; the caller owns its own status line + buttons.
+    function dispatchCells(cells, statusFn){
       var perRev=[]; var snapShas=[]; var sawSnap=false;
       cells.forEach(function(x){
         if(x.cap==='snapshots'){ sawSnap=true; snapShas.push(x.sha); }
@@ -629,21 +750,20 @@
       perRev.sort(function(a,b){ return b.order - a.order; });   // oldest first
       var total=perRev.length + (sawSnap?1:0);
       var t0=Date.now(); var ok=0, err=0, done=0;
-      bfStatus('Queuing '+total+' workflow'+(total>1?'s':'')+'\u2026', null);
+      statusFn('Queuing '+total+' workflow'+(total>1?'s':'')+'\u2026', null);
       var chain=Promise.resolve();
       // 1) Snapshots — one backfill run for the whole history (oldest→newest, deduped).
       if(sawSnap){
         chain=chain.then(function(){
           return dispatchOne('vi-snapshots.yml', { mode:'backfill' }).then(function(r){
             done++;
-            if(r.ok){ ok++; snapShas.forEach(function(sha){ markQueued('snapshots', sha, ['all'], '', t0); }); }
+            if(r.ok){ ok++; snapShas.forEach(function(sha){ markQueued('snapshots', sha, ['all'], '', t0); }); captureSnapshotRun(t0); }
             else { err++; if(r.status===401) clearTok(); }
-            bfStatus('Queuing\u2026 '+done+'/'+total, null);
+            statusFn('Queuing\u2026 '+done+'/'+total, null);
           });
         });
       }
-      // 2) Per-revision capabilities, oldest first, gently throttled so a long
-      //    history doesn't trip GitHub's secondary rate limits.
+      // 2) Per-revision capabilities, oldest first, gently throttled.
       perRev.forEach(function(x){
         chain=chain.then(function(){
           var def=RT[x.cap]; if(!def){ return; }
@@ -655,17 +775,26 @@
             var okPlats=results.filter(function(r){return r.ok;}).map(function(r){return r.plat;});
             if(okPlats.length){ ok++; markQueued(x.cap, x.sha, okPlats, x.parent, Date.now()); captureRuns(x.cap, x.sha); }
             else { err++; }
-            bfStatus('Queuing\u2026 '+done+'/'+total, null);
+            statusFn('Queuing\u2026 '+done+'/'+total, null);
           }).then(function(){ return new Promise(function(res){ setTimeout(res, 650); }); });
         });
       });
-      chain.then(function(){
+      return chain.then(function(){ return { ok:ok, err:err, total:total }; });
+    }
+    function bfRunAll(){
+      var cells=bfCells();
+      if(!cells.length){ bfStatus('Nothing left to run \u2014 every revision is queued or already has results.', 'ok'); return; }
+      if(!getTok()){ bfTokPanel(true); bfStatus('Add a token (Actions: Read and write) to queue runs.', 'warn'); var i=document.getElementById('lvci-bf-tok-input'); if(i) i.focus(); return; }
+      bfTokPanel(false);
+      var runBtn=document.getElementById('lvci-bf-run'); var disBtn=document.getElementById('lvci-bf-dismiss');
+      if(runBtn) runBtn.disabled=true; if(disBtn) disBtn.disabled=true;
+      dispatchCells(cells, bfStatus).then(function(res){
         if(runBtn) runBtn.disabled=false; if(disBtn) disBtn.disabled=false;
-        if(ok && !err){
-          bfStatus('\u2713 Queued '+ok+' workflow'+(ok>1?'s':'')+', oldest first \u2014 results appear as they finish. <a href="https://github.com/'+REPO+'/actions" target="_blank" rel="noopener" style="color:var(--link)">View runs \u2197</a>', 'ok');
+        if(res.ok && !res.err){
+          bfStatus('\u2713 Queued '+res.ok+' workflow'+(res.ok>1?'s':'')+', oldest first \u2014 results appear as they finish. <a href="https://github.com/'+REPO+'/actions" target="_blank" rel="noopener" style="color:var(--link)">View runs \u2197</a>', 'ok');
           bfDismiss();
-        } else if(ok && err){
-          bfStatus('Queued '+ok+', but '+err+' could not be dispatched \u2014 check the token has <strong>Actions: Read and write</strong> on this repo. <a href="https://github.com/'+REPO+'/actions" target="_blank" rel="noopener" style="color:var(--link)">View runs \u2197</a>', 'warn');
+        } else if(res.ok && res.err){
+          bfStatus('Queued '+res.ok+', but '+res.err+' could not be dispatched \u2014 check the token has <strong>Actions: Read and write</strong> on this repo. <a href="https://github.com/'+REPO+'/actions" target="_blank" rel="noopener" style="color:var(--link)">View runs \u2197</a>', 'warn');
         } else {
           bfStatus('Could not queue runs. The token needs <strong>Actions: Read and write</strong> on <code>'+esc(REPO)+'</code> (runs dispatch on <code>'+esc(BRANCH)+'</code>). <a href="'+tokenSetupUrl()+'" target="_blank" rel="noopener" style="color:var(--link)">Create or update a token \u2197</a>', 'err');
           bfTokPanel(true);
@@ -679,29 +808,220 @@
       var save=document.getElementById('lvci-bf-tok-save'); if(save) save.addEventListener('click', function(){ var i=document.getElementById('lvci-bf-tok-input'); var v=(i&&i.value||'').trim(); if(!v){ if(i) i.focus(); return; } setTok(v); bfRunAll(); });
       var inp=document.getElementById('lvci-bf-tok-input'); if(inp) inp.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); var v=(inp.value||'').trim(); if(v){ setTok(v); bfRunAll(); } } });
       var link=document.getElementById('lvci-bf-tok-link'); if(link) link.href=tokenSetupUrl();
+      var cust=document.getElementById('lvci-bf-custom'); if(cust) cust.addEventListener('click', function(e){ e.preventDefault(); histOpen(); });
       bfShow();
     }
+    // ── "Populate dashboard history" dialog ──────────────────────────────
+    // Opened from the header's More menu (window.lvciRunHistory) and the fresh
+    // install card's "Customize…" link. The user chooses where in history to
+    // start, whether to run the lean diff-based pass (VI Snapshots + VIDiff only —
+    // the modified-file visual history) or every activity, and exactly which
+    // activities to queue. Reuses dispatchCells (oldest-first, snapshots as one
+    // backfill) + the same token and optimistic-queued bridge as every other
+    // dispatch on the dashboard.
+    var HIST = [{"sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712", "short": "0d83d34", "msg": "minor improvements"}, {"sha": "fed86b42317e8d798cd98d7a312c8d8c49a96b4b", "short": "fed86b4", "msg": "Added ability to highlight winner"}, {"sha": "cc73dfed4977f9ab424c05dd2edb34a5c8b772c3", "short": "cc73dfe", "msg": "fixed sound"}, {"sha": "39d1c2a93007b3769824d981f223e7e225e17862", "short": "39d1c2a", "msg": "NI Connect 2025 Prep"}, {"sha": "68ba17030ab2828447f558453eece7e1adbad49c", "short": "68ba170", "msg": "Improvements to instructions and simulated daq display"}, {"sha": "9ad479c4fbe954727c37792e39a7d0163fc8242d", "short": "9ad479c", "msg": "Fixed scoring bug"}, {"sha": "070a44c9b06351d1ddff3f844dead25140a49c7c", "short": "070a44c", "msg": "Merge branch 'main' of https://github.com/elijah286/challenge-of-champions"}, {"sha": "1ae15b21fb486eee1a559d5f6854a0fcbcba44a6", "short": "1ae15b2", "msg": "Bug Fixes"}, {"sha": "cc939cda81377d35fd17a587744f459cb3e20121", "short": "cc939cd", "msg": "Saved for 2021"}, {"sha": "ade2f01f0b980e24b46acf78c9c250d465801070", "short": "ade2f01", "msg": "Icon Update"}, {"sha": "a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c", "short": "a12cdb3", "msg": "DAQ physical channel can be changed while running"}, {"sha": "eff9a664410ee93984150561edac9e2552837e22", "short": "eff9a66", "msg": "Squashed commit of the following:"}, {"sha": "dbf0fa5447b21e38f7d818ccb8f1947119b8bd96", "short": "dbf0fa5", "msg": "Fixed UI layout issues"}, {"sha": "a9b7bd49859410d403991d0257e8c4553c8412d9", "short": "a9b7bd4", "msg": "Animation added and code cleanup"}, {"sha": "8a5f4004be4425fdc87f8ca425e85f364948d655", "short": "8a5f400", "msg": "Animation working for hype mode"}, {"sha": "27c2970c84667ecb41c43b4f56b8ac067297b011", "short": "27c2970", "msg": "Added configuration file"}, {"sha": "8c690e533a6dd70b6d86e5bdfa520053c9401cc0", "short": "8c690e5", "msg": "Added instructions to the screen and fixed another bug in the DAQ task"}, {"sha": "ddc17dbc03688b1510da32de1adb0c41ec1cb27a", "short": "ddc17db", "msg": "Fixed a bug with DAQ task"}, {"sha": "7d43bc8921f11fd29072b8b34913dd1281a881a8", "short": "7d43bc8", "msg": "Better DAQ"}, {"sha": "5c6c0a76492473182eb589175e15f0c9d770d4e6", "short": "5c6c0a7", "msg": "First Beta Version"}, {"sha": "55852b9622b6ae0aea2b8571d53b4370a424e70b", "short": "55852b9", "msg": "Image functionality"}, {"sha": "6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74", "short": "6bd0bbf", "msg": "Major progress"}, {"sha": "fc96dc5da1fe74e09a9749417476cc7b455e9aca", "short": "fc96dc5", "msg": "Added timer functionality and image display"}, {"sha": "a231e7f207bc9f97955a3f51a3d120f55e157f24", "short": "a231e7f", "msg": "Made increment and decrement scores work"}, {"sha": "342171d5a674a151f121fe282eff2634ca0672ae", "short": "342171d", "msg": "Questions working with simulated DAQ"}, {"sha": "ef956c3e70e3c2e601099a53192b46c520969659", "short": "ef956c3", "msg": "Layout of main screen is working"}, {"sha": "ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629", "short": "ca4d8f5", "msg": "Working on UI and Actor Architecture"}, {"sha": "0bd74709c51730b09aca38c7e425fac356d53bad", "short": "0bd7470", "msg": "Moved the grid into actor core"}, {"sha": "3610ea9666189150b9ff3cb6872e3912c72ea053", "short": "3610ea9", "msg": "Submitting files for the first time"}];                        // [{sha, short, msg}] newest-first (project revisions)
+    var HIST_CAPS = [                           // activity rows, in display order
+      ['snapshots',   'VI Snapshots', 'Renders every changed VI (one backfill pass)'],
+      ['vidiff',      'VIDiff',       'Visual diff of the VIs each revision changed'],
+      ['masscompile', 'Mass Compile', 'Compiles the whole project, each revision'],
+      ['vi-analyzer', 'VI Analyzer',  'Runs the VI Analyzer suite, each revision'],
+      ['antidoc',     'Antidoc',      'Generates project documentation, each revision']
+    ];
+    var DIFF_CAPS = { snapshots:1, vidiff:1 };  // the lean "diff-based" subset
+    function histModal(){ return document.getElementById('cidash-hist-modal'); }
+    function cidashHistClose(){ var m=histModal(); if(m) m.style.display='none'; document.body.style.overflow=''; }
+    function histStatus(html, kind){
+      var s=document.getElementById('cidash-hist-status'); if(!s) return;
+      var col = kind==='ok' ? '#3fb950' : (kind==='err' ? '#f85149' : (kind==='warn' ? '#d29922' : 'var(--fg-muted)'));
+      s.style.color=col; s.innerHTML=html||'';
+    }
+    function histTokPanel(show){ var p=document.getElementById('cidash-hist-tok'); if(p) p.style.display = show ? 'block' : 'none'; }
+    function histSelectedCaps(){
+      var caps={};
+      HIST_CAPS.forEach(function(o){ var b=document.getElementById('cidash-hist-act-'+o[0]); if(b && b.checked && !b.disabled) caps[o[0]]=1; });
+      return caps;
+    }
+    function histScopeMode(){ var r=document.querySelector('input[name="cidash-hist-scope"]:checked'); return r ? r.value : 'all'; }
+    function histIdx(sha){ for(var i=0;i<HIST.length;i++){ if(HIST[i].sha===sha) return i; } return -1; }
+    function histIncludedShas(){
+      // Three scopes drive which revisions are queued (HIST is newest-first):
+      //   all      -> every revision
+      //   range    -> Start (older bound) .. Stop (newer bound), inclusive; a blank
+      //               Start = oldest and a blank Stop = newest, and a reversed pair
+      //               is swapped so the range is always valid
+      //   specific -> exactly the ticked revisions (one or many)
+      var mode=histScopeMode(); var inc={};
+      if(mode==='specific'){
+        Array.prototype.forEach.call(document.querySelectorAll('input.cidash-hist-spec:checked'), function(b){ inc[b.value]=1; });
+        return inc;
+      }
+      if(mode==='range'){
+        var f=document.getElementById('cidash-hist-from'); var t=document.getElementById('cidash-hist-to');
+        var iFrom = (f && f.value) ? histIdx(f.value) : HIST.length-1;   // '' = oldest
+        var iTo   = (t && t.value) ? histIdx(t.value) : 0;               // '' = newest
+        if(iFrom<0) iFrom=HIST.length-1; if(iTo<0) iTo=0;
+        var lo=Math.min(iFrom,iTo), hi=Math.max(iFrom,iTo);
+        for(var j=lo;j<=hi;j++){ if(HIST[j]) inc[HIST[j].sha]=1; }
+        return inc;
+      }
+      HIST.forEach(function(r){ inc[r.sha]=1; });
+      return inc;
+    }
+    function histScopeApply(){
+      // Reveal only the sub-control for the chosen scope.
+      var mode=histScopeMode();
+      var rr=document.getElementById('cidash-hist-rangerow'); if(rr) rr.style.display = (mode==='range') ? '' : 'none';
+      var sw=document.getElementById('cidash-hist-specwrap'); if(sw) sw.style.display = (mode==='specific') ? '' : 'none';
+    }
+    function histCells(){
+      var caps=histSelectedCaps(); var inc=histIncludedShas();
+      return bfCells().filter(function(x){ return caps[x.cap] && inc[x.sha] && !(x.cap==='vidiff' && !x.parent); });
+    }
+    function histRefresh(){
+      // Live summary of what will be queued from the current selection.
+      var cells=histCells();
+      var shas={}; var snaps=0; var perRev=0;
+      cells.forEach(function(x){ shas[x.sha]=1; if(x.cap==='snapshots') snaps=1; else perRev++; });
+      var runs=perRev + snaps;   // snapshots collapse into one backfill run
+      var nrev=Object.keys(shas).length;
+      var sum=document.getElementById('cidash-hist-summary');
+      if(sum){
+        if(!HIST.length){ sum.innerHTML='No project revisions to populate yet \u2014 commit some VIs first.'; }
+        else if(!runs){ sum.innerHTML='Nothing to queue \u2014 the selected revisions already have results for those activities.'; }
+        else { sum.innerHTML='Will queue <b>'+runs+'</b> run'+(runs>1?'s':'')+' across <b>'+nrev+'</b> revision'+(nrev>1?'s':'')+', oldest first.'; }
+      }
+      var go=document.getElementById('cidash-hist-go'); if(go) go.disabled = !runs;
+    }
+    function histDiffApply(){
+      // The diff-based toggle constrains the run to Snapshots + VIDiff: when it is
+      // ON, Mass Compile + VI Analyzer are unchecked and greyed out; turning it OFF
+      // re-checks + re-enables them (its label promises "uncheck to also run" them).
+      // Only invoked from the toggle itself, so manually unchecking an activity
+      // afterwards is never overridden by a summary refresh.
+      var diff=document.getElementById('cidash-hist-diff');
+      var on = !!(diff && diff.checked);
+      HIST_CAPS.forEach(function(o){
+        if(DIFF_CAPS[o[0]]) return;
+        var b=document.getElementById('cidash-hist-act-'+o[0]);
+        var row=document.getElementById('cidash-hist-actrow-'+o[0]);
+        if(b){ b.disabled=on; b.checked=!on; }
+        if(row) row.classList.toggle('disabled', on);
+      });
+    }
+    function histRender(){
+      var body=document.getElementById('cidash-hist-body'); if(!body) return;
+      var h='';
+      h += '<p style="margin:0 0 16px;color:var(--fg-muted);font-size:.86em;line-height:1.55">Queue CI for revisions that already exist so the dashboard fills in. Runs <strong>oldest \u2192 newest</strong>; only activities that haven\u2019t run yet are queued, and VI Snapshots backfills the whole history in one incremental pass.</p>';
+      var optsHtml = HIST.map(function(r){ return '<option value="'+esc(r.sha)+'">'+esc((r.short||'')+(r.msg?(' \u2014 '+r.msg):''))+'</option>'; }).join('');
+      h += '<div class="cidash-hist-sec"><label class="cidash-hist-lbl">Which revisions</label><div class="cidash-hist-scope">';
+      h += '<label class="cidash-hist-radio"><input type="radio" name="cidash-hist-scope" value="all" checked> All '+HIST.length+' revision'+(HIST.length===1?'':'s')+' <span class="sub">\u2014 the full history</span></label>';
+      h += '<label class="cidash-hist-radio"><input type="radio" name="cidash-hist-scope" value="range"> A range of history</label>';
+      h += '<div class="cidash-hist-rangerow" id="cidash-hist-rangerow" style="display:none">';
+      h += '<label>Start at <select id="cidash-hist-from"><option value="">Oldest (beginning)</option>'+optsHtml+'</select></label>';
+      h += '<label>stop at <select id="cidash-hist-to"><option value="">Newest (latest)</option>'+optsHtml+'</select></label>';
+      h += '</div>';
+      h += '<label class="cidash-hist-radio"><input type="radio" name="cidash-hist-scope" value="specific"> Specific revision(s)</label>';
+      h += '<div id="cidash-hist-specwrap" style="display:none">';
+      h += '<div class="cidash-hist-spectools"><a href="#" id="cidash-hist-spec-all">Select all</a><a href="#" id="cidash-hist-spec-none">Clear</a></div>';
+      h += '<div class="cidash-hist-speclist" id="cidash-hist-speclist">';
+      HIST.forEach(function(r){ h += '<label class="cidash-hist-specitem"><input type="checkbox" class="cidash-hist-spec" value="'+esc(r.sha)+'"><span class="sh">'+esc(r.short||'')+'</span><span class="ms">'+esc(r.msg||'')+'</span></label>'; });
+      h += '</div></div>';
+      h += '</div></div>';
+      h += '<div class="cidash-hist-sec"><label class="cidash-hist-toggle"><input type="checkbox" id="cidash-hist-diff" checked>'
+        + '<span><span class="cidash-hist-tmain">Diff-based \u2014 modified files only</span>'
+        + '<span class="cidash-hist-tsub">Runs just VI Snapshots and VIDiff (the visual history of what each revision changed). Uncheck to also run Mass Compile and VI Analyzer on every revision.</span></span></label></div>';
+      h += '<div class="cidash-hist-sec"><label class="cidash-hist-lbl">Activities</label><div class="cidash-hist-acts">';
+      HIST_CAPS.forEach(function(o){
+        h += '<label class="cidash-hist-act" id="cidash-hist-actrow-'+o[0]+'"><input type="checkbox" id="cidash-hist-act-'+o[0]+'" data-cap="'+o[0]+'" checked>'
+          + '<span>'+esc(o[1])+'</span><span class="cidash-hist-actsub">'+esc(o[2])+'</span></label>';
+      });
+      h += '</div></div>';
+      h += '<div id="cidash-hist-tok" style="display:none;border:1px solid var(--border);border-radius:8px;padding:12px;background:var(--surface);margin:0 0 12px">';
+      h += '<div style="font-size:.82em;color:var(--fg);font-weight:600;margin-bottom:6px">One-time setup \u2014 a token to queue runs</div>';
+      h += '<ol style="font-size:.8em;color:var(--fg-muted);margin:0 0 8px;padding-left:18px;line-height:1.6">';
+      h += '<li><a href="'+tokenSetupUrl()+'" target="_blank" rel="noopener" style="color:var(--link)">Create a fine-grained token \u2197</a> \u2014 opens with the name, owner, and <strong>Actions: Read and write</strong> already set.</li>';
+      h += '<li><strong>Repository access</strong> \u2192 Only select repositories \u2192 add <code>'+esc(REPO)+'</code>.</li>';
+      h += '<li><strong>Permissions \u2192 Repository permissions \u2192 Actions \u2192 Read and write</strong>.</li>';
+      h += '<li>Generate, then paste it below.</li></ol>';
+      h += '<div style="display:flex;gap:8px;flex-wrap:wrap"><input id="cidash-hist-tok-input" type="password" autocomplete="off" placeholder="github_pat_\u2026 or ghp_\u2026" style="flex:1 1 240px;min-width:180px;padding:7px 10px;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:6px;font-family:ui-monospace,Menlo,monospace;font-size:.8em">';
+      h += '<button class="cidash-btn cidash-go" id="cidash-hist-tok-save">Save &amp; queue</button></div></div>';
+      h += '<div id="cidash-hist-summary" class="cidash-hist-summary"></div>';
+      h += '<div id="cidash-hist-status" style="font-size:.82em;min-height:1.2em;margin:0 0 12px"></div>';
+      h += '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">';
+      h += '<button class="cidash-btn cidash-go" id="cidash-hist-go">\u25B6 Queue runs</button>';
+      h += '<button class="cidash-btn cidash-ghost" id="cidash-hist-cancel">Cancel</button></div>';
+      body.innerHTML=h;
+      var diff=document.getElementById('cidash-hist-diff'); if(diff) diff.addEventListener('change', function(){ histDiffApply(); histRefresh(); });
+      Array.prototype.forEach.call(document.querySelectorAll('input[name="cidash-hist-scope"]'), function(r){ r.addEventListener('change', function(){ histScopeApply(); histRefresh(); }); });
+      var hf=document.getElementById('cidash-hist-from'); if(hf) hf.addEventListener('change', histRefresh);
+      var ht=document.getElementById('cidash-hist-to'); if(ht) ht.addEventListener('change', histRefresh);
+      Array.prototype.forEach.call(document.querySelectorAll('input.cidash-hist-spec'), function(b){ b.addEventListener('change', histRefresh); });
+      var spa=document.getElementById('cidash-hist-spec-all'); if(spa) spa.addEventListener('click', function(e){ e.preventDefault(); Array.prototype.forEach.call(document.querySelectorAll('input.cidash-hist-spec'), function(b){ b.checked=true; }); histRefresh(); });
+      var spn=document.getElementById('cidash-hist-spec-none'); if(spn) spn.addEventListener('click', function(e){ e.preventDefault(); Array.prototype.forEach.call(document.querySelectorAll('input.cidash-hist-spec'), function(b){ b.checked=false; }); histRefresh(); });
+      HIST_CAPS.forEach(function(o){ var b=document.getElementById('cidash-hist-act-'+o[0]); if(b) b.addEventListener('change', histRefresh); });
+      var go=document.getElementById('cidash-hist-go'); if(go) go.addEventListener('click', histRun);
+      var cancel=document.getElementById('cidash-hist-cancel'); if(cancel) cancel.addEventListener('click', cidashHistClose);
+      var save=document.getElementById('cidash-hist-tok-save'); if(save) save.addEventListener('click', function(){ var i=document.getElementById('cidash-hist-tok-input'); var v=(i&&i.value||'').trim(); if(!v){ if(i) i.focus(); return; } setTok(v); histTokPanel(false); histRun(); });
+      var tin=document.getElementById('cidash-hist-tok-input'); if(tin) tin.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); var v=(tin.value||'').trim(); if(v){ setTok(v); histTokPanel(false); histRun(); } } });
+      histScopeApply(); histDiffApply(); histRefresh();
+    }
+    function histOpen(){
+      var m=histModal(); if(!m) return;
+      histRender();
+      m.style.display='block'; document.body.style.overflow='hidden';
+    }
+    function histRun(){
+      var cells=histCells();
+      if(!cells.length){ histStatus('Nothing to queue \u2014 the selected revisions already have results for those activities.', 'warn'); return; }
+      if(!getTok()){ histTokPanel(true); histStatus('Add a token (Actions: Read and write) to queue runs.', 'warn'); var i=document.getElementById('cidash-hist-tok-input'); if(i) i.focus(); return; }
+      histTokPanel(false);
+      var go=document.getElementById('cidash-hist-go'); var cancel=document.getElementById('cidash-hist-cancel');
+      if(go) go.disabled=true; if(cancel) cancel.disabled=true;
+      dispatchCells(cells, histStatus).then(function(res){
+        if(cancel) cancel.disabled=false;
+        if(res.ok && !res.err){
+          histStatus('\u2713 Queued '+res.ok+' run'+(res.ok>1?'s':'')+', oldest first \u2014 results appear on the dashboard as they finish. <a href="https://github.com/'+REPO+'/actions" target="_blank" rel="noopener" style="color:var(--link)">View runs \u2197</a>', 'ok');
+          bfDismiss();   // the fresh-install nudge has served its purpose
+        } else if(res.ok && res.err){
+          if(go) go.disabled=false;
+          histStatus('Queued '+res.ok+', but '+res.err+' could not be dispatched \u2014 check the token has <strong>Actions: Read and write</strong> on this repo. <a href="https://github.com/'+REPO+'/actions" target="_blank" rel="noopener" style="color:var(--link)">View runs \u2197</a>', 'warn');
+        } else {
+          if(go) go.disabled=false;
+          histStatus('Could not queue runs. The token needs <strong>Actions: Read and write</strong> on <code>'+esc(REPO)+'</code> (runs dispatch on <code>'+esc(BRANCH)+'</code>). <a href="'+tokenSetupUrl()+'" target="_blank" rel="noopener" style="color:var(--link)">Create or update a token \u2197</a>', 'err');
+          histTokPanel(true);
+        }
+      });
+    }
+    // Exposed for the shared header's "Populate history" menu item.
+    window.lvciRunHistory = histOpen;
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ var m=histModal(); if(m && m.style.display==='block') cidashHistClose(); } });
     // Re-apply optimistic "Queued" badges once the table exists (this script runs
     // before the table is parsed), and after every auto-refresh thereafter; wire
     // the backfill card the same way.
-    if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', function(){ applyQueued(); bfInit(); }); }
-    else { applyQueued(); bfInit(); }
+    if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', function(){ applyQueued(); qSync(); bfInit(); }); }
+    else { applyQueued(); qSync(); bfInit(); }
   })();
   </script>
   <main class="lvci-main">
   <h1>CI Dashboard — challenge-of-champions</h1>
-  <div class="sub">Last updated: 2026-06-18 15:06 UTC &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
+  <div class="sub">Last updated: 2026-06-18 16:15 UTC &nbsp;|&nbsp; Auto-refreshes every 15 min</div>
   <div class="nav">
     <a href="https://github.com/elijah286/challenge-of-champions">GitHub</a>
     <a href="https://github.com/elijah286/challenge-of-champions/actions">Actions</a>
   </div>
 
-  <label class="controls" for="show-nonproject">
-    <input type="checkbox" id="show-nonproject">
-    Include CI-only revisions
-  </label>
+  <div class="controls">
+    <label class="cidash-check" for="show-nonproject">
+      <input type="checkbox" id="show-nonproject">
+      Include CI-only revisions
+    </label>
+    <div class="cidash-colmenu">
+      <button type="button" id="cidash-colbtn" class="cidash-colbtn" aria-haspopup="true" aria-expanded="false">&#9783; Columns &#9662;</button>
+      <div id="cidash-colpanel" class="cidash-colpanel" role="menu" hidden></div>
+    </div>
+  </div>
   <div class="lvci-tablewrap">
-  <table>
+  <table id="cidash-table">
     <thead>
       <tr>
         <th>Commit</th><th>Message</th><th>Author</th><th>Date</th>
@@ -709,11 +1029,26 @@
         <th style="text-align:center">VI Analyzer</th>
         <th style="text-align:center">VIDiff</th>
         <th style="text-align:center">Snapshots</th>
-        <th style="text-align:center">Win Worker</th>
-        <th style="text-align:center">Linux Worker</th>
+        <th style="text-align:center">Unit Tests</th>
+        <th style="text-align:center">Antidoc</th>
       </tr>
     </thead>
     <tbody>
+    <tr data-project="false">
+      <td style="padding:8px;font-family:monospace;font-size:.85em">
+        <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=2ecc4dfca357a80a4b503929eef97e9793166d55" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">2ecc4df</a>
+      </td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Add LabVIEW CI pipeline"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=2ecc4dfca357a80a4b503929eef97e9793166d55" style="color:var(--fg)">Add LabVIEW CI pipeline</a></td>
+      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">Elijah Kerry</td>
+      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-18</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+    </tr>
+
     <tr data-project="false">
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=bf73514a60ae14549739e8531c22547d3c577eae" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">bf73514</a>
@@ -1078,7 +1413,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=b75d73527e2c1bf3ca7a8e49f14f79a1bd3d9319" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">b75d735</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(update): make 'Update now' do a full tooling update"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=b75d73527e2c1bf3ca7a8e49f14f79a1bd3d9319" style="color:var(--fg)">feat(update): make 'Update now' do a full tooling update</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(update): make &#x27;Update now&#x27; do a full tooling update"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=b75d73527e2c1bf3ca7a8e49f14f79a1bd3d9319" style="color:var(--fg)">feat(update): make &#x27;Update now&#x27; do a full tooling update</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">github-actions[bot]</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -1123,7 +1458,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=22f16b321fa626a6959806a5d43a280d3bf984da" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">22f16b3</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="fix(apply-update): resilient PR creation when Actions can't open PRs"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=22f16b321fa626a6959806a5d43a280d3bf984da" style="color:var(--fg)">fix(apply-update): resilient PR creation when Actions can't open PRs</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="fix(apply-update): resilient PR creation when Actions can&#x27;t open PRs"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=22f16b321fa626a6959806a5d43a280d3bf984da" style="color:var(--fg)">fix(apply-update): resilient PR creation when Actions can&#x27;t open PRs</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">github-actions[bot]</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -1138,7 +1473,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ba4a65d5fb6a53a0689628f53cb4474574a7c9f8" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">ba4a65d</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(update): one-click 'Update now' button in What's New (no terminal needed)"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ba4a65d5fb6a53a0689628f53cb4474574a7c9f8" style="color:var(--fg)">feat(update): one-click 'Update now' button in What's New (no terminal needed)</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(update): one-click &#x27;Update now&#x27; button in What&#x27;s New (no terminal needed)"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ba4a65d5fb6a53a0689628f53cb4474574a7c9f8" style="color:var(--fg)">feat(update): one-click &#x27;Update now&#x27; button in What&#x27;s New (no terminal needed)</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">github-actions[bot]</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -1168,7 +1503,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=28a99747550d2a407da7586ba412e4f1b0cf3dbc" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">28a9974</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(dashboard): show version badge + What's New update flow on COTC"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=28a99747550d2a407da7586ba412e4f1b0cf3dbc" style="color:var(--fg)">feat(dashboard): show version badge + What's New update flow on COTC</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(dashboard): show version badge + What&#x27;s New update flow on COTC"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=28a99747550d2a407da7586ba412e4f1b0cf3dbc" style="color:var(--fg)">feat(dashboard): show version badge + What&#x27;s New update flow on COTC</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -1213,7 +1548,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=299975acff5b75fe338fc61397a5261896953452" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">299975a</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="fix(vi-analyzer/windows): never let 'Read worker version' fail CI"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=299975acff5b75fe338fc61397a5261896953452" style="color:var(--fg)">fix(vi-analyzer/windows): never let 'Read worker version' fail CI</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="fix(vi-analyzer/windows): never let &#x27;Read worker version&#x27; fail CI"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=299975acff5b75fe338fc61397a5261896953452" style="color:var(--fg)">fix(vi-analyzer/windows): never let &#x27;Read worker version&#x27; fail CI</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -1453,7 +1788,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=1ff7341669245c7cb99bc652820d61bc0dfae162" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">1ff7341</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(dashboard): live "running" indicator per CI activity"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=1ff7341669245c7cb99bc652820d61bc0dfae162" style="color:var(--fg)">feat(dashboard): live "running" indicator per CI activity</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(dashboard): live &quot;running&quot; indicator per CI activity"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=1ff7341669245c7cb99bc652820d61bc0dfae162" style="color:var(--fg)">feat(dashboard): live &quot;running&quot; indicator per CI activity</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-15</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -1603,7 +1938,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0b0a35ac3fa7b58b2c5ea8effec4ef51d33fd89d" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">0b0a35a</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(vidiff): Linux<->Windows report toggle + Windows backfill"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0b0a35ac3fa7b58b2c5ea8effec4ef51d33fd89d" style="color:var(--fg)">feat(vidiff): Linux<->Windows report toggle + Windows backfill</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(vidiff): Linux&lt;-&gt;Windows report toggle + Windows backfill"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0b0a35ac3fa7b58b2c5ea8effec4ef51d33fd89d" style="color:var(--fg)">feat(vidiff): Linux&lt;-&gt;Windows report toggle + Windows backfill</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-06</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -1678,7 +2013,7 @@
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=51dad97833507b7f53d9b90c0699d8d2d56825e8" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">51dad97</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(vi-browser): unify diffs into the browser with a 'Changed VIs only' filter"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=51dad97833507b7f53d9b90c0699d8d2d56825e8" style="color:var(--fg)">feat(vi-browser): unify diffs into the browser with a 'Changed VIs only' filter</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="feat(vi-browser): unify diffs into the browser with a &#x27;Changed VIs only&#x27; filter"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=51dad97833507b7f53d9b90c0699d8d2d56825e8" style="color:var(--fg)">feat(vi-browser): unify diffs into the browser with a &#x27;Changed VIs only&#x27; filter</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-06</td>
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
@@ -2199,21 +2534,6 @@
       <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
     </tr>
 
-    <tr data-project="false">
-      <td style="padding:8px;font-family:monospace;font-size:.85em">
-        <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ca6ee3971f0c1d7002baf20f36880f439ed6cde8" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">ca6ee39</a>
-      </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="ci: temporarily revert Linux VI Analyzer to NI base image for immediate validati"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ca6ee3971f0c1d7002baf20f36880f439ed6cde8" style="color:var(--fg)">ci: temporarily revert Linux VI Analyzer to NI base image for immediate validati</a></td>
-      <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">elijah286</td>
-      <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2026-06-04</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-    </tr>
-
     <tr data-project="true">
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">0d83d34</a>
@@ -2225,8 +2545,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="0d83d346da3d3fe1fc36ee40fb283da0ef857712" data-parent="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-short="0d83d34" data-ts="2026-06-15T15:12:10Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&short=0d83d34&src=..%2Fvi-analyzer%2F0d83d346da3d3fe1fc36ee40fb283da0ef857712%2Findex.html&title=VI%20Analyzer%20%C2%B7%200d83d34" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="0d83d346da3d3fe1fc36ee40fb283da0ef857712" data-parent="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-short="0d83d34" data-ts="2026-06-09T11:39:16Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&plat=windows&changed=1" style="color:var(--link)">Win(1)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0d83d346da3d3fe1fc36ee40fb283da0ef857712&plat=linux&changed=1" style="color:var(--link)">Linux(1)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="0d83d346da3d3fe1fc36ee40fb283da0ef857712" data-parent="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-short="0d83d34" title="Run Unit Tests for commit 0d83d34">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="0d83d346da3d3fe1fc36ee40fb283da0ef857712" data-parent="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-short="0d83d34" title="Run Antidoc for commit 0d83d34">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2240,8 +2560,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-parent="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-short="fed86b4" data-ts="2026-06-15T16:58:52Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b&short=fed86b4&src=..%2Fvi-analyzer%2Ffed86b42317e8d798cd98d7a312c8d8c49a96b4b%2Findex.html&title=VI%20Analyzer%20%C2%B7%20fed86b4" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-parent="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-short="fed86b4" data-ts="2026-06-09T11:39:56Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b&plat=windows&changed=1" style="color:var(--link)">Win(11)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fed86b42317e8d798cd98d7a312c8d8c49a96b4b&plat=linux&changed=1" style="color:var(--link)">Linux(11)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-parent="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-short="fed86b4" title="Run Unit Tests for commit fed86b4">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="fed86b42317e8d798cd98d7a312c8d8c49a96b4b" data-parent="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-short="fed86b4" title="Run Antidoc for commit fed86b4">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2255,8 +2575,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-parent="39d1c2a93007b3769824d981f223e7e225e17862" data-short="cc73dfe" data-ts="2026-06-15T20:44:48Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=cc73dfed4977f9ab424c05dd2edb34a5c8b772c3&short=cc73dfe&src=..%2Fvi-analyzer%2Fcc73dfed4977f9ab424c05dd2edb34a5c8b772c3%2Findex.html&title=VI%20Analyzer%20%C2%B7%20cc73dfe" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-parent="39d1c2a93007b3769824d981f223e7e225e17862" data-short="cc73dfe" data-ts="2026-06-09T11:39:47Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=cc73dfed4977f9ab424c05dd2edb34a5c8b772c3&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=cc73dfed4977f9ab424c05dd2edb34a5c8b772c3&plat=windows&changed=1" style="color:var(--link)">Win(3)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=cc73dfed4977f9ab424c05dd2edb34a5c8b772c3&plat=linux&changed=1" style="color:var(--link)">Linux(3)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-parent="39d1c2a93007b3769824d981f223e7e225e17862" data-short="cc73dfe" title="Run Unit Tests for commit cc73dfe">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="cc73dfed4977f9ab424c05dd2edb34a5c8b772c3" data-parent="39d1c2a93007b3769824d981f223e7e225e17862" data-short="cc73dfe" title="Run Antidoc for commit cc73dfe">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2270,8 +2590,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="39d1c2a93007b3769824d981f223e7e225e17862" data-parent="68ba17030ab2828447f558453eece7e1adbad49c" data-short="39d1c2a" data-ts="2026-06-15T23:11:08Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=39d1c2a93007b3769824d981f223e7e225e17862&short=39d1c2a&src=..%2Fvi-analyzer%2F39d1c2a93007b3769824d981f223e7e225e17862%2Findex.html&title=VI%20Analyzer%20%C2%B7%2039d1c2a" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="39d1c2a93007b3769824d981f223e7e225e17862" data-parent="68ba17030ab2828447f558453eece7e1adbad49c" data-short="39d1c2a" data-ts="2026-06-09T11:39:22Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=39d1c2a93007b3769824d981f223e7e225e17862&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=39d1c2a93007b3769824d981f223e7e225e17862&plat=windows&changed=1" style="color:var(--link)">Win(9)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=39d1c2a93007b3769824d981f223e7e225e17862&plat=linux&changed=1" style="color:var(--link)">Linux(9)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="39d1c2a93007b3769824d981f223e7e225e17862" data-parent="68ba17030ab2828447f558453eece7e1adbad49c" data-short="39d1c2a" title="Run Unit Tests for commit 39d1c2a">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="39d1c2a93007b3769824d981f223e7e225e17862" data-parent="68ba17030ab2828447f558453eece7e1adbad49c" data-short="39d1c2a" title="Run Antidoc for commit 39d1c2a">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2285,8 +2605,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="68ba17030ab2828447f558453eece7e1adbad49c" data-parent="0542e89aad5eeb771765ce85d0b61f22ffba5d42" data-short="68ba170" data-ts="2026-06-15T20:43:52Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=68ba17030ab2828447f558453eece7e1adbad49c&short=68ba170&src=..%2Fvi-analyzer%2F68ba17030ab2828447f558453eece7e1adbad49c%2Findex.html&title=VI%20Analyzer%20%C2%B7%2068ba170" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="68ba17030ab2828447f558453eece7e1adbad49c" data-parent="0542e89aad5eeb771765ce85d0b61f22ffba5d42" data-short="68ba170" data-ts="2026-06-09T11:39:28Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=68ba17030ab2828447f558453eece7e1adbad49c&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=68ba17030ab2828447f558453eece7e1adbad49c&plat=windows&changed=1" style="color:var(--link)">Win(4)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=68ba17030ab2828447f558453eece7e1adbad49c&plat=linux&changed=1" style="color:var(--link)">Linux(4)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="68ba17030ab2828447f558453eece7e1adbad49c" data-parent="0542e89aad5eeb771765ce85d0b61f22ffba5d42" data-short="68ba170" title="Run Unit Tests for commit 68ba170">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="68ba17030ab2828447f558453eece7e1adbad49c" data-parent="0542e89aad5eeb771765ce85d0b61f22ffba5d42" data-short="68ba170" title="Run Antidoc for commit 68ba170">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2300,23 +2620,23 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="9ad479c4fbe954727c37792e39a7d0163fc8242d" data-parent="070a44c9b06351d1ddff3f844dead25140a49c7c" data-short="9ad479c" data-ts="2026-06-15T20:45:17Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=9ad479c4fbe954727c37792e39a7d0163fc8242d&short=9ad479c&src=..%2Fvi-analyzer%2F9ad479c4fbe954727c37792e39a7d0163fc8242d%2Findex.html&title=VI%20Analyzer%20%C2%B7%209ad479c" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="9ad479c4fbe954727c37792e39a7d0163fc8242d" data-parent="070a44c9b06351d1ddff3f844dead25140a49c7c" data-short="9ad479c" data-ts="2026-06-09T11:39:38Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=9ad479c4fbe954727c37792e39a7d0163fc8242d&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=9ad479c4fbe954727c37792e39a7d0163fc8242d&plat=windows&changed=1" style="color:var(--link)">Win(5)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=9ad479c4fbe954727c37792e39a7d0163fc8242d&plat=linux&changed=1" style="color:var(--link)">Linux(5)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="9ad479c4fbe954727c37792e39a7d0163fc8242d" data-parent="070a44c9b06351d1ddff3f844dead25140a49c7c" data-short="9ad479c" title="Run Unit Tests for commit 9ad479c">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="9ad479c4fbe954727c37792e39a7d0163fc8242d" data-parent="070a44c9b06351d1ddff3f844dead25140a49c7c" data-short="9ad479c" title="Run Antidoc for commit 9ad479c">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
       <td style="padding:8px;font-family:monospace;font-size:.85em">
         <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=070a44c9b06351d1ddff3f844dead25140a49c7c" style="color:var(--link)" title="Browse this commit's VIs in the VI Browser">070a44c</a>
       </td>
-      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Merge branch 'main' of https://github.com/elijah286/challenge-of-champions"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=070a44c9b06351d1ddff3f844dead25140a49c7c" style="color:var(--fg)">Merge branch 'main' of https://github.com/elijah286/challenge-of-champions</a></td>
+      <td style="padding:8px;font-size:.85em;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="Merge branch &#x27;main&#x27; of https://github.com/elijah286/challenge-of-champions"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=070a44c9b06351d1ddff3f844dead25140a49c7c" style="color:var(--fg)">Merge branch &#x27;main&#x27; of https://github.com/elijah286/challenge-of-champions</a></td>
       <td style="padding:8px;font-size:.82em;color:var(--fg-muted)">Elijah Kerry</td>
       <td style="padding:8px;font-size:.75em;color:var(--fg-muted)">2024-05-20</td>
       <td style="text-align:center"><span title="195/216 project VIs compiled" style="background:#bb8009;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=masscompile-report&sha=070a44c9b06351d1ddff3f844dead25140a49c7c&short=070a44c&src=..%2Fmasscompile%2F070a44c9b06351d1ddff3f844dead25140a49c7c%2Findex.html&title=Mass%20Compile%20%C2%B7%20070a44c" style="color:inherit">⚠️ 90%</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="070a44c9b06351d1ddff3f844dead25140a49c7c" data-parent="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-short="070a44c" data-ts="2026-06-15T20:45:05Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=070a44c9b06351d1ddff3f844dead25140a49c7c&short=070a44c&src=..%2Fvi-analyzer%2F070a44c9b06351d1ddff3f844dead25140a49c7c%2Findex.html&title=VI%20Analyzer%20%C2%B7%20070a44c" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="070a44c9b06351d1ddff3f844dead25140a49c7c" data-parent="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-short="070a44c" data-ts="2026-06-09T11:39:12Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=070a44c9b06351d1ddff3f844dead25140a49c7c&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=070a44c9b06351d1ddff3f844dead25140a49c7c&plat=windows&changed=1" style="color:var(--link)">Win(203)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=070a44c9b06351d1ddff3f844dead25140a49c7c&plat=linux&changed=1" style="color:var(--link)">Linux(203)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="070a44c9b06351d1ddff3f844dead25140a49c7c" data-parent="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-short="070a44c" title="Run Unit Tests for commit 070a44c">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="070a44c9b06351d1ddff3f844dead25140a49c7c" data-parent="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-short="070a44c" title="Run Antidoc for commit 070a44c">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2330,8 +2650,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="1ae15b2" data-ts="2026-06-15T20:42:53Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=1ae15b21fb486eee1a559d5f6854a0fcbcba44a6&short=1ae15b2&src=..%2Fvi-analyzer%2F1ae15b21fb486eee1a559d5f6854a0fcbcba44a6%2Findex.html&title=VI%20Analyzer%20%C2%B7%201ae15b2" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="1ae15b2" data-ts="2026-06-09T11:39:18Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=1ae15b21fb486eee1a559d5f6854a0fcbcba44a6&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=1ae15b21fb486eee1a559d5f6854a0fcbcba44a6&plat=windows&changed=1" style="color:var(--link)">Win(207)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=1ae15b21fb486eee1a559d5f6854a0fcbcba44a6&plat=linux&changed=1" style="color:var(--link)">Linux(207)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="1ae15b2" title="Run Unit Tests for commit 1ae15b2">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="1ae15b21fb486eee1a559d5f6854a0fcbcba44a6" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="1ae15b2" title="Run Antidoc for commit 1ae15b2">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2345,8 +2665,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="cc939cda81377d35fd17a587744f459cb3e20121" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="cc939cd" data-ts="2026-06-15T20:44:07Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=cc939cda81377d35fd17a587744f459cb3e20121&short=cc939cd&src=..%2Fvi-analyzer%2Fcc939cda81377d35fd17a587744f459cb3e20121%2Findex.html&title=VI%20Analyzer%20%C2%B7%20cc939cd" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="cc939cda81377d35fd17a587744f459cb3e20121" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="cc939cd" data-ts="2026-06-09T11:39:48Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=cc939cda81377d35fd17a587744f459cb3e20121&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=cc939cda81377d35fd17a587744f459cb3e20121&plat=windows&changed=1" style="color:var(--link)">Win(207)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=cc939cda81377d35fd17a587744f459cb3e20121&plat=linux&changed=1" style="color:var(--link)">Linux(207)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="cc939cda81377d35fd17a587744f459cb3e20121" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="cc939cd" title="Run Unit Tests for commit cc939cd">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="cc939cda81377d35fd17a587744f459cb3e20121" data-parent="ade2f01f0b980e24b46acf78c9c250d465801070" data-short="cc939cd" title="Run Antidoc for commit cc939cd">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2360,8 +2680,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="ade2f01f0b980e24b46acf78c9c250d465801070" data-parent="cdcdd4a32895e7028312394f82e52a21dc577bd0" data-short="ade2f01" data-ts="2026-06-15T20:46:36Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=ade2f01f0b980e24b46acf78c9c250d465801070&short=ade2f01&src=..%2Fvi-analyzer%2Fade2f01f0b980e24b46acf78c9c250d465801070%2Findex.html&title=VI%20Analyzer%20%C2%B7%20ade2f01" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="ade2f01f0b980e24b46acf78c9c250d465801070" data-parent="cdcdd4a32895e7028312394f82e52a21dc577bd0" data-short="ade2f01" data-ts="2026-06-09T11:39:43Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ade2f01f0b980e24b46acf78c9c250d465801070&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ade2f01f0b980e24b46acf78c9c250d465801070&plat=windows&changed=1" style="color:var(--link)">Win(1)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ade2f01f0b980e24b46acf78c9c250d465801070&plat=linux&changed=1" style="color:var(--link)">Linux(1)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="ade2f01f0b980e24b46acf78c9c250d465801070" data-parent="cdcdd4a32895e7028312394f82e52a21dc577bd0" data-short="ade2f01" title="Run Unit Tests for commit ade2f01">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="ade2f01f0b980e24b46acf78c9c250d465801070" data-parent="cdcdd4a32895e7028312394f82e52a21dc577bd0" data-short="ade2f01" title="Run Antidoc for commit ade2f01">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2375,8 +2695,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c" data-parent="eff9a664410ee93984150561edac9e2552837e22" data-short="a12cdb3" data-ts="2026-06-15T20:43:13Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c&short=a12cdb3&src=..%2Fvi-analyzer%2Fa12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c%2Findex.html&title=VI%20Analyzer%20%C2%B7%20a12cdb3" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c" data-parent="eff9a664410ee93984150561edac9e2552837e22" data-short="a12cdb3" data-ts="2026-06-09T11:39:41Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c&plat=windows&changed=1" style="color:var(--link)">Win(2)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c&plat=linux&changed=1" style="color:var(--link)">Linux(2)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c" data-parent="eff9a664410ee93984150561edac9e2552837e22" data-short="a12cdb3" title="Run Unit Tests for commit a12cdb3">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="a12cdb36a8410ad67f2827ec9ee20ea57b1c9b9c" data-parent="eff9a664410ee93984150561edac9e2552837e22" data-short="a12cdb3" title="Run Antidoc for commit a12cdb3">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2390,8 +2710,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="eff9a664410ee93984150561edac9e2552837e22" data-parent="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-short="eff9a66" data-ts="2026-06-15T23:32:56Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=eff9a664410ee93984150561edac9e2552837e22&short=eff9a66&src=..%2Fvi-analyzer%2Feff9a664410ee93984150561edac9e2552837e22%2Findex.html&title=VI%20Analyzer%20%C2%B7%20eff9a66" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="eff9a664410ee93984150561edac9e2552837e22" data-parent="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-short="eff9a66" data-ts="2026-06-09T11:39:53Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=eff9a664410ee93984150561edac9e2552837e22&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=eff9a664410ee93984150561edac9e2552837e22&plat=windows&changed=1" style="color:var(--link)">Win(8)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=eff9a664410ee93984150561edac9e2552837e22&plat=linux&changed=1" style="color:var(--link)">Linux(8)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="eff9a664410ee93984150561edac9e2552837e22" data-parent="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-short="eff9a66" title="Run Unit Tests for commit eff9a66">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="eff9a664410ee93984150561edac9e2552837e22" data-parent="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-short="eff9a66" title="Run Antidoc for commit eff9a66">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2405,8 +2725,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="dbf0fa5" data-ts="2026-06-15T23:50:36Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=dbf0fa5447b21e38f7d818ccb8f1947119b8bd96&short=dbf0fa5&src=..%2Fvi-analyzer%2Fdbf0fa5447b21e38f7d818ccb8f1947119b8bd96%2Findex.html&title=VI%20Analyzer%20%C2%B7%20dbf0fa5" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="dbf0fa5" data-ts="2026-06-09T11:39:50Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=dbf0fa5447b21e38f7d818ccb8f1947119b8bd96&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=dbf0fa5447b21e38f7d818ccb8f1947119b8bd96&plat=windows&changed=1" style="color:var(--link)">Win(15)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=dbf0fa5447b21e38f7d818ccb8f1947119b8bd96&plat=linux&changed=1" style="color:var(--link)">Linux(15)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="dbf0fa5" title="Run Unit Tests for commit dbf0fa5">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="dbf0fa5447b21e38f7d818ccb8f1947119b8bd96" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="dbf0fa5" title="Run Antidoc for commit dbf0fa5">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2420,8 +2740,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="a9b7bd49859410d403991d0257e8c4553c8412d9" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="a9b7bd4" data-ts="2026-06-16T00:06:52Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=a9b7bd49859410d403991d0257e8c4553c8412d9&short=a9b7bd4&src=..%2Fvi-analyzer%2Fa9b7bd49859410d403991d0257e8c4553c8412d9%2Findex.html&title=VI%20Analyzer%20%C2%B7%20a9b7bd4" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center"><a href="#" class="cidash-run" data-cap="vidiff" data-sha="a9b7bd49859410d403991d0257e8c4553c8412d9" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="a9b7bd4" title="Run VIDiff for commit a9b7bd4">&#9655;</a></td>
       <td style="text-align:center"><a href="#" class="cidash-run" data-cap="snapshots" data-sha="a9b7bd49859410d403991d0257e8c4553c8412d9" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="a9b7bd4" title="Run VI Snapshots for commit a9b7bd4">&#9655;</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="a9b7bd49859410d403991d0257e8c4553c8412d9" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="a9b7bd4" title="Run Unit Tests for commit a9b7bd4">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="a9b7bd49859410d403991d0257e8c4553c8412d9" data-parent="22d12ece5bd885fdc334fb6723be5bd9a3b3dacb" data-short="a9b7bd4" title="Run Antidoc for commit a9b7bd4">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2435,8 +2755,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="8a5f4004be4425fdc87f8ca425e85f364948d655" data-parent="27c2970c84667ecb41c43b4f56b8ac067297b011" data-short="8a5f400" data-ts="2026-06-16T00:21:42Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=8a5f4004be4425fdc87f8ca425e85f364948d655&short=8a5f400&src=..%2Fvi-analyzer%2F8a5f4004be4425fdc87f8ca425e85f364948d655%2Findex.html&title=VI%20Analyzer%20%C2%B7%208a5f400" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="8a5f4004be4425fdc87f8ca425e85f364948d655" data-parent="27c2970c84667ecb41c43b4f56b8ac067297b011" data-short="8a5f400" data-ts="2026-06-09T11:39:34Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=8a5f4004be4425fdc87f8ca425e85f364948d655&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=8a5f4004be4425fdc87f8ca425e85f364948d655&plat=windows&changed=1" style="color:var(--link)">Win(19)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=8a5f4004be4425fdc87f8ca425e85f364948d655&plat=linux&changed=1" style="color:var(--link)">Linux(19)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="8a5f4004be4425fdc87f8ca425e85f364948d655" data-parent="27c2970c84667ecb41c43b4f56b8ac067297b011" data-short="8a5f400" title="Run Unit Tests for commit 8a5f400">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="8a5f4004be4425fdc87f8ca425e85f364948d655" data-parent="27c2970c84667ecb41c43b4f56b8ac067297b011" data-short="8a5f400" title="Run Antidoc for commit 8a5f400">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2450,8 +2770,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="27c2970c84667ecb41c43b4f56b8ac067297b011" data-parent="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-short="27c2970" data-ts="2026-06-16T00:35:25Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=27c2970c84667ecb41c43b4f56b8ac067297b011&short=27c2970&src=..%2Fvi-analyzer%2F27c2970c84667ecb41c43b4f56b8ac067297b011%2Findex.html&title=VI%20Analyzer%20%C2%B7%2027c2970" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center"><a href="#" class="cidash-run" data-cap="vidiff" data-sha="27c2970c84667ecb41c43b4f56b8ac067297b011" data-parent="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-short="27c2970" title="Run VIDiff for commit 27c2970">&#9655;</a></td>
       <td style="text-align:center"><a href="#" class="cidash-run" data-cap="snapshots" data-sha="27c2970c84667ecb41c43b4f56b8ac067297b011" data-parent="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-short="27c2970" title="Run VI Snapshots for commit 27c2970">&#9655;</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="27c2970c84667ecb41c43b4f56b8ac067297b011" data-parent="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-short="27c2970" title="Run Unit Tests for commit 27c2970">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="27c2970c84667ecb41c43b4f56b8ac067297b011" data-parent="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-short="27c2970" title="Run Antidoc for commit 27c2970">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2465,8 +2785,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-parent="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-short="8c690e5" data-ts="2026-06-15T20:41:28Z"><span style="background:#da3633;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://github.com/elijah286/challenge-of-champions/actions/runs/27574399147" style="color:inherit">❌ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-parent="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-short="8c690e5" data-ts="2026-06-09T11:39:37Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=8c690e533a6dd70b6d86e5bdfa520053c9401cc0&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=8c690e533a6dd70b6d86e5bdfa520053c9401cc0&plat=windows&changed=1" style="color:var(--link)">Win(9)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=8c690e533a6dd70b6d86e5bdfa520053c9401cc0&plat=linux&changed=1" style="color:var(--link)">Linux(9)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-parent="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-short="8c690e5" title="Run Unit Tests for commit 8c690e5">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="8c690e533a6dd70b6d86e5bdfa520053c9401cc0" data-parent="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-short="8c690e5" title="Run Antidoc for commit 8c690e5">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2480,8 +2800,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-parent="f0557e57e1250dc72a976a3f7a953aad041475ec" data-short="ddc17db" data-ts="2026-06-15T20:40:47Z"><span style="background:#da3633;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://github.com/elijah286/challenge-of-champions/actions/runs/27574401942" style="color:inherit">❌ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-parent="f0557e57e1250dc72a976a3f7a953aad041475ec" data-short="ddc17db" data-ts="2026-06-09T11:39:51Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ddc17dbc03688b1510da32de1adb0c41ec1cb27a&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ddc17dbc03688b1510da32de1adb0c41ec1cb27a&plat=windows&changed=1" style="color:var(--link)">Win(10)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ddc17dbc03688b1510da32de1adb0c41ec1cb27a&plat=linux&changed=1" style="color:var(--link)">Linux(10)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-parent="f0557e57e1250dc72a976a3f7a953aad041475ec" data-short="ddc17db" title="Run Unit Tests for commit ddc17db">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="ddc17dbc03688b1510da32de1adb0c41ec1cb27a" data-parent="f0557e57e1250dc72a976a3f7a953aad041475ec" data-short="ddc17db" title="Run Antidoc for commit ddc17db">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2495,8 +2815,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="7d43bc8921f11fd29072b8b34913dd1281a881a8" data-parent="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-short="7d43bc8" data-ts="2026-06-15T20:55:44Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=7d43bc8921f11fd29072b8b34913dd1281a881a8&short=7d43bc8&src=..%2Fvi-analyzer%2F7d43bc8921f11fd29072b8b34913dd1281a881a8%2Findex.html&title=VI%20Analyzer%20%C2%B7%207d43bc8" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="7d43bc8921f11fd29072b8b34913dd1281a881a8" data-parent="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-short="7d43bc8" data-ts="2026-06-09T11:39:32Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=7d43bc8921f11fd29072b8b34913dd1281a881a8&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=7d43bc8921f11fd29072b8b34913dd1281a881a8&plat=windows&changed=1" style="color:var(--link)">Win(62)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=7d43bc8921f11fd29072b8b34913dd1281a881a8&plat=linux&changed=1" style="color:var(--link)">Linux(62)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="7d43bc8921f11fd29072b8b34913dd1281a881a8" data-parent="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-short="7d43bc8" title="Run Unit Tests for commit 7d43bc8">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="7d43bc8921f11fd29072b8b34913dd1281a881a8" data-parent="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-short="7d43bc8" title="Run Antidoc for commit 7d43bc8">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2510,8 +2830,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-parent="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-short="5c6c0a7" data-ts="2026-06-15T21:13:11Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=5c6c0a76492473182eb589175e15f0c9d770d4e6&short=5c6c0a7&src=..%2Fvi-analyzer%2F5c6c0a76492473182eb589175e15f0c9d770d4e6%2Findex.html&title=VI%20Analyzer%20%C2%B7%205c6c0a7" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-parent="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-short="5c6c0a7" data-ts="2026-06-09T11:39:26Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=5c6c0a76492473182eb589175e15f0c9d770d4e6&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=5c6c0a76492473182eb589175e15f0c9d770d4e6&plat=windows&changed=1" style="color:var(--link)">Win(54)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=5c6c0a76492473182eb589175e15f0c9d770d4e6&plat=linux&changed=1" style="color:var(--link)">Linux(54)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-parent="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-short="5c6c0a7" title="Run Unit Tests for commit 5c6c0a7">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="5c6c0a76492473182eb589175e15f0c9d770d4e6" data-parent="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-short="5c6c0a7" title="Run Antidoc for commit 5c6c0a7">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2525,8 +2845,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-parent="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-short="55852b9" data-ts="2026-06-15T21:27:33Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=55852b9622b6ae0aea2b8571d53b4370a424e70b&short=55852b9&src=..%2Fvi-analyzer%2F55852b9622b6ae0aea2b8571d53b4370a424e70b%2Findex.html&title=VI%20Analyzer%20%C2%B7%2055852b9" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-parent="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-short="55852b9" data-ts="2026-06-09T11:39:24Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=55852b9622b6ae0aea2b8571d53b4370a424e70b&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=55852b9622b6ae0aea2b8571d53b4370a424e70b&plat=windows&changed=1" style="color:var(--link)">Win(6)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=55852b9622b6ae0aea2b8571d53b4370a424e70b&plat=linux&changed=1" style="color:var(--link)">Linux(6)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-parent="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-short="55852b9" title="Run Unit Tests for commit 55852b9">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="55852b9622b6ae0aea2b8571d53b4370a424e70b" data-parent="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-short="55852b9" title="Run Antidoc for commit 55852b9">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2540,8 +2860,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-parent="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-short="6bd0bbf" data-ts="2026-06-15T21:42:54Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74&short=6bd0bbf&src=..%2Fvi-analyzer%2F6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74%2Findex.html&title=VI%20Analyzer%20%C2%B7%206bd0bbf" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-parent="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-short="6bd0bbf" data-ts="2026-06-09T11:39:30Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74&plat=windows&changed=1" style="color:var(--link)">Win(27)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74&plat=linux&changed=1" style="color:var(--link)">Linux(27)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-parent="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-short="6bd0bbf" title="Run Unit Tests for commit 6bd0bbf">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="6bd0bbf32006c19e6ffea4c0f3fcb5fe87b25e74" data-parent="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-short="6bd0bbf" title="Run Antidoc for commit 6bd0bbf">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2555,8 +2875,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-parent="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-short="fc96dc5" data-ts="2026-06-15T21:58:01Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=fc96dc5da1fe74e09a9749417476cc7b455e9aca&short=fc96dc5&src=..%2Fvi-analyzer%2Ffc96dc5da1fe74e09a9749417476cc7b455e9aca%2Findex.html&title=VI%20Analyzer%20%C2%B7%20fc96dc5" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-parent="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-short="fc96dc5" data-ts="2026-06-09T11:39:55Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fc96dc5da1fe74e09a9749417476cc7b455e9aca&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fc96dc5da1fe74e09a9749417476cc7b455e9aca&plat=windows&changed=1" style="color:var(--link)">Win(29)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=fc96dc5da1fe74e09a9749417476cc7b455e9aca&plat=linux&changed=1" style="color:var(--link)">Linux(29)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-parent="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-short="fc96dc5" title="Run Unit Tests for commit fc96dc5">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="fc96dc5da1fe74e09a9749417476cc7b455e9aca" data-parent="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-short="fc96dc5" title="Run Antidoc for commit fc96dc5">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2570,8 +2890,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-parent="342171d5a674a151f121fe282eff2634ca0672ae" data-short="a231e7f" data-ts="2026-06-15T22:15:16Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=a231e7f207bc9f97955a3f51a3d120f55e157f24&short=a231e7f&src=..%2Fvi-analyzer%2Fa231e7f207bc9f97955a3f51a3d120f55e157f24%2Findex.html&title=VI%20Analyzer%20%C2%B7%20a231e7f" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-parent="342171d5a674a151f121fe282eff2634ca0672ae" data-short="a231e7f" data-ts="2026-06-09T11:39:42Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=a231e7f207bc9f97955a3f51a3d120f55e157f24&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=a231e7f207bc9f97955a3f51a3d120f55e157f24&plat=windows&changed=1" style="color:var(--link)">Win(10)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=a231e7f207bc9f97955a3f51a3d120f55e157f24&plat=linux&changed=1" style="color:var(--link)">Linux(10)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-parent="342171d5a674a151f121fe282eff2634ca0672ae" data-short="a231e7f" title="Run Unit Tests for commit a231e7f">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="a231e7f207bc9f97955a3f51a3d120f55e157f24" data-parent="342171d5a674a151f121fe282eff2634ca0672ae" data-short="a231e7f" title="Run Antidoc for commit a231e7f">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2585,8 +2905,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="342171d5a674a151f121fe282eff2634ca0672ae" data-parent="ef956c3e70e3c2e601099a53192b46c520969659" data-short="342171d" data-ts="2026-06-15T22:31:34Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=342171d5a674a151f121fe282eff2634ca0672ae&short=342171d&src=..%2Fvi-analyzer%2F342171d5a674a151f121fe282eff2634ca0672ae%2Findex.html&title=VI%20Analyzer%20%C2%B7%20342171d" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="342171d5a674a151f121fe282eff2634ca0672ae" data-parent="ef956c3e70e3c2e601099a53192b46c520969659" data-short="342171d" data-ts="2026-06-09T11:39:20Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=342171d5a674a151f121fe282eff2634ca0672ae&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=342171d5a674a151f121fe282eff2634ca0672ae&plat=windows&changed=1" style="color:var(--link)">Win(74)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=342171d5a674a151f121fe282eff2634ca0672ae&plat=linux&changed=1" style="color:var(--link)">Linux(74)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="342171d5a674a151f121fe282eff2634ca0672ae" data-parent="ef956c3e70e3c2e601099a53192b46c520969659" data-short="342171d" title="Run Unit Tests for commit 342171d">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="342171d5a674a151f121fe282eff2634ca0672ae" data-parent="ef956c3e70e3c2e601099a53192b46c520969659" data-short="342171d" title="Run Antidoc for commit 342171d">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2600,8 +2920,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="ef956c3e70e3c2e601099a53192b46c520969659" data-parent="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-short="ef956c3" data-ts="2026-06-15T22:51:08Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=ef956c3e70e3c2e601099a53192b46c520969659&short=ef956c3&src=..%2Fvi-analyzer%2Fef956c3e70e3c2e601099a53192b46c520969659%2Findex.html&title=VI%20Analyzer%20%C2%B7%20ef956c3" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="ef956c3e70e3c2e601099a53192b46c520969659" data-parent="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-short="ef956c3" data-ts="2026-06-09T11:39:52Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ef956c3e70e3c2e601099a53192b46c520969659&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ef956c3e70e3c2e601099a53192b46c520969659&plat=windows&changed=1" style="color:var(--link)">Win(13)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ef956c3e70e3c2e601099a53192b46c520969659&plat=linux&changed=1" style="color:var(--link)">Linux(13)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="ef956c3e70e3c2e601099a53192b46c520969659" data-parent="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-short="ef956c3" title="Run Unit Tests for commit ef956c3">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="ef956c3e70e3c2e601099a53192b46c520969659" data-parent="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-short="ef956c3" title="Run Antidoc for commit ef956c3">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2615,8 +2935,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-parent="0bd74709c51730b09aca38c7e425fac356d53bad" data-short="ca4d8f5" data-ts="2026-06-15T23:05:07Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629&short=ca4d8f5&src=..%2Fvi-analyzer%2Fca4d8f5e2ea8891143ac1f57f49692b8fe4fa629%2Findex.html&title=VI%20Analyzer%20%C2%B7%20ca4d8f5" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-parent="0bd74709c51730b09aca38c7e425fac356d53bad" data-short="ca4d8f5" data-ts="2026-06-09T11:39:45Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629&plat=windows&changed=1" style="color:var(--link)">Win(39)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629&plat=linux&changed=1" style="color:var(--link)">Linux(39)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-parent="0bd74709c51730b09aca38c7e425fac356d53bad" data-short="ca4d8f5" title="Run Unit Tests for commit ca4d8f5">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="ca4d8f5e2ea8891143ac1f57f49692b8fe4fa629" data-parent="0bd74709c51730b09aca38c7e425fac356d53bad" data-short="ca4d8f5" title="Run Antidoc for commit ca4d8f5">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2630,8 +2950,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="0bd74709c51730b09aca38c7e425fac356d53bad" data-parent="3610ea9666189150b9ff3cb6872e3912c72ea053" data-short="0bd7470" data-ts="2026-06-16T00:50:37Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=0bd74709c51730b09aca38c7e425fac356d53bad&short=0bd7470&src=..%2Fvi-analyzer%2F0bd74709c51730b09aca38c7e425fac356d53bad%2Findex.html&title=VI%20Analyzer%20%C2%B7%200bd7470" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vidiff" data-sha="0bd74709c51730b09aca38c7e425fac356d53bad" data-parent="3610ea9666189150b9ff3cb6872e3912c72ea053" data-short="0bd7470" data-ts="2026-06-09T11:39:14Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0bd74709c51730b09aca38c7e425fac356d53bad&changed=1" style="color:inherit">✅ diff</a></span></td>
       <td style="text-align:center;font-size:.78em;white-space:nowrap"><a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0bd74709c51730b09aca38c7e425fac356d53bad&plat=windows&changed=1" style="color:var(--link)">Win(2)</a> / <a href="https://elijah286.github.io/challenge-of-champions/vi-snapshots/index.html?sha=0bd74709c51730b09aca38c7e425fac356d53bad&plat=linux&changed=1" style="color:var(--link)">Linux(2)</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="0bd74709c51730b09aca38c7e425fac356d53bad" data-parent="3610ea9666189150b9ff3cb6872e3912c72ea053" data-short="0bd7470" title="Run Unit Tests for commit 0bd7470">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="0bd74709c51730b09aca38c7e425fac356d53bad" data-parent="3610ea9666189150b9ff3cb6872e3912c72ea053" data-short="0bd7470" title="Run Antidoc for commit 0bd7470">&#9655;</a></td>
     </tr>
 
     <tr data-project="true">
@@ -2645,8 +2965,8 @@
       <td style="text-align:center" class="cidash-cap-cell" data-cap="vi-analyzer" data-sha="3610ea9666189150b9ff3cb6872e3912c72ea053" data-parent="1e1f601e21b79478d17c7bfe8bf402a76da3afd7" data-short="3610ea9" data-ts="2026-06-16T01:05:58Z"><span style="background:#2ea043;color:#fff;padding:2px 7px;border-radius:4px;font-size:.75em"><a href="https://elijah286.github.io/challenge-of-champions/report/index.html?type=vi-analyzer-report&sha=3610ea9666189150b9ff3cb6872e3912c72ea053&short=3610ea9&src=..%2Fvi-analyzer%2F3610ea9666189150b9ff3cb6872e3912c72ea053%2Findex.html&title=VI%20Analyzer%20%C2%B7%203610ea9" style="color:inherit">✅ analyze</a></span></td>
       <td style="text-align:center"><a href="#" class="cidash-run" data-cap="vidiff" data-sha="3610ea9666189150b9ff3cb6872e3912c72ea053" data-parent="1e1f601e21b79478d17c7bfe8bf402a76da3afd7" data-short="3610ea9" title="Run VIDiff for commit 3610ea9">&#9655;</a></td>
       <td style="text-align:center"><a href="#" class="cidash-run" data-cap="snapshots" data-sha="3610ea9666189150b9ff3cb6872e3912c72ea053" data-parent="1e1f601e21b79478d17c7bfe8bf402a76da3afd7" data-short="3610ea9" title="Run VI Snapshots for commit 3610ea9">&#9655;</a></td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
-      <td style="text-align:center;color:var(--fg-muted);font-size:.75em">—</td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="unit-tests" data-sha="3610ea9666189150b9ff3cb6872e3912c72ea053" data-parent="1e1f601e21b79478d17c7bfe8bf402a76da3afd7" data-short="3610ea9" title="Run Unit Tests for commit 3610ea9">&#9655;</a></td>
+      <td style="text-align:center"><a href="#" class="cidash-run" data-cap="antidoc" data-sha="3610ea9666189150b9ff3cb6872e3912c72ea053" data-parent="1e1f601e21b79478d17c7bfe8bf402a76da3afd7" data-short="3610ea9" title="Run Antidoc for commit 3610ea9">&#9655;</a></td>
     </tr></tbody>
   </table>
   </div>
@@ -2676,6 +2996,60 @@
       };
       checkbox.addEventListener('change', applyFilter);
       applyFilter();
+    })();
+
+    // Column-visibility menu: a standard "Columns" dropdown of checkboxes that
+    // toggles each (non-identifier) column on/off, persisted per-repo in
+    // localStorage so the choice survives reloads. Commit (column 0) is the row
+    // identifier and is always shown.
+    (() => {
+      const STORE = 'lvci_dash_cols_elijah286/challenge-of-champions';
+      const COLS = [
+        {key:'message',     label:'Message',      idx:1},
+        {key:'author',      label:'Author',       idx:2},
+        {key:'date',        label:'Date',         idx:3},
+        {key:'masscompile', label:'Mass Compile', idx:4},
+        {key:'vi-analyzer', label:'VI Analyzer',  idx:5},
+        {key:'vidiff',      label:'VIDiff',       idx:6},
+        {key:'snapshots',   label:'Snapshots',    idx:7},
+        {key:'unit-tests',  label:'Unit Tests',   idx:8},
+        {key:'antidoc',     label:'Antidoc',      idx:9}
+      ];
+      const btn = document.getElementById('cidash-colbtn');
+      const panel = document.getElementById('cidash-colpanel');
+      if (!btn || !panel) return;
+      const hidden = {};
+      try { (JSON.parse(localStorage.getItem(STORE)) || []).forEach((k) => { hidden[k] = true; }); } catch (e) {}
+      const persist = () => {
+        try { localStorage.setItem(STORE, JSON.stringify(COLS.map((c) => c.key).filter((k) => hidden[k]))); } catch (e) {}
+      };
+      const applyCol = (col) => {
+        const vis = !hidden[col.key];
+        document.querySelectorAll('#cidash-table > thead > tr, #cidash-table > tbody > tr').forEach((tr) => {
+          const cell = tr.children[col.idx];
+          if (cell) cell.style.display = vis ? '' : 'none';
+        });
+      };
+      const head = document.createElement('div');
+      head.className = 'hd';
+      head.textContent = 'Show columns';
+      panel.appendChild(head);
+      COLS.forEach((col) => {
+        const lab = document.createElement('label');
+        lab.className = 'cidash-colopt';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = !hidden[col.key];
+        cb.addEventListener('change', () => { hidden[col.key] = !cb.checked; applyCol(col); persist(); });
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(' ' + col.label));
+        panel.appendChild(lab);
+        applyCol(col);
+      });
+      const setOpen = (open) => { panel.hidden = !open; btn.setAttribute('aria-expanded', open ? 'true' : 'false'); };
+      btn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(panel.hidden); });
+      document.addEventListener('click', (e) => { if (!panel.hidden && !panel.contains(e.target) && e.target !== btn) setOpen(false); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
     })();
   </script>
 </body>

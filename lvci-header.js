@@ -112,6 +112,8 @@
     '.lvci-nav a.on::after{content:"";position:absolute}',
     '@media(prefers-color-scheme:light){.lvci-nav a:hover,.lvci-nav a.on{color:#1f2328;background:rgba(80,90,100,.10)}}',
     '.lvci-nav a .lvci-soon{font-size:9.5px;font-weight:600;color:#8b949e;border:1px solid #30363d;border-radius:999px;padding:0 5px;text-transform:uppercase;letter-spacing:.04em}',
+    // Count pill beside a nav item (e.g. Clients), filled in once the registry loads.
+    '.lvci-nav a .lvci-ncount{font-size:10px;font-weight:700;color:#8b949e;background:rgba(177,186,196,.16);border-radius:999px;padding:1px 6px;min-width:16px;text-align:center;line-height:1.4}',
     // Actions cluster (right)
     '.lvci-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}',
     '.lvci-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;line-height:1;cursor:pointer;',
@@ -125,21 +127,29 @@
     '.lvci-btn[disabled]{opacity:.55;cursor:default}',
     '.lvci-btn .lvci-spin{width:11px;height:11px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;display:inline-block;animation:lvci-spin .7s linear infinite}',
     '@keyframes lvci-spin{to{transform:rotate(360deg)}}',
-    // Version badge
-    '.lvci-ver{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#8b949e;text-decoration:none;',
-      'border:1px solid #30363d;border-radius:999px;padding:4px 10px;white-space:nowrap}',
-    '.lvci-ver:hover{color:#e6edf3;border-color:#8b949e;text-decoration:none}',
-    '@media(prefers-color-scheme:light){.lvci-ver{color:#57606a;border-color:#d0d7de}.lvci-ver:hover{color:#1f2328;border-color:#57606a}}',
-    '.lvci-ver .lvci-dot{width:7px;height:7px;border-radius:50%;background:#d29922;box-shadow:0 0 0 0 rgba(210,153,34,.5);animation:lvci-pulse 1.8s infinite;display:none}',
-    '.lvci-ver.behind .lvci-dot{display:inline-block}',
-    '@keyframes lvci-pulse{0%{box-shadow:0 0 0 0 rgba(210,153,34,.5)}70%{box-shadow:0 0 0 6px rgba(210,153,34,0)}100%{box-shadow:0 0 0 0 rgba(210,153,34,0)}}',
-    // Version badge → "N running" while CI is in flight (blue spinner replaces the version)
-    '.lvci-ver .lvci-run{width:9px;height:9px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;display:none;animation:lvci-spin .7s linear infinite}',
-    '.lvci-ver.working .lvci-run{display:inline-block}',
-    '.lvci-ver.working .lvci-dot{display:none}',
-    '.lvci-ver.working{color:#1f6feb;border-color:#1f6feb}',
-    '.lvci-ver.working:hover{color:#388bfd;border-color:#388bfd}',
-    '@media(prefers-color-scheme:light){.lvci-ver.working{color:#0969da;border-color:#0969da}.lvci-ver.working:hover{color:#0969da;border-color:#0969da}}',
+    // Live CI activity chip — shown in the actions cluster ONLY while one or more
+    // workflow runs are in flight; idle leaves the bar clean. It is its own
+    // surface (no longer fused onto the version), so activity and version never
+    // compete for one pill.
+    '.lvci-run-chip{display:none;align-items:center;gap:7px;font-size:12px;font-weight:600;color:#1f6feb;text-decoration:none;',
+      'border:1px solid #1f6feb;border-radius:999px;padding:4px 11px;white-space:nowrap}',
+    '.lvci-run-chip.show{display:inline-flex}',
+    '.lvci-run-chip:hover{background:rgba(31,111,235,.12);text-decoration:none}',
+    '.lvci-run-chip .lvci-run-spin{width:9px;height:9px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:lvci-spin .7s linear infinite}',
+    '@media(prefers-color-scheme:light){.lvci-run-chip{color:#0969da;border-color:#0969da}.lvci-run-chip:hover{background:rgba(9,105,218,.08)}}',
+    // Update-available cue: a single amber dot on the menu trigger (the More
+    // button on desktop, the hamburger on mobile). The version + update action
+    // live inside that menu, so this dot is the at-a-glance "you can update" hint.
+    '.lvci-mdot{display:none;position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#d29922;',
+      'box-shadow:0 0 0 0 rgba(210,153,34,.5);animation:lvci-pulse 1.8s infinite}',
+    '.has-update .lvci-mdot{display:block}',
+    '@keyframes lvci-pulse{0%{box-shadow:0 0 0 0 rgba(210,153,34,.5)}70%{box-shadow:0 0 0 5px rgba(210,153,34,0)}100%{box-shadow:0 0 0 0 rgba(210,153,34,0)}}',
+    // Version / update entry inside the menu(s): shows the installed version and
+    // opens What's New; turns amber + reads "Update available" when behind.
+    '.lvci-ddver .lvci-ddver-label{flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.lvci-ddver .lvci-ddver-tag{margin-left:auto;padding-left:10px;font-size:11px;font-weight:600;color:#8b949e;white-space:nowrap;font-variant-numeric:tabular-nums}',
+    '.lvci-ddver.behind .lvci-ddver-tag,.lvci-ddver.behind .lvci-ic{color:#d29922}',
+    '@media(prefers-color-scheme:light){.lvci-ddver .lvci-ddver-tag{color:#57606a}.lvci-ddver.behind .lvci-ddver-tag,.lvci-ddver.behind .lvci-ic{color:#bf8700}}',
     // Revision picker (per-revision reports: switch which revision you're viewing)
     '.lvci-rev{display:inline-flex;align-items:center;gap:7px;flex:0 1 auto;min-width:0}',
     '.lvci-rev .lvci-revlbl{font-size:11px;font-weight:600;color:#8b949e;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}',
@@ -148,7 +158,7 @@
     '.lvci-rev select:hover{border-color:#8b949e}',
     '@media(prefers-color-scheme:light){.lvci-rev .lvci-revlbl{color:#57606a}.lvci-rev select{color:#1f2328;background:#fff;border-color:#d0d7de;color-scheme:light}}',
     // Hamburger (mobile)
-    '.lvci-burger{display:none;align-items:center;justify-content:center;width:38px;height:34px;border:1px solid #30363d;border-radius:7px;background:transparent;color:inherit;cursor:pointer;flex:0 0 auto}',
+    '.lvci-burger{position:relative;display:none;align-items:center;justify-content:center;width:38px;height:34px;border:1px solid #30363d;border-radius:7px;background:transparent;color:inherit;cursor:pointer;flex:0 0 auto}',
     '@media(prefers-color-scheme:light){.lvci-burger{border-color:#d0d7de}}',
     '.lvci-burger svg{width:18px;height:18px;display:block}',
     // Inline glyph wrapper — sizes the SVG and lets it inherit color (currentColor)
@@ -157,7 +167,7 @@
     '.lvci-btn .lvci-ic{width:15px;height:15px}',
     // ── Secondary actions: "More" button → popover (Configure / Update / About / theme)
     '.lvci-dropdown{position:relative;display:inline-flex;align-items:center}',
-    '.lvci-more{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid #30363d;background:transparent;color:#8b949e;border-radius:7px;cursor:pointer}',
+    '.lvci-more{position:relative;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid #30363d;background:transparent;color:#8b949e;border-radius:7px;cursor:pointer}',
     '.lvci-more svg{width:18px;height:18px;display:block}',
     '.lvci-more:hover{background:rgba(177,186,196,.12);color:#e6edf3}',
     '.lvci-more.open{background:rgba(177,186,196,.16);color:#e6edf3;border-color:#8b949e}',
@@ -239,8 +249,10 @@
     ':root[data-lvci-theme=light] .lvci-nav a:hover,:root[data-lvci-theme=light] .lvci-nav a.on{color:#1f2328;background:rgba(80,90,100,.10)}',
     ':root[data-lvci-theme=light] .lvci-btn{border-color:#d0d7de}',
     ':root[data-lvci-theme=light] .lvci-btn:hover{background:rgba(80,90,100,.08)}',
-    ':root[data-lvci-theme=light] .lvci-ver{color:#57606a;border-color:#d0d7de}',
-    ':root[data-lvci-theme=light] .lvci-ver:hover{color:#1f2328;border-color:#57606a}',
+    ':root[data-lvci-theme=light] .lvci-run-chip{color:#0969da;border-color:#0969da}',
+    ':root[data-lvci-theme=light] .lvci-run-chip:hover{background:rgba(9,105,218,.08)}',
+    ':root[data-lvci-theme=light] .lvci-ddver .lvci-ddver-tag{color:#57606a}',
+    ':root[data-lvci-theme=light] .lvci-ddver.behind .lvci-ddver-tag,:root[data-lvci-theme=light] .lvci-ddver.behind .lvci-ic{color:#bf8700}',
     ':root[data-lvci-theme=light] .lvci-burger{border-color:#d0d7de}',
     ':root[data-lvci-theme=light] .lvci-more{border-color:#d0d7de;color:#57606a}',
     ':root[data-lvci-theme=light] .lvci-more:hover,:root[data-lvci-theme=light] .lvci-more.open{background:rgba(80,90,100,.08);color:#1f2328}',
@@ -274,8 +286,10 @@
     ':root[data-lvci-theme=dark] .lvci-nav a:hover,:root[data-lvci-theme=dark] .lvci-nav a.on{color:#e6edf3;background:rgba(177,186,196,.16)}',
     ':root[data-lvci-theme=dark] .lvci-btn{border-color:#30363d}',
     ':root[data-lvci-theme=dark] .lvci-btn:hover{background:rgba(177,186,196,.12)}',
-    ':root[data-lvci-theme=dark] .lvci-ver{color:#8b949e;border-color:#30363d}',
-    ':root[data-lvci-theme=dark] .lvci-ver:hover{color:#e6edf3;border-color:#8b949e}',
+    ':root[data-lvci-theme=dark] .lvci-run-chip{color:#1f6feb;border-color:#1f6feb}',
+    ':root[data-lvci-theme=dark] .lvci-run-chip:hover{background:rgba(31,111,235,.12)}',
+    ':root[data-lvci-theme=dark] .lvci-ddver .lvci-ddver-tag{color:#8b949e}',
+    ':root[data-lvci-theme=dark] .lvci-ddver.behind .lvci-ddver-tag,:root[data-lvci-theme=dark] .lvci-ddver.behind .lvci-ic{color:#d29922}',
     ':root[data-lvci-theme=dark] .lvci-burger{border-color:#30363d}',
     ':root[data-lvci-theme=dark] .lvci-more{border-color:#30363d;color:#8b949e}',
     ':root[data-lvci-theme=dark] .lvci-more:hover,:root[data-lvci-theme=dark] .lvci-more.open{background:rgba(177,186,196,.12);color:#e6edf3}',
@@ -323,6 +337,10 @@
     configure: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1.5" y1="14" x2="6.5" y2="14"/><line x1="9.5" y1="8" x2="14.5" y2="8"/><line x1="17.5" y1="16" x2="22.5" y2="16"/></svg>',
     update: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
     about: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="16" x2="12" y2="11.5"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+    clients: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-6A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10.5" cy="8" r="3.5"/><path d="M21 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8"/></svg>',
+    news: '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M11.5 3l1.8 5.2 5.2 1.8-5.2 1.8L11.5 17l-1.8-5.2L4.5 10l5.2-1.8z"/><path d="M18 14l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z"/></svg>',
+    history: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>',
+    tests: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 3v6L5.4 17.5A1.5 1.5 0 0 0 6.7 20h10.6a1.5 1.5 0 0 0 1.3-2.5L14 9V3"/><line x1="7.5" y1="14" x2="16.5" y2="14"/></svg>',
     sun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 1.8v2.4M12 19.8v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M1.8 12h2.4M19.8 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>',
     moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
     system: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="3.5" width="19" height="13" rx="2"/><line x1="8.5" y1="20.5" x2="15.5" y2="20.5"/><line x1="12" y1="16.5" x2="12" y2="20.5"/></svg>'
@@ -390,12 +408,11 @@
   // ── Primary navigation (the durable site sections). Data-driven so future
   //    capabilities — Builds, Documentation, Unit Tests — are a one-line add. ─
   var NAV = [
-    { key: 'dashboard',  label: 'Dashboard',  href: base + '/' },
-    { key: 'vi-browser', label: 'VI Browser', href: base + '/vi-snapshots/' }
+    { key: 'dashboard',   label: 'Dashboard',    href: base + '/' },
+    { key: 'vi-browser',  label: 'VI Browser',   href: base + '/vi-snapshots/' }
     // Future (uncomment / extend as capabilities land):
     // { key: 'builds', label: 'Builds', href: base + '/builds/', soon: true },
-    // { key: 'docs',   label: 'Docs',   href: base + '/docs/',   soon: true },
-    // { key: 'tests',  label: 'Tests',  href: base + '/tests/',  soon: true }
+    // { key: 'docs',   label: 'Docs',   href: base + '/docs/',   soon: true }
   ];
   // Which nav item is "current" for each context (drives the active pill).
   var NAV_ACTIVE = {
@@ -403,12 +420,16 @@
     'vi-browser': 'vi-browser',
     'vi-analyzer-report': 'dashboard',
     'masscompile-report': 'dashboard',
+    'unit-tests-report': 'dashboard',
+    'antidoc-report': 'dashboard',
+    'unit-tests-config': 'dashboard',
     'worker-manifest': 'dashboard',
     'report-viewer': 'dashboard',
     'configure': 'dashboard',
     'integrate': 'dashboard',
     'whats-new': 'dashboard',
-    'faq': 'dashboard'
+    'faq': 'dashboard',
+    'clients': 'clients'
   };
 
   // ── Per-revision DOCUMENT types ───────────────────────────────────────────
@@ -432,6 +453,17 @@
       regenLabel: 'Regenerate report', rawLabel: 'Raw log', rawName: 'masscompile.log',
       workflow: { windows: 'masscompile-windows-container.yml',
                   linux:   'masscompile-linux-container.yml' }
+    },
+    'unit-tests-report': {
+      prefix: 'unit-tests', cap: 'unit-tests', label: 'Unit Tests',
+      regenLabel: 'Re-run tests', rawLabel: 'Test results (JSON)', rawName: 'results.json',
+      workflow: { windows: 'unit-tests-windows-container.yml',
+                  linux:   'unit-tests-linux-container.yml' }
+    },
+    'antidoc-report': {
+      prefix: 'antidoc', cap: 'antidoc', label: 'Antidoc',
+      regenLabel: 'Regenerate docs', rawLabel: 'Run log', rawName: 'antidoc.log',
+      workflow: { windows: 'run-antidoc-windows-container.yml' }
     }
   };
   var DOC = DOCTYPES[ctx] || null;   // non-null only on a per-revision report
@@ -476,13 +508,15 @@
   function buildSecondaryActions() {
     var A = {
       'dashboard': [
+        { label: 'Populate history', svg: ICON.history, kind: 'runhistory' },
         { label: 'Configure Workers', svg: ICON.configure, kind: 'configure' },
-        { label: 'Update now', svg: ICON.update, href: base + '/whats-new.html' },
+        { label: 'Unit Testing', svg: ICON.tests, kind: 'unittests' },
+        { label: 'Clients', svg: ICON.clients, href: base + '/clients.html', source: true },
         { label: 'About', svg: ICON.about, href: base + '/faq.html' }
       ],
       'worker-manifest': [],
       'vi-browser': [
-        { label: 'Update now', svg: ICON.update, href: base + '/whats-new.html' },
+        { label: 'Clients', svg: ICON.clients, href: base + '/clients.html', source: true },
         { label: 'About', svg: ICON.about, href: base + '/faq.html' }
       ],
       'report-viewer': [],
@@ -499,11 +533,22 @@
   function openPage(kind) {
     var map = {
       configure: { src: 'configure.html' + (repo ? ('?repo=' + encodeURIComponent(repo)) : ''), title: 'Configure Workers' },
+      unittests: { src: 'unit-tests.html' + (repo ? ('?repo=' + encodeURIComponent(repo)) : ''), title: 'Unit Testing' },
       integrate: { src: 'integrate.html', title: 'Apply to New Repo' }
     };
     var t = map[kind]; if (!t) return;
     if (typeof window.lvciOpen === 'function') { window.lvciOpen(t.src, t.title); return; }
     window.location.href = base + '/' + t.src;
+  }
+
+  // ── Populate history: open the dashboard's "Populate dashboard history" dialog
+  //    (queue CI for existing revisions). The dialog itself lives in the dashboard
+  //    generator, which exposes window.lvciRunHistory; this menu item is only
+  //    offered on the dashboard context, where that hook is present. The guard
+  //    keeps it inert anywhere the hook is absent (e.g. an older dashboard). ────
+  function runHistory() {
+    if (typeof window.lvciRunHistory === 'function') window.lvciRunHistory();
+    else window.location.href = base + '/';   // fall back to the dashboard
   }
 
   // ── Regenerate this revision's report: dispatch a fresh run for THIS commit,
@@ -608,8 +653,9 @@
     el.innerHTML = iconHtml(a) + esc(a.label);
     if (!a.href) {
       el.addEventListener('click', function () {
-        if (a.kind === 'configure' || a.kind === 'integrate') openPage(a.kind);
+        if (a.kind === 'configure' || a.kind === 'integrate' || a.kind === 'unittests') openPage(a.kind);
         else if (a.kind === 'rerun') rerun();
+        else if (a.kind === 'runhistory') runHistory();
       });
     }
     return el;
@@ -706,6 +752,21 @@
     }).catch(function () {});
   }
 
+  // ── Version / update menu entry ───────────────────────────────────────────
+  // A single home for the installed version + the update affordance (it replaces
+  // the old always-on version pill). Used in the More popover and the mobile
+  // menu; renderBadge() fills its label/tag/icon and toggles the amber "behind"
+  // state. Always links to What's New (release notes / the update flow).
+  function makeVerItem() {
+    var a = document.createElement('a');
+    a.className = 'lvci-ddver';
+    a.href = base + '/whats-new.html';
+    a.innerHTML = '<span class="lvci-ic">' + ICON.news + '</span>'
+      + '<span class="lvci-ddver-label">What\u2019s new</span>'
+      + '<span class="lvci-ddver-tag"></span>';
+    return a;
+  }
+
   // ── Build the header DOM ──────────────────────────────────────────────────
   function build() {
     var style = document.createElement('style');
@@ -759,6 +820,14 @@
     // Actions
     var actions = document.createElement('div');
     actions.className = 'lvci-actions';
+    // Live CI activity chip (transient) leads the cluster so the stable
+    // [primary action][More] pairing keeps its position when nothing is running.
+    var runChip = document.createElement('a');
+    runChip.className = 'lvci-run-chip';
+    runChip.id = 'lvci-runchip';
+    if (repo) { runChip.href = 'https://github.com/' + repo + '/actions'; runChip.target = '_blank'; runChip.rel = 'noopener'; }
+    runChip.innerHTML = '<span class="lvci-run-spin" aria-hidden="true"></span><span id="lvci-runchip-txt">running</span>';
+    actions.appendChild(runChip);
     buildActions().forEach(function (a) { actions.appendChild(actionEl(a, false)); });
     // "More" popover — always present so the Appearance control is available
     // site-wide; it also hosts any context-specific secondary actions
@@ -769,10 +838,11 @@
       dropdown.className = 'lvci-dropdown';
       var moreBtn = document.createElement('button');
       moreBtn.className = 'lvci-more';
+      moreBtn.id = 'lvci-more';
       moreBtn.setAttribute('aria-label', 'More options');
       moreBtn.setAttribute('aria-haspopup', 'true');
       moreBtn.setAttribute('aria-expanded', 'false');
-      moreBtn.innerHTML = ICON.more;
+      moreBtn.innerHTML = ICON.more + '<span class="lvci-mdot" aria-hidden="true"></span>';
       dropdown.appendChild(moreBtn);
       var ddMenu = document.createElement('div');
       ddMenu.className = 'lvci-dropdown-menu';
@@ -788,15 +858,21 @@
           el = document.createElement('button');
           el.type = 'button';
           el.addEventListener('click', function () {
-            if (a.kind === 'configure' || a.kind === 'integrate') openPage(a.kind);
+            if (a.kind === 'configure' || a.kind === 'integrate' || a.kind === 'unittests') openPage(a.kind);
+            else if (a.kind === 'runhistory') runHistory();
             closeDD();
           });
         }
         el.innerHTML = iconHtml(a) + esc(a.label);
+        if (a.source) { el.style.display = 'none'; clientsEls.push(el); }
         ddMenu.appendChild(el);
       });
-      // Appearance (theme) control — divided from the action items when present.
-      if (secActions.length) { var dsep = document.createElement('div'); dsep.className = 'lvci-sep'; ddMenu.appendChild(dsep); }
+      // Version / update entry — the single home for the installed version and
+      // the update affordance (replaces the standalone badge); links to What's New.
+      if (ddMenu.children.length) { var vsep = document.createElement('div'); vsep.className = 'lvci-sep'; ddMenu.appendChild(vsep); }
+      var ddVer = makeVerItem(); ddVer.addEventListener('click', closeDD); ddMenu.appendChild(ddVer); verEls.push(ddVer);
+      // Appearance (theme) control — divided below.
+      var dsep = document.createElement('div'); dsep.className = 'lvci-sep'; ddMenu.appendChild(dsep);
       ddMenu.appendChild(themeControl());
       dropdown.appendChild(ddMenu);
       moreBtn.addEventListener('click', function (e) {
@@ -811,20 +887,14 @@
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDD(); });
       actions.appendChild(dropdown);
     }
-    // Version badge (always present)
-    var ver = document.createElement('a');
-    ver.className = 'lvci-ver';
-    ver.id = 'lvci-ver';
-    ver.href = base + '/whats-new.html';
-    ver.innerHTML = '<span class="lvci-dot"></span><span class="lvci-run"></span><span id="lvci-ver-txt">LabVIEW CI</span>';
-    actions.appendChild(ver);
     hdr.appendChild(actions);
 
     // Hamburger
     var burger = document.createElement('button');
     burger.className = 'lvci-burger';
+    burger.id = 'lvci-burger';
     burger.setAttribute('aria-label', 'Menu');
-    burger.innerHTML = ICON.burger;
+    burger.innerHTML = ICON.burger + '<span class="lvci-mdot" aria-hidden="true"></span>';
     hdr.appendChild(burger);
 
     // Mobile menu
@@ -845,14 +915,18 @@
     var secActs = buildSecondaryActions();
     if (secActs.length) {
       var sep = document.createElement('div'); sep.className = 'lvci-sep'; menu.appendChild(sep);
-      secActs.forEach(function (a) { menu.appendChild(actionEl(a, true)); });
+      secActs.forEach(function (a) {
+        var el = actionEl(a, true);
+        if (a.source) { el.style.display = 'none'; clientsEls.push(el); }
+        menu.appendChild(el);
+      });
     }
+    // Version / update entry (mobile) — same single home as the dropdown.
+    var sepV = document.createElement('div'); sepV.className = 'lvci-sep'; menu.appendChild(sepV);
+    var mVer = makeVerItem(); menu.appendChild(mVer); verEls.push(mVer);
     // Appearance (theme) control in the mobile menu
     var sepT = document.createElement('div'); sepT.className = 'lvci-sep'; menu.appendChild(sepT);
     menu.appendChild(themeControl());
-    var sep2 = document.createElement('div'); sep2.className = 'lvci-sep'; menu.appendChild(sep2);
-    var wn = document.createElement('a'); wn.href = base + '/whats-new.html'; wn.id = 'lvci-ver-m';
-    wn.textContent = "What\u2019s new"; menu.appendChild(wn);
     burger.addEventListener('click', function () { menu.classList.toggle('open'); });
 
     // Populate the revision picker(s) once mounted (async; filters to revisions
@@ -919,57 +993,28 @@
     document.body.insertBefore(menu, status);
     document.body.insertBefore(hdr, menu);
     if (rebuild) document.body.insertBefore(rebuild, menu);   // directly under the bar
+
+    renderBadge();   // initial paint (idle, or the persisted "Updating" flag)
   }
 
   // ── Badge state ───────────────────────────────────────────────────────────
-  // The single version badge paints one of (priority high→low):
-  //   1. "Updating to vX…"  — a tooling update was just dispatched (localStorage)
-  //   2. "N running"        — CI workflow runs are in flight (live Actions poll)
-  //   3. "vX" + amber dot   — an update is available (consumer behind source)
-  //   4. "vX"               — idle, up to date
-  // Both loaders feed shared state and re-render, so the periodic activity poll
-  // and the version/update check never fight over the element.
+  // Header status surfaces (all fed by the same poll + version check, so they
+  // never fight over one element):
+  //   - run chip   : a transient "N running" pill in the bar, only while CI runs
+  //   - menu entry : the installed version + What's New / Update affordance
+  //                  (amber "Update available" when behind; "Updating to vX..."
+  //                  while a dispatched update is in flight)
+  //   - menu dot   : one amber dot on the More button / hamburger whenever an
+  //                  update is available or in progress
   var verState = { v: '', behind: false, to: '' };
   var runState = { active: 0, names: [] };
+  var verEls = [];
+  var clientsEls = [];
   // Page-rebuild banner: only the dashboard shows it (there "this page is being
   // regenerated" is literally true). buildWas remembers the prior poll so we can
   // auto-refresh exactly once when an in-flight rebuild finishes.
   var REBUILD_ON = (ctx === 'dashboard');
   var buildWas = false;
-  function renderBadge() {
-    var badge = document.getElementById('lvci-ver'), txt = document.getElementById('lvci-ver-txt');
-    if (!badge || !txt) return;
-    badge.classList.remove('behind', 'working');
-    badge.removeAttribute('target'); badge.removeAttribute('rel');
-    var upd = updGet();
-    // 1) tooling update in flight (explicit user action — highest priority)
-    if (upd && (!verState.v || cmpVer(verState.v, upd.v) < 0)) {
-      txt.textContent = 'Updating to v' + upd.v + '\u2026';
-      badge.classList.add('behind');
-      badge.title = 'An update to v' + upd.v + ' is in progress (merge the update PR to finish).';
-      badge.href = base + '/whats-new.html';
-      return;
-    }
-    // 2) CI activity in flight — replace the version with a live "N running"
-    if (runState.active > 0) {
-      badge.classList.add('working');
-      txt.textContent = (runState.active === 1 ? '1 running' : runState.active + ' running');
-      badge.title = 'CI in progress: ' + (runState.names.join(', ') || 'workflow run')
-        + '\nThe dashboard updates when it finishes.';
-      badge.href = 'https://github.com/' + repo + '/actions';
-      badge.target = '_blank'; badge.rel = 'noopener';
-      return;
-    }
-    // 3) idle: show version, flag if an update is available
-    txt.textContent = verState.v ? 'v' + verState.v : 'LabVIEW CI';
-    badge.href = base + '/whats-new.html';
-    if (verState.behind) {
-      badge.classList.add('behind');
-      badge.title = 'Update available: v' + verState.v + ' \u2192 v' + verState.to;
-    } else {
-      badge.title = verState.v ? 'LabVIEW CI v' + verState.v : 'LabVIEW CI';
-    }
-  }
 
   // ── Version badge: read same-origin catalog.json for the installed version,
   //    and (on consumer repos) compare to the source repo to flag an update. ─
@@ -984,7 +1029,7 @@
         renderBadge();
         var src = (cat.source && cat.source.repo) || '';
         var isConsumer = src && repo && src.toLowerCase() !== repo.toLowerCase();
-        if (!isConsumer) return;
+        if (!isConsumer) { revealClients(); return; }   // root repo: surface Clients even before a scan has published clients.json
         var ref = (cat.source && cat.source.ref) || 'main';
         fetch('https://raw.githubusercontent.com/' + src + '/' + ref + '/.github/labview-ci/catalog.json', { cache: 'no-cache' })
           .then(function (r) { return r.ok ? r.json() : null; })
@@ -993,6 +1038,23 @@
             if (cmpVer(s.version, v) > 0) { verState.behind = true; verState.to = s.version; renderBadge(); }
           }).catch(function () {});
       }).catch(function () {});
+  }
+  // ── Clients registry (root/source repo only) ────────────────────────────
+  // The Clients nav entry belongs to the ROOT repo that originates this tooling.
+  // It is revealed when this repo is the source (no upstream — see loadVersion)
+  // or once the published clients.json is read (then it also shows a count). It
+  // stays hidden on consumer sites.
+  function revealClients(count) {
+    clientsEls.forEach(function (a) {
+      a.style.display = '';
+      if (count) { var c = a.querySelector('.lvci-ncount'); if (c) { c.textContent = count; c.hidden = false; } }
+    });
+  }
+  function loadClients() {
+    if (!clientsEls.length) return;
+    fetch(base + '/clients.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) { if (data) revealClients((data.clients && data.clients.length) || data.count || 0); })
+      .catch(function () {});
   }
   function cmpVer(a, b) {
     var pa = String(a).split('.').map(Number), pb = String(b).split('.').map(Number);
@@ -1109,13 +1171,69 @@
     return null;
   }
   function updClear() { try { localStorage.removeItem(UPD_KEY); } catch (e) {} }
+  // Paint all three surfaces from the current verState/runState (+ the optimistic
+  // update flag). Safe to call repeatedly; each surface no-ops when not on the page.
+  function renderBadge() {
+    var upd = updGet();
+    var updating = !!(upd && (!verState.v || cmpVer(verState.v, upd.v) < 0));
+    var behind = !updating && verState.behind;
+    var hasUpdate = updating || behind;
+
+    // 1) Live CI activity chip — present only while runs are in flight.
+    var chip = document.getElementById('lvci-runchip');
+    var chipTxt = document.getElementById('lvci-runchip-txt');
+    if (chip && chipTxt) {
+      if (runState.active > 0) {
+        chipTxt.textContent = (runState.active === 1 ? '1 running' : runState.active + ' running');
+        chip.title = 'CI in progress: ' + (runState.names.join(', ') || 'workflow run')
+          + '\nThe dashboard updates when it finishes.';
+        chip.classList.add('show');
+      } else {
+        chip.classList.remove('show');
+      }
+    }
+
+    // 2) Update-available dot on the menu trigger(s).
+    ['lvci-more', 'lvci-burger'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.toggle('has-update', hasUpdate);
+    });
+
+    // 3) Version / update entry inside the menu(s).
+    verEls.forEach(function (a) {
+      var ic = a.querySelector('.lvci-ic'),
+          lbl = a.querySelector('.lvci-ddver-label'),
+          tag = a.querySelector('.lvci-ddver-tag');
+      a.classList.toggle('behind', hasUpdate);
+      if (updating) {
+        if (ic) ic.innerHTML = ICON.update;
+        if (lbl) lbl.textContent = 'Updating to v' + upd.v + '\u2026';
+        if (tag) tag.textContent = verState.v ? ('v' + verState.v + ' \u2192 v' + upd.v) : ('v' + upd.v);
+        a.title = 'An update to v' + upd.v + ' is in progress (merge the update PR to finish).';
+      } else if (behind) {
+        if (ic) ic.innerHTML = ICON.update;
+        if (lbl) lbl.textContent = 'Update available';
+        if (tag) tag.textContent = 'v' + verState.v + ' \u2192 v' + verState.to;
+        a.title = 'Update available: v' + verState.v + ' \u2192 v' + verState.to;
+      } else {
+        if (ic) ic.innerHTML = ICON.news;
+        if (lbl) lbl.textContent = 'What\u2019s new';
+        if (tag) tag.textContent = verState.v ? ('v' + verState.v) : '';
+        a.title = verState.v ? ('LabVIEW CI v' + verState.v) : 'LabVIEW CI';
+      }
+    });
+  }
+
+  // The What's New dialog dispatches the update then calls window.lvciMarkUpdating
+  // (directly when standalone, or via window.parent from the dashboard modal), so
+  // the menu version entry flips to "Updating to vX..." immediately and persists.
   window.lvciMarkUpdating = function (v) {
     if (!v) return;
-    try { localStorage.setItem(UPD_KEY, JSON.stringify({ v: v, ts: Date.now(), repo: C.repo })); } catch (e) {}
+    try { localStorage.setItem(UPD_KEY, JSON.stringify({ v: v, ts: Date.now(), repo: repo })); } catch (e) {}
     renderBadge();
   };
 
-  function init() { build(); loadVersion(); startActivity(); }
+  function init() { build(); if (cfg.isSource) revealClients(); loadVersion(); loadClients(); startActivity(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
