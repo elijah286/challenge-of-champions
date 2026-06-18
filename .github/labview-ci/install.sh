@@ -8,7 +8,7 @@
 #
 # Usage (from the root of the repo you want to add CI to):
 #
-#   curl -fsSL https://raw.githubusercontent.com/elijah286/challenge-of-champions/main/.github/labview-ci/install.sh \
+#   curl -fsSL https://raw.githubusercontent.com/elijah286/LabVIEW-CI-with-Containers/main/.github/labview-ci/install.sh \
 #     | bash -s -- --activities masscompile,vi-analyzer,vidiff,dashboard \
 #                  --os windows,linux --labview-version 2026
 #
@@ -20,7 +20,7 @@
 #
 set -euo pipefail
 
-SOURCE_REPO="elijah286/challenge-of-champions"
+SOURCE_REPO="elijah286/LabVIEW-CI-with-Containers"
 SOURCE_REF="main"
 SRC_DIR=""
 PASS=()
