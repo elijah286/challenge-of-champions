@@ -6,9 +6,9 @@
   "base_image": "nationalinstruments/labview:latest-windows",
   "base_digest": "nationalinstruments/labview@sha256:d44465ad15415150d36221017ce54ca3d9f15db2e1cbf3227fee3e0f7e97f13c",
   "image_ref": "ghcr.io/elijah286/challenge-of-champions-labview:win-561907836a05",
-  "build_date": "2026-06-17T03:56:03Z",
-  "git_sha": "848daabe17e300ff78624a945480095be88b1612",
-  "run_url": "https://github.com/elijah286/challenge-of-champions/actions/runs/27664244333",
+  "build_date": "2026-06-18T16:34:04Z",
+  "git_sha": "2ecc4dfca357a80a4b503929eef97e9793166d55",
+  "run_url": "https://github.com/elijah286/challenge-of-champions/actions/runs/27773193651",
   "vipc": [
     {
       "file": "ci-tooling.vipc",
