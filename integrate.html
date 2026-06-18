@@ -135,7 +135,8 @@
         </div>
         <div class="field">
           <label class="fl" for="version">LabVIEW version</label>
-          <select id="version"></select>
+          <select id="version" disabled aria-disabled="true" title="The CI tooling, container images, and baked dependencies are built for LabVIEW 2026."></select>
+          <p class="hint" style="margin-top:6px">Fixed to LabVIEW 2026 &mdash; the container images and tooling are built for it.</p>
         </div>
         <div class="field">
           <label class="fl">Operating systems</label>
@@ -164,8 +165,8 @@
         <label class="insopt"><input type="checkbox" id="optPages" checked>
           <span><strong>Turn on GitHub Pages &amp; set Workflow permissions for me</strong><small>Sets Actions to read/write and enables Pages (<code class="inl">gh-pages</code>) so the dashboard goes live with no manual settings. Needs a broader token &mdash; Administration + Pages &mdash; and falls back to manual steps if you decline them.</small></span>
         </label>
-        <label class="insopt"><input type="checkbox" id="optAutoMerge">
-          <span><strong>Auto-merge this PR when it&rsquo;s created</strong><small>Squash &amp; merge the install pull request immediately (skips the review step). Re-run the installer with this unchecked if you want to review before merging.</small></span>
+        <label class="insopt"><input type="checkbox" id="optAutoMerge" checked>
+          <span><strong>Publish the dashboard right away (auto-merge the install PR)</strong><small>Squash &amp; merge the install pull request immediately so the dashboard goes live and the README link lands as the first thing &mdash; no review wait and no CI run required. Uncheck to review the PR first; the dashboard then publishes the moment you merge.</small></span>
         </label>
       </div>
 
@@ -245,20 +246,42 @@
     <section>
       <h2>4. Finish setup</h2>
       <ol class="steps">
-        <li>Merge the install pull request (or, if you used the manual option, commit the added <code class="inl">.github/</code> files).</li>
+        <li>Merge the install pull request — the <strong>dashboard publishes itself</strong> from that merge (no CI run required), and the README link lands in the same merge.</li>
         <li>Enable <strong>GitHub Pages</strong> from the <code class="inl">gh-pages</code> branch (Settings &rsaquo; Pages).</li>
         <li>Set <strong>Workflow permissions</strong> to <em>Read and write</em> (Settings &rsaquo; Actions &rsaquo; General).</li>
         <li id="varsStep">Optionally pin settings as Actions variables (shown after you choose options).</li>
-        <li>Open a pull request that changes a VI — the pipeline runs and reports back.</li>
+        <li>Open a pull request that changes a VI whenever you want the analysis columns (VI Analyzer, VIDiff, Mass Compile) to fill in — a failing check never keeps the dashboard from publishing.</li>
       </ol>
       <p class="hint" style="margin-top:12px">None of these choices are permanent — change the LabVIEW version, platforms, activities, and container dependencies any time from <strong>⚙ Configure Workers</strong> on the dashboard (it opens a pull request with your changes). To pull later tooling improvements, re-run the installer with <code class="inl">--update</code>.</p>
+    </section>
+
+    <section id="toimgSection">
+      <h2>VI Browser 2.0 &mdash; position-aware renders <span class="hint" style="font-weight:400">(optional)</span></h2>
+      <p class="hint">The in-place VI Browser draws each VI&rsquo;s Case / Event / Sequence structures right where they sit on the block diagram. It needs a private render image (built separately) plus a read-token so CI can pull it. Set them here; until then the browser shows the classic 1.0 view automatically.</p>
+      <div class="tokpanel" id="toimgPanel">
+        <div class="status" id="toimgStatus">Enter your repository above to check current settings.</div>
+        <ol>
+          <li><strong>Render image</strong> &mdash; the private image reference:
+            <div class="tokrow"><input id="toimgImage" type="text" autocomplete="off" placeholder="ghcr.io/owner/lvci-toimages:latest" style="flex:1"></div>
+          </li>
+          <li><strong>Render token</strong> &mdash; a token with <code class="inl">read:packages</code> for that image (saved as the <code class="inl">TOIMAGES_REGISTRY_TOKEN</code> repo secret):
+            <div class="tokrow"><input id="toimgPat" type="password" autocomplete="off" placeholder="github_pat_&hellip; (blank = keep existing secret)" style="flex:1"></div>
+          </li>
+        </ol>
+        <p class="note">The render token is sealed with this repository&rsquo;s public key <strong>in your browser</strong> (a libsodium sealed box) before anything is sent &mdash; GitHub never receives, and this page never stores, the raw token. Saving reuses the install token from step 3, which must include <strong>Secrets</strong> and <strong>Variables</strong> (Read and write).</p>
+        <div class="tokrow">
+          <button type="button" class="primary" id="toimgSave">Save</button>
+          <button type="button" class="ghost" id="toimgRefresh">Refresh status</button>
+          <span class="status" id="toimgResult"></span>
+        </div>
+      </div>
     </section>
   </div>
 
   <script>
   (() => {
     "use strict";
-    const SOURCE_FALLBACK = { repo: "elijah286/LabVIEW-CI-with-Containers", ref: "main" };
+    const SOURCE_FALLBACK = { repo: "elijah286/challenge-of-champions", ref: "main" };
     const TEXT_EXTS = new Set([".yml",".yaml",".ps1",".sh",".py",".html",".htm",".md",".json",".xml",".viancfg",".txt",".cfg",".css",".js",".svg"]);
     const NO_SUB_PREFIX = ".github/labview-ci/";
 
@@ -274,8 +297,13 @@
     const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
     async function loadCatalog() {
-      const candidates = ["./catalog.json", "./labview-ci/catalog.json",
-        `https://raw.githubusercontent.com/${SOURCE_FALLBACK.repo}/${SOURCE_FALLBACK.ref}/.github/labview-ci/catalog.json`];
+      // Apply-to-new-repo must always source the tooling from the ROOT repo so
+      // every fresh install points back here (accurate client discovery), even
+      // when this page is opened on a consumer site. Prefer the root's published
+      // catalog; fall back to a local copy only if the root is unreachable.
+      const candidates = [
+        `https://raw.githubusercontent.com/${SOURCE_FALLBACK.repo}/${SOURCE_FALLBACK.ref}/.github/labview-ci/catalog.json`,
+        "./catalog.json", "./labview-ci/catalog.json"];
       for (const url of candidates) {
         try {
           const r = await fetch(url, { cache: "no-store" });
@@ -304,16 +332,24 @@
     }
 
     // ---- rendering -------------------------------------------------------
+    // The version field is LOCKED. The CI container images, baked VIPC, and the
+    // LabVIEW.exe path in every workflow target a single LabVIEW year
+    // (catalog.defaults.labviewVersion = 2026). Offering another year asked the
+    // jobs to pull a container image / use a LabVIEW path that doesn't exist,
+    // which failed every container run -- the bug a colleague hit by picking 2024.
+    // So render only that year, selected and disabled (grayed out).
+    // FUTURE: re-enable as a 2017..2026 *code-compatibility* picker that keeps the
+    // editor/container on 2026 but writes the LabVIEW project "Save Setting" so the
+    // 2026 editor saves code compatible with an older run-time.
     function renderVersions() {
       const sel = $("version");
-      const versions = catalog.labviewVersions || ["2026"];
-      const def = (catalog.defaults && catalog.defaults.labviewVersion) || versions[versions.length - 1];
+      const locked = (catalog.defaults && catalog.defaults.labviewVersion) || "2026";
       sel.innerHTML = "";
-      versions.forEach(v => {
-        const o = document.createElement("option");
-        o.value = v; o.textContent = v; if (v === def) o.selected = true;
-        sel.appendChild(o);
-      });
+      const o = document.createElement("option");
+      o.value = locked; o.textContent = locked; o.selected = true;
+      sel.appendChild(o);
+      sel.disabled = true;
+      sel.setAttribute("aria-disabled", "true");
     }
 
     function renderCaps() {
@@ -539,7 +575,7 @@
       // contents/pull_requests/workflows let the install commit files and open the
       // PR; actions:write lets this SAME token queue CI runs from the dashboard
       // afterward (Run now / Run all history), so setup and running share one token.
-      const perms = { contents: "write", pull_requests: "write", workflows: "write", actions: "write" };
+      const perms = { contents: "write", pull_requests: "write", workflows: "write", actions: "write", secrets: "write", variables: "write" };
       if (wantsPages()) { perms.administration = "write"; perms.pages = "write"; }
       const p = new URLSearchParams(Object.assign({
         name: "LabVIEW CI installer",
@@ -550,7 +586,7 @@
     }
     function renderTokPanel() {
       const li = $("insTokPerms"); if (!li) return;
-      let html = `Confirm <strong>Permissions</strong> &mdash; <strong>Contents</strong>, <strong>Pull requests</strong>, <strong>Workflows</strong>, and <strong>Actions</strong> set to <strong>Read and write</strong> (Workflows lets the install add files under <code class="inl">.github/workflows/</code>; Actions lets this same token queue CI runs from the dashboard later)`;
+      let html = `Confirm <strong>Permissions</strong> &mdash; <strong>Contents</strong>, <strong>Pull requests</strong>, <strong>Workflows</strong>, <strong>Actions</strong>, <strong>Secrets</strong>, and <strong>Variables</strong> set to <strong>Read and write</strong> (Workflows lets the install add files under <code class="inl">.github/workflows/</code>; Actions lets this token queue CI runs; Secrets + Variables let the VI Browser 2.0 panel save its image and token)`;
       if (wantsPages()) html += `, plus <strong>Administration</strong> and <strong>Pages</strong> (Read and write) so the configurator can set Workflow permissions and turn on Pages for you`;
       li.innerHTML = html + `.`;
     }
@@ -816,7 +852,7 @@
         `<meta http-equiv="refresh" content="30">` +
         `<body style="font-family:system-ui,sans-serif;background:#0d1117;color:#e6edf3;display:grid;place-items:center;min-height:100vh;margin:0">` +
         `<div style="text-align:center"><h1>LabVIEW CI dashboard</h1>` +
-        `<p>Publishing\u2026 this page appears after the first CI run completes.</p></div>`;
+        `<p>Publishing\u2026 your dashboard goes live within a minute of the install merge \u2014 no CI run required.</p></div>`;
       const blob = await ghJson(await gh(`/repos/${repo}/git/blobs`, { method: "POST", body: { content: b64text(html), encoding: "base64" } }));
       const tree = await ghJson(await gh(`/repos/${repo}/git/trees`, { method: "POST", body: { tree: [{ path: "index.html", mode: "100644", type: "blob", sha: blob.sha }] } }));
       const commit = await ghJson(await gh(`/repos/${repo}/git/commits`, { method: "POST", body: { message: "chore: initialize gh-pages for the LabVIEW CI dashboard", tree: tree.sha, parents: [] } }));
@@ -897,7 +933,7 @@
       lines.push("", "### After you merge", "",
         "1. **Workflow permissions** must be *Read and write* (Settings \u203a Actions \u203a General) \u2014 the configurator may have already set this for you.",
         "2. **GitHub Pages** must be enabled on the `gh-pages` branch (Settings \u203a Pages) \u2014 the configurator may have already enabled this for you; otherwise turn it on after the first run creates the branch.",
-        "3. Open a pull request that changes a VI \u2014 the pipeline runs and reports back on the dashboard.", "",
+        "3. The **dashboard publishes itself from this merge** \u2014 no CI run required. Open a pull request that changes a VI whenever you want the analysis columns (VI Analyzer, VIDiff, Mass Compile) to fill in; a failing check never blocks the dashboard.", "",
         "Change any of these choices later from **\u2699 Configure Workers** on the dashboard.", "");
       return lines.join("\n");
     }
@@ -925,6 +961,27 @@
       }
     }
 
+    // Kick the dashboard build the instant the install merges, so the dashboard +
+    // README link go live as the FIRST thing — never waiting on a CI run, the
+    // hourly schedule, or a VI change (a failing VI Analyzer must NOT keep the
+    // dashboard from publishing). The consumer's dashboard workflow already fires
+    // on the merge push; this dispatch guarantees a build even if that event is
+    // coalesced, and gives instant feedback. Best-effort: a 404 just means the
+    // workflow file isn't registered on the default branch yet (the merge-push
+    // build still covers it), so we briefly retry, then fall back silently.
+    async function publishDashboardNow(repo, branch) {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const r = await gh(`/repos/${repo}/actions/workflows/dashboard-pages.yml/dispatches`,
+            { method: "POST", body: { ref: branch } });
+          if (r.ok || r.status === 204) return true;
+          if (r.status !== 404) return false;   // real error (e.g. perms) — stop retrying
+        } catch (_) { /* transient network — retry */ }
+        await sleep(3000);                       // workflow not on the default branch yet
+      }
+      return false;
+    }
+
     function installSuccess(pr, repo, setup) {
       setup = setup || {};
       setInsStatus(`&#10003; Done \u2014 opened pull request <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a> in <code class="inl">${esc(repo)}</code>.`, "ok");
@@ -935,7 +992,7 @@
       if (setup.removed && setup.removed.length) done.push(`Removed <strong>${setup.removed.length}</strong> old tooling file${setup.removed.length > 1 ? "s" : ""} no longer used (in the pull request).`);
       if (setup.readme) done.push(`Added a CI dashboard badge &amp; link to your README (in the pull request).`);
       if (setup.workflowPerms === "done") done.push(`Set <strong>Workflow permissions</strong> to read &amp; write.`);
-      if (setup.pages === "done") done.push(`Enabled <strong>GitHub Pages</strong> &mdash; your dashboard will be at <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a><small>It goes live after the first CI run; until then it shows a &ldquo;publishing&hellip;&rdquo; placeholder.</small>`);
+      if (setup.pages === "done") done.push(`Enabled <strong>GitHub Pages</strong> &mdash; your dashboard will be at <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a><small>It publishes within a minute of the install merge &mdash; no CI run required; until then it shows a &ldquo;publishing&hellip;&rdquo; placeholder.</small>`);
       else if (setup.pages === "exists") done.push(`<strong>GitHub Pages</strong> is already on &mdash; dashboard at <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a>.`);
       const doneEl = $("insDone");
       if (doneEl) { doneEl.innerHTML = done.map(d => `<li>${d}</li>`).join(""); doneEl.style.display = done.length ? "" : "none"; }
@@ -944,7 +1001,7 @@
       steps.push(`Review and merge pull request <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a>.`);
       if (setup.workflowPerms !== "done") steps.push(`Set <strong>Workflow permissions</strong> to <em>Read and write</em> (<a href="https://github.com/${esc(repo)}/settings/actions" target="_blank" rel="noopener">Settings &rsaquo; Actions &rsaquo; General</a>).`);
       if (setup.hasDashboard && setup.pages !== "done" && setup.pages !== "exists")
-        steps.push(`After the first run publishes the <code class="inl">gh-pages</code> branch, enable <strong>GitHub Pages</strong> from it (<a href="https://github.com/${esc(repo)}/settings/pages" target="_blank" rel="noopener">Settings &rsaquo; Pages</a>).`);
+        steps.push(`After you merge, the dashboard build publishes the <code class="inl">gh-pages</code> branch \u2014 then enable <strong>GitHub Pages</strong> from it (<a href="https://github.com/${esc(repo)}/settings/pages" target="_blank" rel="noopener">Settings &rsaquo; Pages</a>). No CI run is required.`);
       const nextEl = $("insNext");
       if (nextEl) { nextEl.innerHTML = steps.map(s => `<li>${s}</li>`).join(""); nextEl.style.display = ""; }
 
@@ -960,11 +1017,20 @@
       if ($("optAutoMerge") && $("optAutoMerge").checked) {
         mergeInstallPr(pr, repo).then(success => {
           if (success) {
-            setInsStatus(`&#10003; Done — pull request <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a> was merged and deployed to <code class="inl">${esc(repo)}</code>.`, "ok");
             const nextEl = $("insNext");
             if (nextEl) nextEl.style.display = "none";
+            // The merge already triggers the dashboard build; dispatch it too so it
+            // publishes immediately as the first thing, independent of any CI run.
+            if (setup.hasDashboard && setup.branch) {
+              setInsStatus(`&#10003; Merged pull request <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a> \u2014 publishing your dashboard now\u2026`, "ok");
+              publishDashboardNow(repo, setup.branch).then(ok => {
+                setInsStatus(`&#10003; Done \u2014 merged <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a> and ${ok ? "started the dashboard build" : "the merge is publishing the dashboard"}. It goes live at <a href="${esc(url)}" target="_blank" rel="noopener">${esc(url)}</a> within a minute \u2014 no CI run required.`, "ok");
+              });
+            } else {
+              setInsStatus(`&#10003; Done \u2014 pull request <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a> was merged and deployed to <code class="inl">${esc(repo)}</code>.`, "ok");
+            }
           } else {
-            setInsStatus(`&#10003; Opened pull request <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a>, but auto-merge failed (check the link above to merge manually).`, "ok");
+            setInsStatus(`&#10003; Opened pull request <a href="${esc(pr.html_url)}" target="_blank" rel="noopener">#${pr.number}</a>, but auto-merge failed (check the link above to merge manually). The dashboard publishes itself the moment you merge \u2014 no CI run required.`, "ok");
           }
         });
       }
@@ -1040,7 +1106,9 @@
         const acts = (m.activities || []).filter(a => { const c = byId(a); return c && c.status !== "planned"; });
         if (acts.length) activities = acts;
         if (m.os && m.os.length) osList = m.os.slice();
-        if (m.labviewVersion) version = m.labviewVersion;
+        // Do NOT carry a prior manifest's labviewVersion forward: the version is
+        // locked to the supported year (see renderVersions), so reinstalling a repo
+        // that was pinned to an unsupported year heals it instead of re-breaking.
       }
       return { activities, osList, version };
     }
@@ -1233,6 +1301,7 @@
         const meta = await ghWrite(`/repos/${repo}`, null, "read your repository");
         const branch = meta && meta.default_branch;
         if (!branch) throw new Error("Your repository has no commits yet. Push an initial commit (e.g. a README) first, then install.");
+        setup.branch = branch;   // remembered so we can dispatch the dashboard build right after an auto-merge
         const headRef = await ghWrite(`/repos/${repo}/git/ref/heads/${encodeURIComponent(branch)}`, null, "read the default branch");
         const headSha = headRef.object.sha;
         const baseCommit = await ghWrite(`/repos/${repo}/git/commits/${headSha}`, null, "read the base commit");
@@ -1323,6 +1392,91 @@
       installToRepo();
     }
 
+    // ---- VI Browser 2.0: private render image + read-token ---------------
+    // The render token is sealed in-browser with the repo public key before it is
+    // sent (GitHub requires libsodium crypto_box_seal). tweetnacl + sealedbox are
+    // loaded only on first use and pinned by SRI. All calls reuse the install
+    // token via gh(); the raw token is never stored by this page.
+    const TOIMG_VAR = "TOIMAGES_IMAGE";
+    const TOIMG_SECRET = "TOIMAGES_REGISTRY_TOKEN";
+    let _sealReady = null;
+    function loadSealedBox() {
+      if (_sealReady) return _sealReady;
+      const add = (src, integrity) => new Promise((res, rej) => {
+        const s = document.createElement("script");
+        s.src = src; s.integrity = integrity; s.crossOrigin = "anonymous";
+        s.onload = res; s.onerror = () => rej(new Error("Could not load the encryption library (is the network blocked?)."));
+        document.head.appendChild(s);
+      });
+      _sealReady = (async () => {
+        await add("https://cdn.jsdelivr.net/npm/tweetnacl@1.0.3/nacl-fast.min.js",
+                  "sha384-05+sicyRJQ56XpL4U9HJ8YbtSzFDvAg7apPKOGV6A0JsAJKFM68jp5oLnUjG5mEp");
+        await add("https://cdn.jsdelivr.net/npm/tweetnacl-sealedbox-js@1.2.0/sealedbox.web.js",
+                  "sha384-gCr/Ers2SYUTIvvm+iWV5lakrZ/tTqxgYQckm0Znr3blQzNfOPirDZlpvkINLyhv");
+        if (!window.nacl || !window.sealedBox) throw new Error("Encryption library loaded but unavailable.");
+        return window.sealedBox;
+      })();
+      return _sealReady;
+    }
+    const _b64ToBytes = (b64) => { const s = atob(b64); const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u; };
+    const _bytesToB64 = (u) => { let s = ""; for (let i = 0; i < u.length; i++) s += String.fromCharCode(u[i]); return btoa(s); };
+    async function sealForRepo(value, publicKeyB64) {
+      const sb = await loadSealedBox();
+      return _bytesToB64(sb.seal(new TextEncoder().encode(value), _b64ToBytes(publicKeyB64)));
+    }
+    function toimgRepo() { return ($("repo").value || "").trim(); }
+    function setToimgStatus(html, kind) { const s = $("toimgStatus"); if (s) { s.className = "status" + (kind ? " " + kind : ""); s.innerHTML = html; } }
+    function setToimgResult(html, kind) { const s = $("toimgResult"); if (s) { s.className = "status" + (kind ? " " + kind : ""); s.innerHTML = html; } }
+    function toimgErr(e, repo) {
+      const st = e && e.status;
+      if (st === 401) return "That install token was rejected (401). Re-create it in step 3.";
+      if (st === 403) return "The install token is missing <strong>Secrets</strong> / <strong>Variables</strong> permission. Re-create it (step 3) with those set to Read and write.";
+      if (st === 404) return `The token cannot see <code class="inl">${esc(repo)}</code> (or its secrets). Check the repo name and the token&rsquo;s repository access.`;
+      return (e && e.message) || "Something went wrong.";
+    }
+    async function refreshToimgStatus() {
+      const repo = toimgRepo();
+      if (!repo.includes("/")) { setToimgStatus("Enter your repository above to check current settings.", null); return; }
+      if (!getInsTok()) { setToimgStatus("Paste your install token in step 3 to read or change these settings.", null); return; }
+      setToimgStatus("Checking current settings\u2026", null);
+      try {
+        let img = null, secretSet = false;
+        try { const v = await ghJson(await gh(`/repos/${repo}/actions/variables/${TOIMG_VAR}`)); img = v && v.value; }
+        catch (e) { if (e.status !== 404) throw e; }
+        try { await ghJson(await gh(`/repos/${repo}/actions/secrets/${TOIMG_SECRET}`)); secretSet = true; }
+        catch (e) { if (e.status !== 404) throw e; }
+        const imgInput = $("toimgImage"); if (imgInput && !imgInput.value && img) imgInput.value = img;
+        setToimgStatus(`Image: <strong>${img ? esc(img) : "not set"}</strong> &middot; Render token: <strong>${secretSet ? "set" : "not set"}</strong>`, (secretSet && img) ? "ok" : null);
+      } catch (e) { setToimgStatus(toimgErr(e, repo), "err"); }
+    }
+    async function saveToimg() {
+      const repo = toimgRepo();
+      if (!repo.includes("/")) { setToimgResult("Enter your repository above first.", "err"); return; }
+      if (!getInsTok()) { setToimgResult("Set your install token in step 3 first.", "err"); return; }
+      const img = ($("toimgImage").value || "").trim();
+      const pat = $("toimgPat").value || "";
+      if (!img && !pat) { setToimgResult("Enter an image reference and/or a render token.", "err"); return; }
+      const btn = $("toimgSave"); if (btn) btn.disabled = true;
+      try {
+        if (img) {
+          setToimgResult("Saving image reference\u2026", null);
+          let resp = await gh(`/repos/${repo}/actions/variables/${TOIMG_VAR}`, { method: "PATCH", body: { name: TOIMG_VAR, value: img } });
+          if (resp.status === 404) resp = await gh(`/repos/${repo}/actions/variables`, { method: "POST", body: { name: TOIMG_VAR, value: img } });
+          await ghJson(resp);
+        }
+        if (pat) {
+          setToimgResult("Encrypting and saving the render token\u2026", null);
+          const pk = await ghJson(await gh(`/repos/${repo}/actions/secrets/public-key`));
+          const enc = await sealForRepo(pat, pk.key);
+          await ghJson(await gh(`/repos/${repo}/actions/secrets/${TOIMG_SECRET}`, { method: "PUT", body: { encrypted_value: enc, key_id: pk.key_id } }));
+          $("toimgPat").value = "";
+        }
+        setToimgResult("Saved. The next VI Snapshots run will render 2.0.", "ok");
+        refreshToimgStatus();
+      } catch (e) { setToimgResult(toimgErr(e, repo), "err"); }
+      finally { if (btn) btn.disabled = false; }
+    }
+
     // ---- wiring ----------------------------------------------------------
     function wire() {
       document.querySelectorAll("#osToggle input").forEach(cb => {
@@ -1356,6 +1510,9 @@
       const _rg = $("insReinstallGo"); if (_rg) _rg.addEventListener("click", confirmReinstall);
       const _rc = $("insReinstallCancel"); if (_rc) _rc.addEventListener("click", () => { hideReinstallPanel(); installBusy(false); setInsStatus("Install cancelled \u2014 nothing was changed.", null); });
       const _ok = $("optKeep"); if (_ok) _ok.addEventListener("change", renderStalePreview);
+      const _ts = $("toimgSave"); if (_ts) _ts.addEventListener("click", saveToimg);
+      const _trf = $("toimgRefresh"); if (_trf) _trf.addEventListener("click", refreshToimgStatus);
+      const _rpo = $("repo"); if (_rpo) _rpo.addEventListener("change", refreshToimgStatus);
     }
 
     (async function init() {
@@ -1374,6 +1531,7 @@
       // source-of-truth repo (catalog.source), never the consumer's copy.
       const _qRepo = new URLSearchParams(location.search).get("repo");
       if (_qRepo) { $("repo").value = _qRepo; update(); }
+      refreshToimgStatus();
     })();
   })();
   </script>
