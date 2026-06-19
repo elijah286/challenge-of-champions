@@ -1,1 +1,1 @@
-{"total":222,"ok":199,"bad":23,"percent":90,"status":"partial","exit":3,"duration":58.1}
+{"total": 222, "ok": 210, "bad": 12, "percent": 95, "status": "partial", "exit": 3, "duration": 61.7, "missing_deps": 21, "problem_vis": 17}
