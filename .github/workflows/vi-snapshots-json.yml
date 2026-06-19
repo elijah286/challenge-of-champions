@@ -78,13 +78,13 @@ jobs:
 
       - name: Checkout repository
         if: steps.pull.outputs.ok == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Checkout deployed gallery (gh-pages) for incremental seed + live publish
         if: steps.pull.outputs.ok == 'true'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         continue-on-error: true
         with:
           ref: gh-pages
@@ -116,7 +116,7 @@ jobs:
 
       - name: Deploy JSON to GitHub Pages (preserves existing HTML + JSON)
         if: steps.pull.outputs.ok == 'true' && steps.verify.outputs.ok == 'true'
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/ci-out/vi-snapshots

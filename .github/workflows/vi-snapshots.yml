@@ -54,7 +54,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0   # full history: backfill + per-commit worktrees
 
@@ -62,7 +62,7 @@ jobs:
       # whose content (git blob) has already been captured. Sparse-checkout keeps
       # this cheap — we only need the by-blob file listing.
       - name: Checkout deployed gallery (gh-pages) for incremental seeding
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         continue-on-error: true
         with:
           ref: gh-pages
@@ -123,7 +123,7 @@ jobs:
 
       - name: Deploy snapshots to GitHub Pages
         if: steps.verify.outputs.ok == 'true'
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/ci-out/vi-snapshots
