@@ -9,13 +9,18 @@ name: Run Unit Tests — Windows Container
 # report). Manual runs come through workflow_dispatch (the dashboard's Run-now).
 
 on:
+  # Auto-runs only on real LabVIEW source changes — never on the tooling files an
+  # install/deploy adds (e.g. .github/labview-ci.yml), so deploying the pipeline or
+  # changing the config never kicks off a unit-test run. Use the dashboard's "Run
+  # all history" prompt or workflow_dispatch to run on demand.
   pull_request:
     paths:
       - '**.vi'
       - '**.lvclass'
       - '**.lvproj'
       - '**.lvlib'
-      - '.github/labview-ci.yml'
+      - '**.lvtest'
+      - '!.github/**'
   push:
     branches: [main]
     paths:
@@ -23,7 +28,8 @@ on:
       - '**.lvclass'
       - '**.lvproj'
       - '**.lvlib'
-      - '.github/labview-ci.yml'
+      - '**.lvtest'
+      - '!.github/**'
   workflow_dispatch:
     inputs:
       commit_sha:
@@ -90,7 +96,9 @@ jobs:
       - name: Restore CI scripts from main
         if: github.event.inputs.commit_sha != ''
         shell: bash
-        run: git checkout origin/main -- .github/labview .github/workflows
+        run: |
+          git fetch --no-tags origin main
+          git checkout FETCH_HEAD -- .github/labview .github/workflows
 
       # Per-action container selection: config.container.actions.unit-tests wins,
       # then config.container.use. With neither set, default to the custom worker
