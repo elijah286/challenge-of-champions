@@ -1,11 +1,55 @@
 {
   "schemaVersion": 1,
-  "version": "3.6.1",
+  "version": "3.6.5",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest this source repo publishes. Each published version should also be tagged v<version> in this repo so consumers can pin an update to a specific release.",
     "releases": [
+      {
+        "version": "3.6.5",
+        "date": "2026-06-18",
+        "title": "Workflows updated to Node 24 actions, clearing the Node 20 deprecation warning",
+        "summary": "GitHub now runs JavaScript-based Actions on Node 24 by default and will remove Node 20 from its runners in the fall of 2026, so any workflow still pinned to a Node 20 action prints a deprecation warning on every run. The third-party actions used across the CI workflows and the install/update generators are now pinned to their Node 24 releases - actions/checkout v5, actions/upload-artifact v6, actions/setup-python v6, actions/github-script v8, Docker login-action and setup-buildx-action v4, and peaceiris/actions-gh-pages v4.1.0 - so the warning is cleared and the pipelines keep working once Node 20 is removed. This is an internal maintenance change with no behavior difference: the pins were chosen for a clean, backward-compatible cutover (for example checkout v5 rather than v7, whose fork pull-request checkout behavior changed). New installs get the updated pins immediately; existing repositories pick them up the next time they update their tooling. GitHub-hosted runners already meet the newer runner version these releases require.",
+        "highlights": [
+          "Third-party GitHub Actions across the CI workflows and the installer/generated workflows are bumped to their Node 24 releases, so the 'Node 20 is deprecated' warning no longer appears on each run.",
+          "Pins chosen for a behavior-preserving cutover: checkout v5, upload-artifact v6, setup-python v6, github-script v8, Docker login/buildx v4, and gh-pages v4.1.0.",
+          "Maintenance only - no functional change; new installs adopt the pins now and existing repositories get them on their next tooling update."
+        ]
+      },
+      {
+        "version": "3.6.4",
+        "date": "2026-06-18",
+        "title": "Update now applies straight to your repository - no pull request to merge",
+        "summary": "Clicking Update now used to build the update, push a branch, and open a pull request for you to merge - but on repositories that keep GitHub's secure default (Actions can't create pull requests) the run finished green with no PR, leaving the update stuck on a manual step. The Apply LabVIEW CI update workflow now commits the new version straight to your default branch using the built-in token, so the dashboard rebuilds and the badge turns green with no pull request to open, approve, or merge. A protected default branch still falls back to a pull request with auto-merge enabled. The What's New page tracks Apply -> Publish -> Done and only asks for a one-time token when a release changes workflow files the built-in token can't push.",
+        "highlights": [
+          "Update now commits the new version straight to your default branch - no pull request to open, approve, or merge.",
+          "Uses only the built-in token's Contents permission, so it no longer depends on the repo allowing GitHub Actions to create pull requests (the secure default that used to leave a finished update with no PR).",
+          "A protected default branch falls back to a pull request with auto-merge; the tracker shows Apply -> Publish -> Done and only prompts for a one-time token when a workflow-file-only change genuinely needs it."
+        ]
+      },
+      {
+        "version": "3.6.3",
+        "date": "2026-06-19",
+        "title": "VI Browser: a new VI shows a \"New\" badge, and Diff is reserved for actual changes",
+        "summary": "In the VI Browser file tree, every changed VI used to show the same \"diff\" badge - even a brand-new VI that has no previous version to compare against, so clicking it opened a diff view that could not show a meaningful comparison. A VI that is new in the selected revision now shows a green \"New\" badge that opens its snapshot, while a modified VI keeps the brown \"Diff\" badge. The Diff view - and the toolbar's Diff toggle and \"View diff report\" link - is offered only for an actual change: selecting Diff shows only the side-by-side report, or a clear note when one has not been generated yet, and never falls back to the 1.0 or 2.0 visualization. A stale view=diff link to a new VI now opens its snapshot instead.",
+        "highlights": [
+          "A VI that is new in a revision shows a green \"New\" badge (instead of \"diff\") and opens its snapshot; a modified VI shows the brown \"Diff\" badge.",
+          "The Diff toggle and the \"View diff report\" link appear only for a modified VI; for a new VI the Diff toggle is grayed out with a tip that there is no earlier version to compare.",
+          "Selecting Diff shows only the side-by-side report, or a note when it has not been generated yet - it never shows the 1.0 or 2.0 render."
+        ]
+      },
+      {
+        "version": "3.6.2",
+        "date": "2026-06-19",
+        "title": "Unit tests: the worker image now actually installs the NI Unit Test Framework",
+        "summary": "The previous release added headless NI Unit Test Framework (UTF) test execution but the worker image discovered the UTF package by searching the NI feed for the words \"unit test framework\" - and the real package is named ni-utf-labview-support, which that search never matched, so UTF was silently absent and the runner reported no tests. The image now pins ni-utf-labview-support by name - exactly the way the VI Analyzer support package is pinned - so UTF is installed every build, with feed discovery kept only as a fallback and a UTF_PACKAGE build-arg to override the name for other feeds. No configuration or report format changed; existing repositories just get a worker that can run their .lvtest files.",
+        "highlights": [
+          "The worker image installs the NI Unit Test Framework by its pinned package name (ni-utf-labview-support) instead of relying on a feed name-search that never matched it.",
+          "UTF install mirrors the VI Analyzer support-package install; feed discovery remains a fallback and a UTF_PACKAGE build-arg overrides the name for other LabVIEW feeds.",
+          "The step is still best-effort: if UTF cannot be installed the build emits a warning and the unit-test runner degrades gracefully rather than failing."
+        ]
+      },
       {
         "version": "3.6.1",
         "date": "2026-06-18",
