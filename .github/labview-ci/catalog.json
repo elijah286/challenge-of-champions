@@ -1,11 +1,65 @@
 {
   "schemaVersion": 1,
-  "version": "3.8.0",
+  "version": "3.10.0",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest this source repo publishes. Each published version should also be tagged v<version> in this repo so consumers can pin an update to a specific release.",
     "releases": [
+      {
+        "version": "3.10.0",
+        "date": "2026-06-19",
+        "title": "Headless unit tests run for real: the UTF JUnit report library is baked into the worker",
+        "summary": "The unit-test runner invokes LabVIEW's built-in 'LabVIEWCLI -OperationName RunUnitTests' operation, but that operation only emits its JUnit results file when the NI 'UTF JUnit Report' library is present - without it the run failed with LabVIEW CLI error -350053 ('missing or bad files in the operation folder') and produced no report. That library (ni_lib_utf_junit_report) is now baked into the CI worker image alongside the UTF toolkit, so headless Unit Test Framework runs produce a real JUnit report that the dashboard turns into a results page. A separate crash in the report builder that only surfaced on Windows (a non-ASCII character printed to a code-page console) was also fixed.",
+        "highlights": [
+          "The worker image now bakes in NI's 'UTF JUnit Report' VIPM library (ni_lib_utf_junit_report 1.0.1.43), which the built-in RunUnitTests CLI operation needs to write its JUnit results.",
+          "Headless Unit Test Framework runs no longer fail with LabVIEW CLI error -350053; they emit a JUnit report that becomes a unit-test results page.",
+          "Fixed a Windows-only crash in the unit-test report builder caused by printing a non-ASCII character to a code-page console."
+        ]
+      },
+      {
+        "version": "3.9.0",
+        "date": "2026-06-19",
+        "title": "The upgrade page now names the repo it is updating, links it, and ends on your dashboard",
+        "summary": "The centralized What's New / upgrade page is served from the source site but upgrades a different consumer repo, which made it easy to lose track of which repository was being changed. It now brands the repo being upgraded throughout: the header and a persistent chip both show that repo, and every place a repo name appears is a clickable link to its GitHub page. The mechanics of upgrading are now above the fold - the Update action comes first and the long What's changed notes are collapsed by default behind a disclosure - and when the upgrade finishes you get a clear Done state with a Go to your dashboard button so you can immediately explore the new features.",
+        "highlights": [
+          "The header brand and a persistent chip both name the repo being upgraded (not the source site that serves the page), so it is always clear which repository the upgrade applies to.",
+          "Every repo name shown on the page is a clickable link to its GitHub repository.",
+          "What's changed is collapsed by default and the Update action is above the fold, so the steps that need you are visible without scrolling; the finished state links straight to your dashboard."
+        ]
+      },
+      {
+        "version": "3.8.3",
+        "date": "2026-06-19",
+        "title": "Queued runs are numbered by their real position in the Actions queue",
+        "summary": "The small position chip on a queued cell (#1, #2, ...) now shows where that run actually sits in the GitHub Actions queue, not just how many runs this browser queued. The dashboard reads the live list of runs still waiting for a runner on this repository - from any activity, push, or person - orders them oldest first, and labels each of your queued cells with its true place in line, so if eight other runs are already ahead these two read #9 and #10. The numbers refresh as the queue moves and the runs ahead start. A repository-scoped token cannot see other repositories that share the same hosted-runner pool, so contention from outside this repository is not counted.",
+        "highlights": [
+          "The #N chip on a queued cell reflects its real place among every run waiting on this repository, so runs queued ahead by pushes or other activities push your numbers back (for example #9 and #10 when eight are already ahead).",
+          "Positions are computed from the live Actions queue and refresh as runs ahead start, instead of just counting the runs queued from this browser.",
+          "The chip stays hidden when only one run is in line; a repository-scoped token cannot count runs from other repositories that share the same runner pool."
+        ]
+      },
+      {
+        "version": "3.8.2",
+        "date": "2026-06-19",
+        "title": "FAQ explains the worker-container lifecycle and how to change it",
+        "summary": "A new FAQ entry makes the container lifecycle explicit: a fresh container is created for each action, each revision, and each platform (docker run --rm) and destroyed the moment that action finishes - it is not created per file, and it is never reused across actions or across revisions, which keeps every run clean and reproducible. It also calls out the one exception (the VI Browser snapshot renderer keeps a single warm container per job and renders each unique VI once ever by content hash) and lists the settings you can change: which image each container runs (Container tab and per-action routing), when the image rebuilds (baked VIPC files plus Monitor), where containers run (self-hosted runners keep a Docker layer cache between jobs), and how many spin up at once (max concurrent runners) or at all (enable/disable capabilities, Windows/Linux).",
+        "highlights": [
+          "Clarifies that each action, each revision, and each platform gets its own fresh container (docker run --rm): one container processes every VI in a revision, but containers are never shared across actions or across revisions.",
+          "Documents the one exception - the VI Browser snapshot renderer keeps a single warm container per job and renders each unique VI exactly once ever by content hash.",
+          "Lists the related settings users can change: container image selection and per-action routing, image rebuild triggers (Monitor), self-hosted runners, and concurrency limits."
+        ]
+      },
+      {
+        "version": "3.8.1",
+        "date": "2026-06-19",
+        "title": "Populate history closes after you queue, revealing the dashboard",
+        "summary": "When you press Queue runs in the Populate dashboard history dialog and the runs are queued successfully, the dialog now closes itself so you land back on the dashboard and can immediately watch the just-queued activities fill in - each shows a Queued badge until its run starts. If some runs could not be dispatched, or a token or permission is missing, the dialog stays open with the explanation so nothing is lost and you can retry.",
+        "highlights": [
+          "The Populate history dialog closes automatically after a successful queue, so you land on the dashboard and can see the queued runs.",
+          "A failed or partial queue keeps the dialog open with its message and a re-enabled Queue button, so you can read it and retry."
+        ]
+      },
       {
         "version": "3.8.0",
         "date": "2026-06-19",

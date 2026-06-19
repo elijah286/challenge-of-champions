@@ -75,6 +75,15 @@
       if (hm && seg && seg.indexOf('.') < 0) repo = hm[1] + '/' + seg;
     } catch (e) {}
   }
+  // A page may be ABOUT a different repository than the one whose assets serve it
+  // — the centralized "What's New" page is served from the source site but upgrades
+  // a consumer repo. cfg.brandRepo names that repo so the brand, its home link, and
+  // the Dashboard / VI Browser nav all reflect it, while `repo` (the serving origin)
+  // still drives the version + dispatch logic. Display-only: with no brandRepo every
+  // link is exactly as before.
+  var brandRepo = cfg.brandRepo || '';
+  var navBase = base;
+  if (brandRepo) { var _nb = trimSlash(pagesUrlForRepo(brandRepo)); if (_nb) navBase = _nb; }
   var ctx = cfg.context || 'page';
 
   // Canonical home of this tooling. The dashboard page assets are served by the
@@ -447,8 +456,8 @@
   // ── Primary navigation (the durable site sections). Data-driven so future
   //    capabilities — Builds, Documentation, Unit Tests — are a one-line add. ─
   var NAV = [
-    { key: 'dashboard',   label: 'Dashboard',    href: base + '/' },
-    { key: 'vi-browser',  label: 'VI Browser',   href: base + '/vi-snapshots/' }
+    { key: 'dashboard',   label: 'Dashboard',    href: navBase + '/' },
+    { key: 'vi-browser',  label: 'VI Browser',   href: navBase + '/vi-snapshots/' }
     // Future (uncomment / extend as capabilities land):
     // { key: 'builds', label: 'Builds', href: base + '/builds/', soon: true },
     // { key: 'docs',   label: 'Docs',   href: base + '/docs/',   soon: true }
@@ -573,6 +582,17 @@
   //    way the rest of the dashboard does (clients.html, integrate.html): a
   //    user/org pages repo (<owner>.github.io) serves at the bare host; any other
   //    repo is a project page under /<repo>/. Empty if the source is unknown. ──
+  // Derive any owner/name repo's GitHub Pages root: a user/org pages repo
+  // (<owner>.github.io) serves at the bare host; any other repo is a project page
+  // under /<name>/. Empty when the repo is unknown. (Hoisted — used by navBase.)
+  function pagesUrlForRepo(r) {
+    var p = String(r || '').split('/');
+    var owner = p[0] || '', name = p[1] || '';
+    if (!owner || !name) return '';
+    var host = owner.toLowerCase() + '.github.io';
+    return name.toLowerCase() === host ? ('https://' + host + '/')
+                                       : ('https://' + host + '/' + name + '/');
+  }
   function sourcePagesUrl() {
     var p = String(srcRepo || '').split('/');
     var owner = p[0] || '', name = p[1] || '';
@@ -1001,11 +1021,12 @@
     // product name when no repo can be derived. The whole mark links home.
     var brand = document.createElement('a');
     brand.className = 'lvci-brand';
-    brand.href = base + '/';
-    if (repo) {
-      var rname = repo.split('/').pop();
-      brand.title = repo;                                      // full owner/name on hover
-      brand.setAttribute('aria-label', 'LabVIEW CI \u2014 ' + repo);
+    brand.href = navBase + '/';
+    var displayRepo = brandRepo || repo;
+    if (displayRepo) {
+      var rname = displayRepo.split('/').pop();
+      brand.title = displayRepo;                                      // full owner/name on hover
+      brand.setAttribute('aria-label', 'LabVIEW CI \u2014 ' + displayRepo);
       brand.innerHTML = BRAND_SVG +
         '<span class="lvci-repo">' +
           '<span class="lvci-kicker">LabVIEW CI</span>' +
