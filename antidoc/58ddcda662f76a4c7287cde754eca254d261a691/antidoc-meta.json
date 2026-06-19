@@ -1,0 +1,16 @@
+{
+    "status":  "failed",
+    "title":  "challenge-of-champions",
+    "project":  "Challenge of Champions.lvproj",
+    "lvVersion":  "2026",
+    "primary":  {
+                    "kind":  "none",
+                    "path":  ""
+                },
+    "fileCount":  0,
+    "files":  [
+
+              ],
+    "exit":  9,
+    "duration":  0
+}
