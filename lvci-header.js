@@ -378,6 +378,7 @@
     integrate: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
     configure: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1.5" y1="14" x2="6.5" y2="14"/><line x1="9.5" y1="8" x2="14.5" y2="8"/><line x1="17.5" y1="16" x2="22.5" y2="16"/></svg>',
     vibrowser: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="M21 15l-4.5-4.5L7 19"/></svg>',
+    vianalyzer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/><path d="M7.8 10.6l2 2 3.2-3.6"/></svg>',
     update: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
     about: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><line x1="12" y1="16" x2="12" y2="11.5"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
     clients: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-6A3.5 3.5 0 0 0 4 18.5V20"/><circle cx="10.5" cy="8" r="3.5"/><path d="M21 20v-1.5a3.5 3.5 0 0 0-2.6-3.4"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8"/></svg>',
@@ -558,6 +559,7 @@
       'dashboard': [
         { label: 'Populate history', svg: ICON.history, kind: 'runhistory' },
         { label: 'Configure Workers', svg: ICON.configure, kind: 'configure' },
+        { label: 'VI Analyzer', svg: ICON.vianalyzer, kind: 'vianalyzer' },
         { label: 'Unit Testing', svg: ICON.tests, kind: 'unittests' },
         { label: 'VI Browser renders', svg: ICON.vibrowser, kind: 'vibrowser' },
         { label: 'Clients', svg: ICON.clients, href: base + '/clients.html', source: true },
@@ -634,6 +636,7 @@
     var map = {
       configure: { src: 'configure.html' + (repo ? ('?repo=' + encodeURIComponent(repo)) : ''), title: 'Configure Workers' },
       vibrowser: { src: 'configure.html' + (repo ? ('?repo=' + encodeURIComponent(repo)) : '') + '#vi-browser', title: 'VI Browser renders' },
+      vianalyzer: { src: 'vi-analyzer.html' + (repo ? ('?repo=' + encodeURIComponent(repo)) : ''), title: 'VI Analyzer' },
       unittests: { src: 'unit-tests.html' + (repo ? ('?repo=' + encodeURIComponent(repo)) : ''), title: 'Unit Testing' },
       integrate: { src: 'integrate.html', title: 'Apply to New Repo' }
     };
@@ -754,7 +757,7 @@
     el.innerHTML = iconHtml(a) + esc(a.label);
     if (!a.href) {
       el.addEventListener('click', function () {
-        if (a.kind === 'configure' || a.kind === 'integrate' || a.kind === 'unittests' || a.kind === 'vibrowser') openPage(a.kind);
+        if (a.kind === 'configure' || a.kind === 'integrate' || a.kind === 'unittests' || a.kind === 'vibrowser' || a.kind === 'vianalyzer') openPage(a.kind);
         else if (a.kind === 'rerun') rerun();
         else if (a.kind === 'runhistory') runHistory();
       });
@@ -1102,7 +1105,7 @@
           el = document.createElement('button');
           el.type = 'button';
           el.addEventListener('click', function () {
-            if (a.kind === 'configure' || a.kind === 'integrate' || a.kind === 'unittests' || a.kind === 'vibrowser') openPage(a.kind);
+            if (a.kind === 'configure' || a.kind === 'integrate' || a.kind === 'unittests' || a.kind === 'vibrowser' || a.kind === 'vianalyzer') openPage(a.kind);
             else if (a.kind === 'runhistory') runHistory();
             closeDD();
           });
@@ -1286,6 +1289,7 @@
   // auto-refresh exactly once when an in-flight rebuild finishes.
   var REBUILD_ON = (ctx === 'dashboard');
   var buildWas = false;
+  var buildState = { active: false, url: '' };
 
   // Re-point the About menu entries at the (possibly relocated) source site once
   // loadVersion has refined srcRepo — see aboutUrl(). Keeps href + new-tab target
@@ -1379,13 +1383,20 @@
   function renderRebuild(run) {
     var card = document.getElementById('lvci-rebuild');
     if (!card) return;
-    if (!run) { card.classList.remove('show'); return; }
+    if (!run) {
+      card.classList.remove('show');
+      if (buildState.active) { buildState = { active: false, url: '' }; renderBadge(); }
+      return;
+    }
+    var url = run.html_url || ('https://github.com/' + repo + '/actions');
     var a = card.querySelector('a');
     if (a) {
-      a.href = run.html_url || ('https://github.com/' + repo + '/actions');
+      a.href = url;
       a.textContent = (run.name || 'the build workflow') + ' \u2197';
     }
+    buildState = { active: true, url: url };
     card.classList.add('show');
+    renderBadge();
   }
   var RELOAD_KEY = 'lvci_rebuild_reload';
   function anyModalOpen() {
@@ -1411,10 +1422,11 @@
   // ── Tooling-upgrade detection (consumer repos) ─────────────────────────
   // Refresh this repo's committed (HEAD) catalog version (throttled). A value
   // ahead of the deployed build means an update PR was merged and is deploying
-  // right now. Private/thin repos without a vendored catalog simply 404 here and
-  // fall back to the apply-tooling-update run check + the optimistic local flag.
+  // right now. On the source repo it also names the version currently being
+  // compiled by dashboard-pages.yml. Private/thin repos without a vendored
+  // catalog simply 404 here and fall back to the run check + optimistic flags.
   function refreshHeadCatalog() {
-    if (!isConsumer || !repo) return Promise.resolve();
+    if (!repo) return Promise.resolve();
     if (Date.now() - headVAt < 30000) return Promise.resolve();        // at most ~every 30s
     headVAt = Date.now();
     return fetch('https://raw.githubusercontent.com/' + repo + '/HEAD/.github/labview-ci/catalog.json', { cache: 'no-cache' })
@@ -1493,7 +1505,7 @@
         // committed catalog, then decide whether a real update is mid-flight (so
         // the menu links to it instead of offering to start another).
         lastAct = act;
-        refreshHeadCatalog().then(resolveUpgrade);
+        refreshHeadCatalog().then(function () { resolveUpgrade(); if (buildState.active) renderBadge(); });
       }).catch(function () { /* network blip: keep prior badge state */ });
   }
   function startActivity() {
@@ -1521,13 +1533,16 @@
   function renderBadge() {
     var upd = updGet();
     var localUpdating = !!(upd && (!verState.v || cmpVer(verState.v, upd.v) < 0));
+    var buildTo = buildState.active ? (headV || verState.to || verState.v || '') : '';
     // A real upgrade is in flight when the server says so (apply-tooling-update
     // running, or a merged update deploying) OR this browser optimistically
-    // flagged one. Either way: show progress + link to it, never offer re-start.
-    var updating = upState.active || localUpdating;
+    // flagged one. A page rebuild also shows progress so the menu doesn't look
+    // like the dashboard has already reached the version currently compiling.
+    var updating = upState.active || localUpdating || !!buildTo;
     var upTo = upState.active ? (upState.to || (upd && upd.v) || verState.to || '')
-                              : (upd ? upd.v : '');
-    var upUrl = upState.active ? upState.url : (repo ? ('https://github.com/' + repo + '/pulls') : '');
+                              : (buildTo || (upd ? upd.v : ''));
+    var upUrl = upState.active ? upState.url
+              : (buildState.active ? buildState.url : (repo ? ('https://github.com/' + repo + '/pulls') : ''));
     var behind = !updating && verState.behind;
     var hasUpdate = updating || behind;
 
