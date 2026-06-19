@@ -1,11 +1,109 @@
 {
   "schemaVersion": 1,
-  "version": "3.10.0",
+  "version": "3.12.1",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest this source repo publishes. Each published version should also be tagged v<version> in this repo so consumers can pin an update to a specific release.",
     "releases": [
+      {
+        "version": "3.12.1",
+        "date": "2026-06-19",
+        "title": "Menu shows the dashboard version it is updating to while Pages rebuilds",
+        "summary": "When the dashboard rebuild banner is visible, the More menu now shows \"Updating to vX...\" using the committed catalog version that is being compiled, and links to the active dashboard build or Pages deploy. This avoids the confusing state where the menu still looked like the currently deployed version was final while the page was actually rebuilding to a newer version.",
+        "highlights": [
+          "The version entry in the More menu now reflects the dashboard rebuild in progress.",
+          "The label uses the target catalog version from the repository HEAD when it is available.",
+          "Clicking the updating entry opens the active dashboard build or Pages deployment instead of implying the deployed version is already current."
+        ]
+      },
+      {
+        "version": "3.12.0",
+        "date": "2026-06-19",
+        "title": "VI Analyzer configuration moves to its own page (and only maps configs to code - it never edits test settings)",
+        "summary": "The VI Analyzer setup now has its own dedicated page (opened from the VI Analyzer menu) instead of a tab inside Configure Workers, and its purpose is spelled out: it does NOT change any VI Analyzer test settings. You author those in LabVIEW's VI Analyzer tool (Tools > VI Analyzer > Analyze VIs..., Save Configuration) and commit the resulting .viancfg files; this page only tells the automated pipeline which VIs get analyzed, which committed .viancfg applies to a specific VI or folder, and which .viancfg (if any) is the default when nothing else matches. Applying a change runs the Reconfigure workflow, which now updates ONLY the VI Analyzer settings and preserves every other setting (LabVIEW version, OS, runners, Antidoc, activities, container, triggers) - so the focused page can't accidentally change anything else.",
+        "highlights": [
+          "VI Analyzer configuration is now a dedicated page, not a tab in Configure Workers.",
+          "Clear framing: test settings are authored in LabVIEW's VI Analyzer tool and committed as .viancfg; this page only assigns them to code and chooses which VIs run.",
+          "The Reconfigure workflow now does partial updates - changing just the VI Analyzer mapping leaves LabVIEW version, OS, runners, Antidoc and the rest untouched."
+        ]
+      },
+      {
+        "version": "3.11.3",
+        "date": "2026-06-19",
+        "title": "Unit-test runner logs where the NI Unit Test Framework toolkit landed in the container",
+        "summary": "To diagnose why the headless RunUnitTests operation cannot load the NI Unit Test Framework on LabVIEW 2026, the unit-test runner now prints, before it runs, a snapshot of the container's version-independent LabVIEW add-ons folder (C:\\Program Files\\NI\\LVAddons), the LabVIEW tree's add-on locations, and the LabVIEW registry keys. This makes it visible whether the toolkit is actually deployed where this LabVIEW loads add-ons from. Diagnostic-only and runner-side (no worker image rebuild).",
+        "highlights": [
+          "Runner logs the version-independent add-ons folder and LabVIEW registry so a -350053 'operation could not load' can be traced to toolkit visibility.",
+          "Diagnostic-only: no change to how tests run and no worker image rebuild."
+        ]
+      },
+      {
+        "version": "3.11.2",
+        "date": "2026-06-19",
+        "title": "Worker now installs the NI Unit Test Framework from its dedicated NI Package Manager feed",
+        "summary": "The worker image now adds the NI Unit Test Framework Toolkit's own NI Package Manager feeds (the released and released-critical channels) before installing ni-utf-labview-support, instead of relying solely on the base LabVIEW feed. This makes the UTF toolkit install come from its canonical source so the headless RunUnitTests operation can find it.",
+        "highlights": [
+          "Adds the dedicated ni-labview-unit-test-framework-toolkit feeds (released + released-critical) to the worker before installing UTF.",
+          "Keeps the install best-effort: if UTF still cannot be installed the build does not fail and the report shows the missing-tooling banner."
+        ]
+      },
+      {
+        "version": "3.11.1",
+        "date": "2026-06-19",
+        "title": "Reports now tell you when the worker container was missing the tooling an activity needs",
+        "summary": "When an activity cannot run because the selected worker container does not include the required tooling (for example, the NI Unit Test Framework toolkit is not installed, so the headless RunUnitTests operation cannot load), the report now shows a clear banner at the top: 'The selected container did not contain the dependencies needed to run this activity', naming the missing tooling and linking straight to the Configure Workers dialog to set the container up. The unit-test runner detects this case and records it; the report renders the banner in the page body so it is visible both on the standalone report and inside the dashboard's pop-out viewer. This is a shared pattern other activities can adopt so a missing-tooling container always explains itself the same way.",
+        "highlights": [
+          "Unit-test reports now show a banner when the container lacked the NI Unit Test Framework, instead of just an empty 'no tests' page.",
+          "The banner names the missing tooling and links directly to the Configure Workers dialog to set up the container.",
+          "A reusable convention (a runner-written marker plus a standard banner) so any activity's report can flag a missing-tooling container the same way."
+        ]
+      },
+      {
+        "version": "3.11.0",
+        "date": "2026-06-19",
+        "title": "VI Analyzer: choose which test configuration runs on which code, and re-run a single VI with a different configuration",
+        "summary": "A new VI Analyzer configuration dialog - reachable from a top-level 'VI Analyzer' menu and a Configure tab - lets you decide which LabVIEW .viancfg test settings run on which VIs. Pick a default configuration applied to every VI (the built-in full test suite, a committed .viancfg, or 'don't test by default'), then add per-folder and per-file rules that apply a specific .viancfg to a subset of your code or exclude it from analysis entirely (some VIs going untested is fine; first matching rule wins). With no configuration set the pipeline auto-uses the first .viancfg found in the repository, otherwise it runs the built-in suite. From a VI Analyzer report you can now also re-run just the VI you are looking at against a different configuration, without re-analyzing the whole revision. Settings are saved to config.viAnalyzer in .github/labview-ci.yml and honored by the VI Analyzer workflow (and the Reconfigure workflow) at run time.",
+        "highlights": [
+          "New VI Analyzer configuration dialog (top-level menu + Configure tab): map .viancfg test configurations to individual VIs and/or whole folders.",
+          "Set a per-repo default configuration, add per-folder/per-file rules, or exclude files from analysis entirely - the first matching rule wins.",
+          "When a .viancfg is present the pipeline defaults to it; with none, it runs the built-in full VI Analyzer test suite.",
+          "Re-run a single VI from its VI Analyzer report against a newly chosen configuration, without re-running the whole revision."
+        ]
+      },
+      {
+        "version": "3.10.3",
+        "date": "2026-06-19",
+        "title": "Headless unit tests: surface the LabVIEW CLI session log when a run produces no report",
+        "summary": "When the built-in RunUnitTests CLI operation fails, LabVIEW prints only a generic error code (for example -350053, 'failed to run the operation due to missing or bad files') to the console, while the real detail - which VI is broken or which module is missing - is written to LabVIEW's own session log file. The unit-test runner now captures that session-log path from the CLI output and, whenever a project produces no JUnit report, echoes the full session log into the workflow output. This makes a failed headless Unit Test Framework run actually diagnosable instead of leaving only an opaque error code.",
+        "highlights": [
+          "A Unit Test Framework run that produces no report now prints LabVIEW's full CLI session log, not just the generic console error code.",
+          "Makes the cause of a -350053 'missing or bad files' failure visible (the specific broken VI or missing module).",
+          "Diagnostic-only change to the runner; no effect on successful runs."
+        ]
+      },
+      {
+        "version": "3.10.2",
+        "date": "2026-06-19",
+        "title": "Headless unit tests: stop the worker build from failing on the new VIPM command-line interface",
+        "summary": "The previous release installed VIPM from the NI Package Manager feed, but that build of VIPM ships a rewritten command-line interface in which the old 'apply_vipc' command no longer exists, so applying the package configuration failed and aborted the whole worker image build. The worker now drives VIPM through its current commands (it tries 'vipm install <configuration> --labview-version <year>' and falls back to the legacy command for older VIPM), refreshes the package list first, and treats a failed apply as a non-fatal warning so the core image (LabVIEW, VI Analyzer, Unit Test Framework toolkit) always builds. It can also activate VIPM Pro when VIPM_SERIAL_NUMBER / VIPM_FULL_NAME / VIPM_EMAIL build secrets are provided, which the modern VIPM interface requires for unattended installs.",
+        "highlights": [
+          "The worker now uses VIPM's current 'install' command (with a fallback to the legacy 'apply_vipc') instead of a command that the new VIPM build no longer recognizes.",
+          "A VIPM apply failure is now a non-fatal warning, so the core worker image (LabVIEW, VI Analyzer, Unit Test Framework toolkit) always builds.",
+          "Supplying VIPM_SERIAL_NUMBER / VIPM_FULL_NAME / VIPM_EMAIL build secrets activates VIPM Pro, which the modern VIPM command-line interface needs for headless package installs."
+        ]
+      },
+      {
+        "version": "3.10.1",
+        "date": "2026-06-19",
+        "title": "Headless unit tests: install VIPM from the NI feed so the JUnit report library actually bakes in",
+        "summary": "The previous release added NI's 'UTF JUnit Report' library to the worker's VIPM configuration, but the worker could not install VIPM itself: the external JKI installer URL it used now returns 404 (and the replacement download is sign-in gated), so the whole VIPM step - and every VIPM-distributed add-on - was silently skipped. The worker now installs VIPM from the same NI Package Manager feed it already uses for the other toolkits (package 'ni-vipm'), which is reproducible and needs no external, gated download. With VIPM present the configuration applies and the UTF JUnit report library is baked in, so headless Unit Test Framework runs emit a real JUnit report. This also un-breaks the other VIPM add-ons (Antidoc, Caraya, VI Tester).",
+        "highlights": [
+          "VIPM is now installed from the NI Package Manager feed (ni-vipm) instead of an external installer URL that had started returning 404.",
+          "With VIPM present, the worker bakes in NI's UTF JUnit Report library, so the built-in RunUnitTests CLI operation can emit its JUnit results.",
+          "Fixes a silent skip that also affected the other VIPM-distributed add-ons (Antidoc, Caraya, VI Tester)."
+        ]
+      },
       {
         "version": "3.10.0",
         "date": "2026-06-19",
