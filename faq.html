@@ -24,7 +24,10 @@
     .wrap{max-width:820px;margin:0 auto;padding:32px 20px 64px}
     h1{font-size:1.6em;margin:0 0 8px}
     .intro{color:var(--fg-muted);font-size:.95em;margin:0 0 28px}
-    .faq-item{margin-bottom:24px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+    .repo-home{margin:0 0 22px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);
+      border-radius:8px;font-size:.95em;color:var(--fg-muted)}
+    .repo-home a{font-weight:600;color:var(--link)}
+    .faq-item{margin-bottom:24px;border:1px solid var(--border);border-radius:8px;overflow:hidden;scroll-margin-top:66px}
     .faq-q{background:var(--surface);padding:14px 16px;font-weight:600;font-size:.95em;cursor:pointer;display:flex;
           justify-content:space-between;align-items:center;user-select:none}
     .faq-q:hover{background:rgba(88,166,255,.06)}
@@ -44,8 +47,25 @@
 </head>
 <body>
   <div class="wrap">
+    <div class="repo-home">
+      These tools were installed from the
+      <a class="lvci-repo-link" data-show-name href="https://github.com/elijah286/LabVIEW-CI-with-Containers" target="_blank" rel="noopener">LabVIEW-CI-with-Containers</a>
+      repo, which are maintained by
+      <a class="lvci-owner-link" href="https://github.com/elijah286" target="_blank" rel="noopener">elijah286</a>.
+    </div>
     <h1>Frequently Asked Questions</h1>
-    <p class="intro">Common questions about LabVIEW CI setup, configuration, and operation.</p>
+    <p class="intro">Common questions about LabVIEW CI setup, configuration, and operation. Want the deep, implementation-level details instead? Read the <a href="documentation.html">full Documentation</a>.</p>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <span>Where can I learn how the whole system works in depth?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-a">
+        <p>This FAQ answers common practical questions. For a thorough, implementation-level reference — how the runners are built, how the worker containers launch headless LabVIEW, how VIPM dependencies are baked in, the report data contracts, the catalog model, the security boundaries, and how to extend or adapt the stack — read the <a href="documentation.html">full Documentation</a>.</p>
+        <p>It is written for expert LabVIEW developers who need to evaluate, extend, or adapt the pipeline.</p>
+      </div>
+    </div>
 
     <div class="faq-item">
       <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
@@ -119,6 +139,50 @@
 
     <div class="faq-item">
       <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <span>When do containers spin up and get destroyed? Do they persist across files, revisions, and actions?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-a">
+        <p><strong>Short answer:</strong> a fresh container is created for <strong>each action, each revision, and each platform</strong> — started when that action begins and destroyed the moment it finishes (<code>docker run --rm</code>). A container is <strong>not</strong> created per file, and it is <strong>never</strong> reused across actions or across revisions. This keeps every run clean, isolated, and reproducible.</p>
+        <p>What that means in practice:</p>
+        <ul>
+          <li><strong>Across files in one revision — shared.</strong> When an action runs (say Mass Compile), it starts <em>one</em> container and processes <em>every</em> VI in that revision inside a single LabVIEW session, then tears the container down. You never get a container per VI.</li>
+          <li><strong>Across actions — not shared.</strong> Each capability (Mass Compile, VI Analyzer, VIDiff, Unit Tests, Antidoc) is its own workflow on its own runner. A push that triggers three actions spins up three separate containers — more if both Windows and Linux are enabled — each created and destroyed independently, usually in parallel.</li>
+          <li><strong>Across revisions / commits — not shared.</strong> Every new commit triggers fresh workflow runs and therefore fresh containers. Nothing carries over from the previous revision.</li>
+          <li><strong>The image is reused; the container is not.</strong> The prebuilt worker <em>image</em> (with your baked-in VIPC dependencies) is pulled once per job and cached on the runner, but each job runs a brand-new container instance from it and discards that instance when the job ends. Your repository files are bind-mounted in from the runner, so nothing changed inside a container is ever persisted.</li>
+        </ul>
+        <p><strong>The one exception — VI Browser snapshots.</strong> The snapshot renderer deliberately starts a <em>single, long-lived</em> container and keeps it warm, rendering many commits through it via <code>docker exec</code> (no per-VI or per-commit container churn), then tears it down when the job ends. Snapshots are content-addressed by VI content, so each unique VI is rendered exactly once — ever — and reused across commits instead of being re-rendered.</p>
+        <p><strong>What you can change:</strong></p>
+        <ul>
+          <li><strong>Which image each container runs.</strong> Open <strong>⚙ Configure Workers</strong>; on the <strong>Container</strong> tab choose <em>Latest</em> (always current) or pin a specific immutable build. The <strong>Per-action routing</strong> section lets you override this per action — for example pin VIDiff to a frozen build for stable rendering while Mass Compile tracks <em>Latest</em>; <code>base</code> forces the bare NI image for that action.</li>
+          <li><strong>When the image rebuilds.</strong> Bake VIPC files into the image and turn on <strong>Monitor</strong> so it rebuilds and re-pushes automatically whenever a dependency file changes — or trigger a rebuild on demand. This changes the <em>image</em> that future containers start from; it does not make a container persist.</li>
+          <li><strong>Where containers run.</strong> Point an action at a custom / self-hosted runner. On a self-hosted runner the machine and its Docker layer cache persist between jobs, so the multi-gigabyte image isn't re-pulled every run — but each job still runs a fresh <code>--rm</code> container. GitHub-hosted runners start from a clean VM every job.</li>
+          <li><strong>How many spin up at once.</strong> Lower the <strong>max concurrent runners</strong> cap so a busy push doesn't start many containers at the same time and exhaust your account-wide Actions concurrency limit.</li>
+          <li><strong>How many spin up at all.</strong> Enable or disable capabilities and choose Windows, Linux, or both, to control how many containers each submission creates.</li>
+        </ul>
+        <p>There is no setting to make a single container persist across actions or across revisions — that isolation is intentional. The VI Browser snapshot renderer is the one place that reuses a warm container within a job, and it avoids repeat work across revisions by content hash rather than by keeping containers alive.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <span>Where are the worker containers stored and where do they run?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-a">
+        <p><strong>Stored</strong> in the <strong>GitHub Container Registry (GHCR, <code>ghcr.io</code>)</strong> as a package attached to <em>your</em> repository. The "Build LabVIEW CI Image" workflow builds your worker image and pushes it with the built-in <code>GITHUB_TOKEN</code>, so the image lives under your own account — for example <code>ghcr.io/&lt;owner&gt;/&lt;repo&gt;-labview</code> (and, if VI Browser 2.0 renders are enabled, <code>ghcr.io/&lt;owner&gt;/&lt;repo&gt;-toimages</code>). The image inherits your repository's visibility, and you can view or delete it under your repo's <strong>Packages</strong>. The NI base layer it builds on (<code>nationalinstruments/labview</code>) is pulled from NI's public registry — nothing is stored on the tooling author's servers.</p>
+        <p><strong>Run</strong> on the <strong>GitHub Actions runner</strong> that executes the workflow job, never on NI's or the tooling author's infrastructure. For each job the runner:</p>
+        <ul>
+          <li><strong>Pulls the image</strong> from GHCR (authenticating with the job's <code>GITHUB_TOKEN</code>), or from NI's registry for the base image.</li>
+          <li><strong>Starts a fresh container</strong> with your repository bind-mounted in, runs LabVIEW headless inside it, and writes the results back out.</li>
+          <li><strong>Destroys the container</strong> when the job ends (<code>docker run --rm</code>), so nothing persists between runs.</li>
+        </ul>
+        <p>Windows container jobs run on a <code>windows-2022</code> runner and Linux jobs on <code>ubuntu-latest</code> — either GitHub-hosted (the default) or a self-hosted runner you provide. In short: the images are your own packages on GitHub, and everything executes inside your own GitHub Actions environment, under your account's minutes and limits.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
         <span>How do I update LabVIEW CI to a new version?</span>
         <span class="faq-icon">▼</span>
       </div>
@@ -157,9 +221,25 @@
         <p>LabVIEW CI itself is free and open-source. Running CI on GitHub costs:</p>
         <ul>
           <li><strong>Public repositories:</strong> free (unlimited Actions minutes on GitHub-hosted runners)</li>
-          <li><strong>Private repositories:</strong> counts against your GitHub Actions quota (2,000 free minutes/month for GitHub Pro)</li>
+          <li><strong>Private repositories:</strong> counts against your GitHub Actions minutes quota (2,000/month included on Free, 3,000/month on Pro and Team)</li>
         </ul>
-        <p>You can configure the max concurrent runners to stay within quota if needed.</p>
+        <p>You can lower the max concurrent runners to stay within quota. Keep in mind that GitHub's concurrency limit &mdash; how many jobs run at once (Free 20, Pro 40, Team 60, Enterprise 500) &mdash; is <strong>per account and shared across all your repositories</strong>, not per repo, and routine submissions and tooling upgrades draw from that same pool. That's why the per-repo runner cap defaults to a conservative value.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <span>What is an Actions runner?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-a">
+        <p>A <strong>runner</strong> is the machine that actually executes a GitHub Actions workflow job. When a run is triggered, GitHub hands the job to a runner, which checks out your code, runs each step in order, and — for LabVIEW CI — pulls and runs the worker container that does the compile, analysis, diff, or test. One job runs on one runner.</p>
+        <p>There are two kinds:</p>
+        <ul>
+          <li><strong>GitHub-hosted runners (the default).</strong> Fresh, disposable virtual machines GitHub provisions for each job — <code>windows-2022</code> for Windows jobs, <code>ubuntu-latest</code> for Linux — and wipes the moment the job finishes. There is nothing to install or maintain. They are free on public repositories and draw from your GitHub Actions minutes on private ones.</li>
+          <li><strong>Self-hosted runners.</strong> Machines you own and register with your repository or organization by running GitHub's runner agent on them. Use these when you need special hardware, a license tied to a specific machine, access to an internal network, or a persistent Docker layer cache so the multi-gigabyte worker image is not re-pulled every run. You are responsible for keeping them online and updated.</li>
+        </ul>
+        <p>Because the worker container runs <em>on the runner</em>, choosing a runner is how you choose where your CI executes. You pick GitHub-hosted or a self-hosted runner label during setup or from <strong>⚙ Configure Workers</strong>. Note that GitHub caps how many jobs — and therefore runners — can run at once per account (see the cost question above), which is why LabVIEW CI has a max concurrent runners setting.</p>
       </div>
     </div>
 
@@ -196,6 +276,25 @@
       </div>
     </div>
 
+    <div class="faq-item" id="discovery">
+      <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+        <span>How do you discover and track which repositories use this tooling?</span>
+        <span class="faq-icon">▼</span>
+      </div>
+      <div class="faq-a">
+        <p>The <strong>Clients</strong> page lists the public repositories found to be running this LabVIEW CI stack. We want to be fully transparent about how that list is built, because it is gathered automatically.</p>
+        <p>Discovery is deliberately <strong>pull-based</strong>: the source repository finds its own clients by querying GitHub's public search index. <strong>Your repository is never modified, never has to "phone home," and there is no shared secret, tracking pixel, or telemetry call involved.</strong> A scheduled workflow in the source repository (<code>discover-clients.yml</code>, which you can also trigger by hand with the <strong>Scan for clients</strong> button) looks for three public signals that an install necessarily leaves behind:</p>
+        <ul>
+          <li><strong>The <code>labview-ci</code> repository topic</strong> — added to a client repository at install time. This is the primary, most reliable signal, because GitHub indexes repository topics as structured metadata.</li>
+          <li><strong>A catalog reference</strong> — this repository's slug appearing as the <code>source.repo</code> value in a client's <code>.github/labview-ci/catalog.json</code>.</li>
+          <li><strong>A workflow reference</strong> — a <code>uses:</code> reference back to this repository inside a client's <code>.github/workflows/</code> files.</li>
+        </ul>
+        <p>Every candidate is then <strong>verified</strong> before it is listed: the repository must be public, must not be a fork, and its catalog must actually point back to this repository (or it must reference this stack from a workflow). Coincidental text matches in unrelated repositories are dropped, so the count reflects real installs.</p>
+        <p><strong>Privacy.</strong> GitHub's search index only covers <strong>public</strong> repositories, and each candidate is additionally checked to be non-private. <strong>Private repositories are never discovered or listed</strong> — a deliberate property, since the Clients page itself is public. Only information GitHub already exposes publicly is shown: the repository name and owner, its installed tooling version, when it was last updated, and links to its dashboard and repository.</p>
+        <p>The scan runs about once a day, so a brand-new install can take up to a day — plus GitHub's own search-index lag — to appear; <strong>Scan for clients</strong> triggers it on demand. The workflow runs <em>only</em> in the source repository, so a fork or a vendored copy never scans on anyone else's behalf.</p>
+      </div>
+    </div>
+
     <div class="faq-item">
       <div class="faq-q" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
         <span>Where do I report bugs or request features?</span>
@@ -203,7 +302,7 @@
       </div>
       <div class="faq-a">
         <p>LabVIEW CI is open-source on GitHub:</p>
-        <p><strong><a href="https://github.com/elijah286/LabVIEW-CI-with-Containers" target="_blank">github.com/elijah286/LabVIEW-CI-with-Containers</a></strong></p>
+        <p><strong><a class="lvci-repo-link" data-show-slug href="https://github.com/elijah286/LabVIEW-CI-with-Containers" target="_blank" rel="noopener">github.com/elijah286/LabVIEW-CI-with-Containers</a></strong></p>
         <p>You can:</p>
         <ul>
           <li>Open an issue to report a bug or request a feature</li>
@@ -213,5 +312,62 @@
       </div>
     </div>
   </div>
+  <script>
+  (function () {
+    "use strict";
+    // All repo links on this page point at the tooling's canonical home, resolved
+    // the same way every other surface does: read the repo this dashboard was
+    // installed from (same-origin catalog.json), then follow the relocation pointer
+    // (.github/labview-ci/source.json) to wherever the tooling officially lives now.
+    var FALLBACK = { repo: "elijah286/LabVIEW-CI-with-Containers", ref: "main" };
+    function paint(repo) {
+      var parts = String(repo).split("/"), owner = parts[0] || "", name = parts[1] || "";
+      var url = "https://github.com/" + repo, slug = "github.com/" + repo;
+      var ownerUrl = "https://github.com/" + owner;
+      var nodes = document.querySelectorAll("a.lvci-repo-link");
+      for (var i = 0; i < nodes.length; i++) {
+        nodes[i].setAttribute("href", url);
+        if (nodes[i].hasAttribute("data-show-slug")) nodes[i].textContent = slug;
+        else if (nodes[i].hasAttribute("data-show-name")) nodes[i].textContent = name;
+      }
+      var owners = document.querySelectorAll("a.lvci-owner-link");
+      for (var k = 0; k < owners.length; k++) {
+        owners[k].setAttribute("href", ownerUrl);
+        owners[k].textContent = owner;
+      }
+    }
+    function getJson(u) {
+      return fetch(u, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    }
+    getJson("./catalog.json").then(function (cat) {
+      var s = (cat && cat.source) || {};
+      var repo = s.repo || FALLBACK.repo, ref = s.ref || FALLBACK.ref;
+      paint(repo);
+      return getJson("https://raw.githubusercontent.com/" + repo + "/" + ref + "/.github/labview-ci/source.json").then(function (p) {
+        if (p && p.repo && p.repo.toLowerCase() !== repo.toLowerCase()) paint(p.repo);
+      });
+    });
+  })();
+  </script>
+  <script>
+  (function () {
+    // Deep-link support: when the URL carries a hash naming a FAQ item (e.g.
+    // faq.html#discovery, linked from the Clients page), open that item and
+    // scroll it into view so the answer is visible immediately.
+    function openFromHash() {
+      var id = (location.hash || "").replace(/^#/, "");
+      if (!id) return;
+      var item = document.getElementById(id);
+      if (!item || !item.classList || !item.classList.contains("faq-item")) return;
+      var q = item.querySelector(".faq-q");
+      var a = item.querySelector(".faq-a");
+      if (q) q.classList.add("open");
+      if (a) a.classList.add("open");
+      item.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.addEventListener("hashchange", openFromHash);
+    openFromHash();
+  })();
+  </script>
 </body>
 </html>
