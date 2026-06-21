@@ -11,41 +11,100 @@
 .NOTES
     These values can be overridden at image-build time via environment variables
     so the script does not need editing for each LabVIEW major version:
-      LABVIEW_VERSION     LabVIEW year passed to `vipm apply_vipc`; MUST match the
+      LABVIEW_VERSION     LabVIEW year passed to `vipm install`; MUST match the
                           LabVIEW in the NI base image. Default: 2026.
+      LABVIEW_BITNESS     LabVIEW bitness passed to `vipm install`. Default: 64.
       VIPM_INSTALLER_URL  VIPM community installer (https://vipm.jki.net) for a
                           VIPM build that supports LABVIEW_VERSION.
+
+    Headless install model: the vipm CLI installs packages in Community Edition
+    (no VIPM Pro license needed) -- the script sets VIPM_COMMUNITY_EDITION and
+    NO_COLOR for unattended runs (the CLI is non-interactive by default). It also
+    launches LabVIEW headless before installing, because vipm requires a running
+    LabVIEW or it fails with "IO error: Failed to load". VIPM Pro activation is
+    still honored if VIPM_SERIAL_NUMBER / VIPM_FULL_NAME / VIPM_EMAIL are supplied.
 #>
 
 $ErrorActionPreference = 'Stop'
 $ProgressPreference   = 'SilentlyContinue'
 
 $VipmDir          = 'C:\Program Files\JKI\VI Package Manager'
-$VipmExe          = "$VipmDir\vipm.exe"
+$VipmExe          = $null
 $VipcDir          = 'C:\vipm'
 $LabVIEWVersion   = if ($Env:LABVIEW_VERSION)    { $Env:LABVIEW_VERSION }    else { '2026' }  # match the LabVIEW version in the NI base image
-$VipmInstallerUrl = if ($Env:VIPM_INSTALLER_URL) { $Env:VIPM_INSTALLER_URL } else { 'https://vipm.jki.net/l/download/vipm_2024_x64.exe' }
+$LabVIEWBitness   = if ($Env:LABVIEW_BITNESS)    { $Env:LABVIEW_BITNESS }    else { '64' }    # NI base image ships 64-bit LabVIEW
+$VipmInstallerUrl = if ($Env:VIPM_INSTALLER_URL) { $Env:VIPM_INSTALLER_URL } else { 'https://traffic.libsyn.com/secure/jkinc/vipm-26.3.3954-windows-setup.exe' }
+# VIPM 26.3 Community Edition only installs packages when the working directory is
+# inside a PUBLIC Git repository (otherwise it exits 6 with "VIPM Community Edition
+# requires a public Git repository"). The worker image is built from this public
+# repo, so we run the installs from a tiny working dir whose origin remote points
+# at it. Override with VIPM_PUBLIC_REPO_URL (the build workflow passes the actual
+# building repo's clone URL so forks use their own public repo).
+$PublicRepoUrl    = if ($Env:VIPM_PUBLIC_REPO_URL) { $Env:VIPM_PUBLIC_REPO_URL } else { 'https://github.com/elijah286/challenge-of-champions.git' }
 
-# -- 1. Install VIPM if not already present -----------------------------------
-# VIPM is normally pre-installed into the image from the NI Package Manager feed
-# (package 'ni-vipm', done in labview-ci.Dockerfile), so this script just finds
-# vipm.exe and applies the .vipc. If it is NOT already present we fall back to the
-# external VIPM community installer, which is OPTIONAL and fetched from a
-# vendor-controlled URL that can move or 404 at any time, so a download/install
-# failure must NOT brick the core CI image (LabVIEW + VI Analyzer were installed
-# above). Treat the fallback as best-effort: on failure, warn and skip the add-ons
-# (exit 0) instead of failing the whole image build.
-if (-not (Test-Path $VipmExe)) {
-    # The nipkg-installed VIPM may land at a slightly different path than the
-    # default; search the common install roots before resorting to a download.
-    $found = Get-ChildItem -Path 'C:\Program Files\JKI', 'C:\Program Files (x86)\JKI' `
-        -Filter 'vipm.exe' -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($found) {
-        $VipmExe = $found.FullName
-        Write-Host "Found VIPM at: $VipmExe"
+# Run VIPM non-interactively so headless installs need no prompts. We deliberately
+# do NOT set VIPM_COMMUNITY_EDITION here: forcing Community Edition mode turns ON
+# VIPM's public-Git-repository entitlement gate (exit 6, "VIPM Community Edition
+# requires a public Git repository"), which blocks installs inside the sealed
+# `docker build` layer. The CLI already runs as Community Edition by default WITHOUT
+# enforcing that gate, so installs proceed and no VIPM Pro license is needed.
+# (If VIPM_COMMUNITY_EDITION=1 is supplied externally we honor it, and the MinGit +
+# public-repo .git context below then satisfies the gate.) These env vars are read
+# by the modern vipm CLI; older CLIs ignore them harmlessly.
+$Env:VIPM_NONINTERACTIVE    = '1'
+$Env:VIPM_ASSUME_YES        = '1'
+$Env:NO_COLOR               = '1'
+# Bound the per-operation timeout. During `docker build` the GITHUB_ACTIONS / CI
+# env vars are NOT present, so VIPM does not apply its longer "CI" default timeouts
+# and its short defaults (check_for_updates ~270s, library_list ~330s) can abort a
+# cold, first-run headless LabVIEW before it finishes responding. VIPM_TIMEOUT
+# overrides the default/CI-adjusted timeout, in seconds.
+# See docs.vipm.io/latest/cli/environment-variables.
+$Env:VIPM_TIMEOUT           = if ($Env:VIPM_TIMEOUT) { $Env:VIPM_TIMEOUT } else { '900' }
+
+# VIPM 26.3 Community Edition shells out to a real `git` binary to verify that the
+# working directory is a PUBLIC Git repository (see New-PublicRepoWorkdir below). The
+# Windows base image has no git on PATH; labview-ci.Dockerfile bakes portable MinGit
+# into C:\git, so make sure git is discoverable by vipm's child process. Without this
+# vipm fails with "Cannot determine repository visibility: ... git: program not found".
+foreach ($gitDir in @('C:\git\cmd', 'C:\Program Files\Git\cmd')) {
+    if ((Test-Path (Join-Path $gitDir 'git.exe')) -and ($Env:Path -notlike "*$gitDir*")) {
+        $Env:Path = "$gitDir;$Env:Path"
     }
 }
-if (-not (Test-Path $VipmExe)) {
+
+# -- 1. Install VIPM if not already present -----------------------------------
+# VIPM is normally pre-installed into the image by labview-ci.Dockerfile, which
+# downloads the official VIPM 2026 Q3 (26.3.3954) Windows installer from the JKI
+# CDN and runs it silently, so this script just finds vipm.exe and applies the
+# .vipc. If it is NOT already present we fall back to downloading the same
+# installer here ($VipmInstallerUrl, overridable via VIPM_INSTALLER_URL). That
+# fallback is OPTIONAL and fetched from a vendor-controlled URL that can move or
+# 404 at any time, so a download/install failure must NOT brick the core CI image
+# (LabVIEW + VI Analyzer were installed above). Treat the fallback as best-effort:
+# on failure, warn and skip the add-ons (exit 0) instead of failing the build.
+# Prefer the MODERN vipm CLI (C:\Program Files\JKI\VIPM) over the legacy
+# LabVIEW-based CLI (C:\Program Files\JKI\VI Package Manager\...). The modern CLI
+# has first-class headless/container support (--refresh, Community Edition mode)
+# and installs packages without a VIPM Pro license.
+$vipmCandidates = @(
+    'C:\Program Files\JKI\VIPM\vipm.exe',
+    'C:\Program Files (x86)\JKI\VIPM\vipm.exe',
+    "$VipmDir\vipm.exe",
+    "$VipmDir\support\vipm.exe"
+)
+$VipmExe = $vipmCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $VipmExe) {
+    # Fall back to a recursive search of the JKI install roots, preferring any
+    # path under a '\VIPM\' folder (the modern CLI) over the legacy product folder.
+    $found = Get-ChildItem -Path 'C:\Program Files\JKI', 'C:\Program Files (x86)\JKI' `
+        -Filter 'vipm.exe' -Recurse -ErrorAction SilentlyContinue |
+        Sort-Object @{ Expression = { $_.FullName -notmatch '\\VIPM\\' } }, FullName |
+        Select-Object -First 1
+    if ($found) { $VipmExe = $found.FullName }
+}
+if ($VipmExe) { Write-Host "Using VIPM CLI: $VipmExe" }
+if (-not $VipmExe -or -not (Test-Path $VipmExe)) {
     Write-Host 'VIPM not found - downloading installer...'
     $InstallerFile = Join-Path $Env:TEMP 'vipm-installer.exe'
     try {
@@ -53,12 +112,14 @@ if (-not (Test-Path $VipmExe)) {
 
         Write-Host 'Running VIPM installer silently...'
         $p = Start-Process -FilePath $InstallerFile `
-            -ArgumentList '/SILENT', '/NORESTART' `
+            -ArgumentList '/exenoui', '/qn' `
             -Wait -PassThru
         if ($p.ExitCode -ne 0) {
             throw "VIPM installer exited with code $($p.ExitCode)"
         }
         Write-Host "VIPM installed to: $VipmDir"
+        $VipmExe = $vipmCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+        if (-not $VipmExe) { $VipmExe = "$VipmDir\vipm.exe" }
     }
     catch {
         Write-Warning ("VIPM add-on install SKIPPED: could not install VIPM from '" + $VipmInstallerUrl + "' (" + $_.Exception.Message + "). " +
@@ -79,16 +140,21 @@ if ($vipcFiles.Count -eq 0) {
 # abort the script - we drive control flow off $LASTEXITCODE instead.
 $ErrorActionPreference = 'Continue'
 
-# Diagnostics: record which VIPM CLI we have. VIPM 2024+ ships a rewritten CLI
-# where the legacy 'apply_vipc' verb was replaced by 'vipm install <file.vipc>';
-# older VIPM builds use 'apply_vipc'. We try the new syntax first and fall back
-# to the legacy one, so this works across VIPM generations.
-& $VipmExe version 2>&1 | Out-Host
+# Diagnostics: record which VIPM CLI we have. The 'ni-vipm' build baked into this
+# image is the modern VIPM CLI (2024+), whose 'install' verb REJECTS the
+# config.xml-only .vipc generated by build-tooling-vipc.py ("Code 42: this file
+# does not appear to be a valid VI package configuration") and which no longer has
+# the legacy 'apply_vipc' verb at all. So instead of applying the .vipc FILE, we
+# read the package list out of its config.xml and install each package BY NAME
+# using the documented 'vipm install <name>@<version>' form - the reliable path
+# that needs no VIPM Pro activation (verified against VIPM 2026 Free Edition).
+& $VipmExe --version 2>&1 | Out-Host
+& $VipmExe about    2>&1 | Out-Host
 
-# Optional VIPM Pro activation. The modern VIPM CLI requires VIPM Pro activation
-# for headless/CI use (see https://docs.vipm.io/latest/cli/github-actions/).
-# Supply credentials via the VIPM_SERIAL_NUMBER / VIPM_FULL_NAME / VIPM_EMAIL
-# build secrets to enable it. Best-effort: a failure here does not stop the build.
+# Optional VIPM Pro activation. With VIPM_COMMUNITY_EDITION=1 set above, headless
+# installs work WITHOUT a Pro license, so activation is optional. If the
+# VIPM_SERIAL_NUMBER / VIPM_FULL_NAME / VIPM_EMAIL build secrets are supplied we
+# still activate Pro (best-effort: a failure here does not stop the build).
 if ($Env:VIPM_SERIAL_NUMBER) {
     Write-Host 'Activating VIPM Pro from VIPM_SERIAL_NUMBER ...'
     & $VipmExe activate `
@@ -96,38 +162,286 @@ if ($Env:VIPM_SERIAL_NUMBER) {
         --name          $Env:VIPM_FULL_NAME `
         --email         $Env:VIPM_EMAIL 2>&1 | Out-Host
 } else {
-    Write-Host 'VIPM_SERIAL_NUMBER not set; skipping VIPM Pro activation (the modern VIPM CLI may require it for headless installs).'
+    Write-Host 'VIPM_SERIAL_NUMBER not set; using VIPM Community Edition (no Pro license required).'
 }
 
-# Refresh repository metadata (new CLI verb; harmless/ignored if unsupported).
-& $VipmExe package-list-refresh 2>&1 | Out-Host
+# The modern vipm CLI requires LabVIEW to be RUNNING (headless) before it can
+# install/build packages -- otherwise it fails to load with "IO error: Failed to
+# load". The Docker build step that calls this script does NOT have LabVIEW
+# running, so launch it headless in the background now and wait for the VI Server
+# port (default 3363) to come up. Best-effort: if LabVIEW can't be found/started
+# we still attempt the install (it may already be running).
+$LabVIEWProc = $null
+$lvExe = @(
+    'C:\Program Files\National Instruments',
+    'C:\Program Files (x86)\National Instruments'
+) | Where-Object { Test-Path $_ } |
+    ForEach-Object { Get-ChildItem -Path $_ -Directory -Filter 'LabVIEW*' -ErrorAction SilentlyContinue } |
+    ForEach-Object { Join-Path $_.FullName 'LabVIEW.exe' } |
+    Where-Object { Test-Path $_ } | Select-Object -First 1
+
+# The vipm CLI reads C:\ProgramData\JKI\VIPM\Settings.ini for its target LabVIEW
+# configuration and ABORTS with "IO error: Failed to load ...Settings.ini ...
+# (os error 2)" if that file is missing. In a fresh image VIPM was never launched
+# interactively, so the file does not exist. Seed a minimal Settings.ini that
+# points the CLI at the image's LabVIEW (so `--labview-version <year>` resolves)
+# before any install. Only create it if absent so a real VIPM never gets clobbered.
+$VipmSettingsDir = 'C:\ProgramData\JKI\VIPM'
+$VipmSettings    = Join-Path $VipmSettingsDir 'Settings.ini'
+if ($lvExe -and -not (Test-Path $VipmSettings)) {
+    try {
+        $fi  = (Get-Item $lvExe).VersionInfo
+        $ver = '{0}.{1} ({2}-bit)' -f $fi.ProductMajorPart, $fi.ProductMinorPart, $LabVIEWBitness
+        # INI wants the exe path in "/C/Program Files/.../LabVIEW.exe" form.
+        $lvIni = '/' + (($lvExe -replace ':', '') -replace '\\', '/')
+        $settingsText = @"
+[General]
+IsFirstLaunch="FALSE"
+
+[Targets]
+Names.<size(s)>="1"
+Names 0="LabVIEW"
+Versions.<size(s)>="1"
+Versions 0="$ver"
+Locations.<size(s)>="1"
+Locations 0="$lvIni"
+Ports="<size(s)=1> 3363"
+Tested.<size(s)>="1"
+Tested 0="TRUE"
+Disabled.<size(s)>="1"
+Disabled 0="FALSE"
+Connection Timeout="120"
+Active Target.Name="LabVIEW"
+Active Target.Version="$ver"
+CommunityEdition.<size(s)>="1"
+CommunityEdition 0="TRUE"
+"@
+        New-Item -ItemType Directory -Path $VipmSettingsDir -Force | Out-Null
+        Set-Content -Path $VipmSettings -Value $settingsText -Encoding ASCII
+        Write-Host "Seeded VIPM Settings.ini for target: LabVIEW $ver"
+    } catch {
+        Write-Warning ("Could not seed VIPM Settings.ini (" + $_.Exception.Message + "); vipm install may fail to load.")
+    }
+}
+if ($lvExe) {
+    Write-Host "Launching headless LabVIEW for VIPM: $lvExe"
+    try {
+        $LabVIEWProc = Start-Process -FilePath $lvExe -ArgumentList '--headless' -PassThru
+        $deadline = (Get-Date).AddSeconds(180)
+        $ready = $false
+        while ((Get-Date) -lt $deadline) {
+            try {
+                $client = New-Object System.Net.Sockets.TcpClient
+                $client.Connect('127.0.0.1', 3363)
+                if ($client.Connected) { $client.Close(); $ready = $true; break }
+            } catch { Start-Sleep -Seconds 3 }
+        }
+        if ($ready) { Write-Host 'Headless LabVIEW VI Server is ready (port 3363).' }
+        else        { Write-Warning 'Timed out waiting for LabVIEW VI Server (port 3363); attempting VIPM install anyway.' }
+    } catch {
+        Write-Warning ("Could not launch headless LabVIEW (" + $_.Exception.Message + "); attempting VIPM install anyway.")
+    }
+} else {
+    Write-Warning 'LabVIEW.exe not found; attempting VIPM install without pre-launching LabVIEW.'
+}
+
+# The vipm CLI does not install packages itself -- it delegates to the VIPM "engine"
+# application (VI Package Manager.exe, the LabVIEW-runtime VIPM app). When that engine
+# is not already running the CLI tries to start it and BLOCKS on "wait for VIPM
+# startup"; in a fresh headless container that startup never completed, so
+# `vipm install` aborted after the full VIPM_TIMEOUT ("Operation 'wait for VIPM
+# startup' timed out after 900s"). Locally the install works only because the VIPM
+# engine is already running. Pre-launch the engine here (best-effort) and give it
+# time to come up so the install can attach to an already-running engine.
+$VipmEngineProc = $null
+$vipmEngineExe = @(
+    (Join-Path $VipmDir 'VI Package Manager.exe'),
+    'C:\Program Files (x86)\JKI\VI Package Manager\VI Package Manager.exe'
+) | Where-Object { Test-Path $_ } | Select-Object -First 1
+if ($vipmEngineExe -and -not (Get-Process -Name 'VI Package Manager' -ErrorAction SilentlyContinue)) {
+    Write-Host "Pre-launching VIPM engine so the CLI can attach: $vipmEngineExe"
+    try {
+        $VipmEngineProc = Start-Process -FilePath $vipmEngineExe -PassThru -ErrorAction Stop
+        # Give the LabVIEW-runtime engine time to initialize before the first install.
+        Start-Sleep -Seconds 45
+        Write-Host 'VIPM engine launch requested (allowed 45s to initialize).'
+    } catch {
+        Write-Warning ("Could not pre-launch the VIPM engine (" + $_.Exception.Message + "); the CLI will try to start it itself.")
+    }
+}
+
+# NOTE: this vipm CLI (2026.1.0) has NO standalone 'refresh' command; the package
+# list is refreshed via the global '--refresh' option passed to 'install' below.
+
+# Read the package list out of a .vipc's config.xml and return install specs.
+# The config.xml lists each package as '<Package><Name>pkg_name-1.2.3.4</Name>...';
+# the modern 'vipm install' wants 'pkg_name@1.2.3.4' (the hyphen form is misread as
+# a file path). Names without a trailing dotted version (e.g. 'jki_vi_tester')
+# install the latest available.
+function Get-VipcPackageSpecs([string]$VipcPath) {
+    Add-Type -AssemblyName System.IO.Compression.FileSystem -ErrorAction SilentlyContinue
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($VipcPath)
+    try {
+        $entry = $zip.Entries | Where-Object { $_.Name -eq 'config.xml' } | Select-Object -First 1
+        if (-not $entry) { return @() }
+        $reader = New-Object System.IO.StreamReader($entry.Open())
+        try { [xml]$cfg = $reader.ReadToEnd() } finally { $reader.Close() }
+    } finally { $zip.Dispose() }
+    $names = @($cfg.VI_Package_Configuration.Target.Package | ForEach-Object { $_.Name })
+    $specs = foreach ($n in $names) {
+        if ([string]::IsNullOrWhiteSpace($n)) { continue }
+        if ($n -match '^(?<n>.+)-(?<v>\d+(?:\.\d+)+)$') { '{0}@{1}' -f $Matches.n, $Matches.v } else { $n.Trim() }
+    }
+    return @($specs)
+}
 
 $applyFailed = $false
-foreach ($vipc in $vipcFiles) {
-    Write-Host "Applying VIPC: $($vipc.Name)"
-    # New VIPM CLI (2024+): 'vipm install <file.vipc> --labview-version <year>'.
-    & $VipmExe install $vipc.FullName --labview-version $LabVIEWVersion 2>&1 | Out-Host
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "  modern 'install' verb failed (exit $LASTEXITCODE); trying legacy 'apply_vipc' ..."
-        & $VipmExe apply_vipc `
-            -vipc_file          $vipc.FullName `
-            -labview_version    $LabVIEWVersion `
-            -accept_agreements  true 2>&1 | Out-Host
+# VIPM 2026 Q3 (26.3) CLI flags (verified against docs.vipm.io command-reference):
+#   * --labview-version / --labview-bitness are GLOBAL options and must PRECEDE the
+#     'install' subcommand; they target the LabVIEW baked into the image.
+#   * There is NO '--refresh' option on 'install' anymore - the package list is
+#     updated by the SEPARATE 'vipm refresh' command (run once below). (In the older
+#     2026.1.0 CLI '--refresh' was a global option; 26.3 removed it - passing it now
+#     fails with exit 2 COMMAND_SYNTAX_ERROR: "unexpected argument '--refresh'".)
+#   * The CLI is non-interactive via the VIPM_NONINTERACTIVE / VIPM_ASSUME_YES env
+#     vars set above, so no '-y' is required.
+$GlobalFlags = @('--labview-version', $LabVIEWVersion, '--labview-bitness', $LabVIEWBitness)
+
+# Run 'vipm install' with the global LabVIEW target flags in front of the subcommand.
+# Exit 2 (COMMAND_SYNTAX_ERROR) means this CLI build rejected the flag position; fall
+# back to the bare form, which targets the active LabVIEW from the seeded Settings.ini.
+function Invoke-VipmInstall {
+    param([Parameter(ValueFromRemainingArguments = $true)] [string[]] $Targets)
+    $out = & $VipmExe @GlobalFlags install @Targets 2>&1
+    $out | Out-Host
+    if ($LASTEXITCODE -eq 2) {
+        Write-Host '  (install rejected global LabVIEW flags; retrying bare form against active target)'
+        $out = & $VipmExe install @Targets 2>&1
+        $out | Out-Host
     }
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning "VIPM could not apply '$($vipc.Name)' (exit $LASTEXITCODE)."
-        $applyFailed = $true
+    # Stash the CLI text so callers can distinguish failure causes that share exit
+    # code 8 (IO_ERROR) - e.g. the engine-startup timeout vs. the engine rejecting
+    # the .vipc file itself.
+    $script:LastVipmOutput = ($out | Out-String)
+    return $LASTEXITCODE
+}
+
+# Refresh all package sources once (best-effort - a refresh failure is only a warning
+# because version-pinned installs can still resolve from the local cache).
+#
+# VIPM 26.3 Community Edition refuses to install ("exit 6: VIPM Community Edition
+# requires a public Git repository") unless the current working directory is inside
+# a PUBLIC Git repository. It only reads .git/config's origin URL (and verifies the
+# repo is public). When Community Edition enforcement is active it shells out to a
+# real `git` binary (MinGit, baked into C:\git by labview-ci.Dockerfile) to read
+# .git/config's origin URL and verify the repo is public - so a minimal fabricated
+# .git (no clone or commits required) plus git on PATH is enough. We default to NOT
+# forcing CE (see above), but keep this public-repo context as a safety net so the
+# install still works if CE enforcement is enabled. Verified locally against VIPM
+# 26.3: with git present this clears the exit-6 gate and the install proceeds.
+function New-PublicRepoWorkdir {
+    param([string] $RepoUrl)
+    $work = Join-Path $env:TEMP ('vipm-install-' + [Guid]::NewGuid().ToString('N'))
+    New-Item -ItemType Directory -Path (Join-Path $work '.git\objects')    -Force | Out-Null
+    New-Item -ItemType Directory -Path (Join-Path $work '.git\refs\heads') -Force | Out-Null
+    Set-Content -Path (Join-Path $work '.git\HEAD') -Value 'ref: refs/heads/main' -NoNewline -Encoding ascii
+    $cfg = "[core]`n`trepositoryformatversion = 0`n`tbare = false`n" +
+           "[remote `"origin`"]`n`turl = $RepoUrl`n`tfetch = +refs/heads/*:refs/remotes/origin/*`n"
+    Set-Content -Path (Join-Path $work '.git\config') -Value $cfg -Encoding ascii
+    return $work
+}
+
+$prevLocation   = Get-Location
+$installWorkdir = $null
+try {
+    $installWorkdir = New-PublicRepoWorkdir $PublicRepoUrl
+    Write-Host "Running VIPM installs from a public-repo context (origin=$PublicRepoUrl) to satisfy Community Edition."
+    Set-Location $installWorkdir
+
+    # Force a full re-download of the package spec index. A fresh headless VIPM in a
+    # container starts with an empty CLI spec cache (C:\ProgramData\JKI\VIPM\cache);
+    # a plain `vipm refresh` reported "complete" but downloaded no specs, so every
+    # package resolved as "not found" (exit 3). --force re-fetches the index.
+    Write-Host 'Refreshing VIPM package sources (vipm refresh --force) ...'
+    & $VipmExe refresh --force 2>&1 | Out-Host
+
+    foreach ($vipc in $vipcFiles) {
+        Write-Host "Applying VIPC: $($vipc.Name)"
+        # Preferred path: install the .vipc file directly (the form VIPM documents:
+        # `vipm install -y project.vipc`). VIPM resolves the full package set from the
+        # file, including transitive dependencies, rather than us parsing names.
+        Write-Host "  Installing from file: vipm install -y '$($vipc.Name)'"
+        $rc = Invoke-VipmInstall '-y' $vipc.FullName
+        if ($rc -eq 0) { continue }
+
+        # ONLY the genuine "wait for VIPM startup" timeout means the VIPM engine
+        # never came online; retrying by name would hit the SAME wall and burn
+        # another VIPM_TIMEOUT apiece (build 27885267098 wasted ~64 min that way),
+        # so skip the fallback and surface the engine-startup failure immediately.
+        #
+        # Other exit-8 failures (notably Code 42 "This file does not appear to be a
+        # valid VI package configuration", seen once the engine is pre-launched and
+        # `vipm refresh` already succeeded) mean the engine IS up but rejected the
+        # .vipc-FILE apply path. In that case the by-name install below bypasses the
+        # file entirely and can still succeed, so we must fall through to it.
+        if (($rc -eq 8 -or $rc -eq 124) -and ($script:LastVipmOutput -match 'wait for VIPM startup')) {
+            Write-Warning ("  VIPM could not install '$($vipc.Name)' (exit $rc): the VIPM engine never " +
+                "came online ('wait for VIPM startup' timeout). Skipping the per-package fallback (same root cause).")
+            $applyFailed = $true
+            continue
+        }
+
+        # Fall back to per-package install by name parsed from the .vipc's config.xml.
+        # (The engine is up - `refresh` succeeded - so this can resolve and install.)
+        Write-Host "  install from file failed (exit $rc); falling back to per-package names ..."
+        $specs = @(Get-VipcPackageSpecs $vipc.FullName)
+        if ($specs.Count -eq 0) {
+            Write-Warning "VIPM could not install from '$($vipc.Name)' (exit $rc) and no package names could be parsed."
+            $applyFailed = $true
+            continue
+        }
+        Write-Host ("  Installing by name: " + ($specs -join ', '))
+        $rc = Invoke-VipmInstall @specs
+        if ($rc -ne 0) {
+            Write-Host "  batch install failed (exit $rc); retrying each package individually ..."
+            foreach ($spec in $specs) {
+                $rc = Invoke-VipmInstall $spec
+                if ($rc -ne 0) {
+                    Write-Warning "  package '$spec' failed (exit $rc)."
+                    $applyFailed = $true
+                }
+            }
+        }
     }
+}
+finally {
+    Set-Location $prevLocation
+    if ($installWorkdir -and (Test-Path $installWorkdir)) {
+        Remove-Item -Recurse -Force $installWorkdir -ErrorAction SilentlyContinue
+    }
+}
+
+# Stop the headless LabVIEW we launched for the install (best-effort).
+if ($LabVIEWProc -and -not $LabVIEWProc.HasExited) {
+    Write-Host 'Stopping headless LabVIEW...'
+    try { $LabVIEWProc | Stop-Process -Force -ErrorAction SilentlyContinue } catch { }
+}
+
+# Stop the VIPM engine we pre-launched for the install (best-effort).
+if ($VipmEngineProc -and -not $VipmEngineProc.HasExited) {
+    Write-Host 'Stopping VIPM engine...'
+    try { $VipmEngineProc | Stop-Process -Force -ErrorAction SilentlyContinue } catch { }
 }
 
 if ($applyFailed) {
-    Write-Warning ('One or more VIPC files could not be applied. VIPM-distributed add-ons ' +
+    Write-Warning ('One or more VIPM packages could not be installed. VIPM-distributed add-ons ' +
         '(Antidoc, Caraya, VI Tester, and the UTF JUnit Report library that the RunUnitTests ' +
-        'CLI operation links against) may be absent. The modern VIPM CLI requires VIPM Pro ' +
-        'activation for headless use - set the VIPM_SERIAL_NUMBER / VIPM_FULL_NAME / VIPM_EMAIL ' +
-        'build secrets to enable it. Core image (LabVIEW + VI Analyzer + UTF) is unaffected.')
+        'CLI operation links against to emit its JUnit report) may be absent, so headless UTF ' +
+        'may fail with LabVIEW CLI error -350053. Check the install log above for the failing ' +
+        'package(s) and confirm they exist on the configured VIPM repository. Core image ' +
+        '(LabVIEW + VI Analyzer + UTF) is unaffected.')
     # Best-effort: never fail the whole image build over optional VIPM add-ons.
     exit 0
 }
 
-Write-Host 'All VIPC files applied successfully.'
+Write-Host 'All VIPM packages installed successfully.'

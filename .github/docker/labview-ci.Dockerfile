@@ -98,30 +98,104 @@ RUN $ErrorActionPreference = 'Continue'; `
       Remove-Item -Path 'C:\ProgramData\National Instruments\NI Package Manager\cache\*' -Force -Recurse -ErrorAction SilentlyContinue `
     }
 
-# Install VIPM (the JKI VI Package Manager) from the NI Package Manager feed so the
-# VIPC hook below can bake in VIPM-distributed add-ons - Antidoc, Caraya, VI Tester,
-# and crucially the "UTF JUnit Report" library (ni_lib_utf_junit_report) that the
-# built-in 'LabVIEWCLI -OperationName RunUnitTests' operation links against to emit
-# its JUnit results file (without it RunUnitTests fails with LabVIEW CLI error -350053).
-# VIPM was previously fetched by install-vipc.ps1 from an external JKI installer URL,
-# but that URL now 404s (and the replacement is auth-gated). NI publishes VIPM on the
-# SAME feed as the support packages above (package 'ni-vipm'), so installing it here is
-# fully reproducible and needs no external, auth-gated download; install-vipc.ps1 then
-# finds vipm.exe already present and skips its (dead) download path. BEST-EFFORT: a
-# failure emits a ::warning:: and leaves the core image (LabVIEW + VI Analyzer + UTF)
-# intact - only VIPM-distributed add-ons are then absent.
-ARG VIPM_PACKAGE=ni-vipm
+# Install VIPM (the JKI VI Package Manager) so the VIPC hook below can bake in
+# VIPM-distributed add-ons - Antidoc, Caraya, VI Tester, and crucially the
+# "UTF JUnit Report" library (ni_lib_utf_junit_report) that the built-in
+# 'LabVIEWCLI -OperationName RunUnitTests' operation links against to emit its
+# JUnit results file (without it RunUnitTests fails with LabVIEW CLI error -350053).
+#
+# UPGRADED to the VIPM 2026 Q3 release (26.3.3954). The NI feed's 'ni-vipm' package
+# ships an OLDER VIPM (2026.1.0) whose CLI cannot complete a headless package install
+# in a Windows container: its 'library_list' call into LabVIEW times out (~330s) and
+# the older CLI does not surface the underlying error. The 2026 Q3 build surfaces
+# underlying install errors and improves headless/container support, so we install it
+# directly from the official JKI CDN (per docs.vipm.io/latest/installation). The
+# installer is a standard InstallShield setup; '/exenoui /qn' runs it fully silent.
+# BEST-EFFORT: a failure emits a ::warning:: and leaves the core image
+# (LabVIEW + VI Analyzer + UTF) intact - only VIPM-distributed add-ons are then absent.
+ARG VIPM_INSTALLER_URL=https://traffic.libsyn.com/secure/jkinc/vipm-26.3.3954-windows-setup.exe
 RUN $ErrorActionPreference = 'Continue'; `
-    Write-Host "Installing VIPM from the NI feed: $env:VIPM_PACKAGE"; `
-    nipkg install --accept-eulas -y $env:VIPM_PACKAGE; `
-    if ($LASTEXITCODE -ne 0) { `
-      Write-Host "::warning::VIPM package '$($env:VIPM_PACKAGE)' did not install (exit $LASTEXITCODE); VIPM-distributed add-ons (including the UTF JUnit Report library) will not be baked in." `
-    } elseif (Test-Path 'C:\ProgramData\National Instruments\NI Package Manager\cache') { `
-      Remove-Item -Path 'C:\ProgramData\National Instruments\NI Package Manager\cache\*' -Force -Recurse -ErrorAction SilentlyContinue `
+    $vipmSetup = Join-Path $env:TEMP 'vipm-setup.exe'; `
+    Write-Host "Downloading VIPM 2026 Q3 installer: $env:VIPM_INSTALLER_URL"; `
+    try { `
+      Invoke-WebRequest -Uri $env:VIPM_INSTALLER_URL -OutFile $vipmSetup -UseBasicParsing; `
+      Write-Host ('Downloaded {0:N1} MB; installing VIPM silently (/exenoui /qn) ...' -f ((Get-Item $vipmSetup).Length / 1MB)); `
+      $p = Start-Process -Wait -PassThru -FilePath $vipmSetup -ArgumentList '/exenoui','/qn'; `
+      Write-Host "VIPM installer exit code: $($p.ExitCode)"; `
+      if ($p.ExitCode -ne 0) { Write-Host "::warning::VIPM 2026 Q3 installer returned exit $($p.ExitCode); VIPM-distributed add-ons may not be baked in." } `
+    } catch { `
+      Write-Host "::warning::VIPM 2026 Q3 install failed ($($_.Exception.Message)); VIPM-distributed add-ons (including the UTF JUnit Report library) will not be baked in." `
+    } finally { `
+      Remove-Item $vipmSetup -Force -ErrorAction SilentlyContinue `
     }
+
+# Install Git so VIPM can verify repository visibility AND reach the community
+# package repository. VIPM 26.3 Community Edition shells out to a real `git` binary to
+# confirm the working directory is a PUBLIC Git repository before it installs anything;
+# JKI (Jim Kring) advised installing a FULL Git (not just MinGit) because the lightweight
+# MinGit build cleared the exit-6 visibility gate yet still left the install resolver's
+# package index empty (every package resolved as "not found", exit 3). The full
+# Git-for-Windows build provides the complete toolset (curl/openssl/credential helpers)
+# the CE repo check relies on.
+#
+# Order of attempts (BEST-EFFORT - a total failure only means the VIPM add-ons such as
+# the UTF JUnit Report library are absent):
+#   1. `winget install -e --id Git.Git` (Jim's suggestion) - used only if the base image
+#      actually ships the Windows Package Manager (Server Core images usually do not).
+#   2. Official Git-for-Windows SILENT installer (Inno Setup /VERYSILENT) -> installs to
+#      C:\Program Files\Git; this is what winget ultimately delivers.
+#   3. Portable MinGit unzipped to C:\git as a last resort.
+# Whichever succeeds, its `cmd` dir is prepended to the machine PATH so VIPM (and
+# install-vipc.ps1) can find git.exe.
+ARG GIT_INSTALLER_URL=https://github.com/git-for-windows/git/releases/download/v2.54.0.windows.1/Git-2.54.0-64-bit.exe
+ARG GIT_MINGIT_URL=https://github.com/git-for-windows/git/releases/download/v2.54.0.windows.1/MinGit-2.54.0-64-bit.zip
+RUN $ErrorActionPreference = 'Continue'; `
+    function Add-MachinePath([string] $dir) { `
+      $mp = [Environment]::GetEnvironmentVariable('Path','Machine'); `
+      if ($mp -notlike ('*' + $dir + '*')) { [Environment]::SetEnvironmentVariable('Path', $dir + ';' + $mp, 'Machine') }; `
+      $env:Path = $dir + ';' + $env:Path `
+    }; `
+    function Test-GitOk { try { $v = & git --version 2>$null; return ($LASTEXITCODE -eq 0 -and $v) } catch { return $false } }; `
+    $ok = $false; `
+    if (Get-Command winget -ErrorAction SilentlyContinue) { `
+      Write-Host 'Installing Git via winget (Git.Git) ...'; `
+      try { `
+        & winget install -e --id Git.Git --accept-source-agreements --accept-package-agreements --silent --disable-interactivity; `
+        Add-MachinePath 'C:\Program Files\Git\cmd'; `
+        $ok = Test-GitOk `
+      } catch { Write-Host ('winget Git install failed: ' + $_.Exception.Message) } `
+    } else { Write-Host 'winget is not available in this base image; using the Git-for-Windows installer instead.' }; `
+    if (-not $ok) { `
+      $exe = Join-Path $env:TEMP 'git-setup.exe'; `
+      try { `
+        Write-Host "Downloading Git for Windows from $env:GIT_INSTALLER_URL"; `
+        Invoke-WebRequest -Uri $env:GIT_INSTALLER_URL -OutFile $exe -UseBasicParsing; `
+        Write-Host ('Downloaded {0:N1} MB; installing silently ...' -f ((Get-Item $exe).Length / 1MB)); `
+        Start-Process -FilePath $exe -ArgumentList '/VERYSILENT','/NORESTART','/SP-','/SUPPRESSMSGBOXES','/NOCANCEL' -Wait; `
+        Add-MachinePath 'C:\Program Files\Git\cmd'; `
+        $ok = Test-GitOk `
+      } catch { Write-Host ('Git-for-Windows installer failed: ' + $_.Exception.Message) } finally { Remove-Item $exe -Force -ErrorAction SilentlyContinue } `
+    }; `
+    if (-not $ok) { `
+      $gitZip = Join-Path $env:TEMP 'mingit.zip'; `
+      try { `
+        Write-Host "Falling back to portable MinGit from $env:GIT_MINGIT_URL"; `
+        Invoke-WebRequest -Uri $env:GIT_MINGIT_URL -OutFile $gitZip -UseBasicParsing; `
+        Expand-Archive -Path $gitZip -DestinationPath 'C:\git' -Force; `
+        Add-MachinePath 'C:\git\cmd'; `
+        $ok = Test-GitOk `
+      } catch { Write-Host ('MinGit fallback failed: ' + $_.Exception.Message) } finally { Remove-Item $gitZip -Force -ErrorAction SilentlyContinue } `
+    }; `
+    if ($ok) { Write-Host ('Installed Git: ' + (& git --version)) } `
+    else { Write-Host '::warning::No Git could be installed; VIPM Community Edition cannot verify repository visibility, so the VIPM add-ons including the UTF JUnit Report library will not be baked in.' }
 
 # Optional VIPC support hook. If .vipc files exist, an installer script must be
 # present so dependencies are handled explicitly.
+# VIPM 26.3 Community Edition only installs when the working dir is inside a PUBLIC
+# Git repository, so install-vipc.ps1 runs the installs from a minimal .git context
+# whose origin points at this build arg (default: this public worker repo). The
+# build workflow passes the actual building repo's URL so forks use their own.
+ARG VIPM_PUBLIC_REPO_URL=https://github.com/elijah286/LabVIEW-CI-with-Containers.git
 RUN $vipcFiles = Get-ChildItem -Path 'C:\vipm' -Filter '*.vipc' -Recurse -ErrorAction SilentlyContinue; `
     if ($vipcFiles -and $vipcFiles.Count -gt 0) { `
       if (Test-Path 'C:\vipm\install-vipc.ps1') { `

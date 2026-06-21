@@ -76,6 +76,18 @@ function Show-UtfAddonsDiag([string]$LvPath) {
             Write-Host "absent: $r"
         }
     }
+    # Dump the add-on manifests. LabVIEW 2023+ loads an LVAddon only if its
+    # lvaddoninfo.json declares compatibility with the running LabVIEW version.
+    # Compare UTF (RunUnitTests fails) against viawin (VI Analyzer, which works)
+    # to reveal the version gating that keeps UTF from loading on LabVIEW 2026.
+    foreach ($mf in @('C:\Program Files\NI\LVAddons\utf64\1\lvaddoninfo.json',
+                      'C:\Program Files\NI\LVAddons\utf32\1\lvaddoninfo.json',
+                      'C:\Program Files\NI\LVAddons\viawin\1\lvaddoninfo.json')) {
+        if (Test-Path -LiteralPath $mf) {
+            Write-Host "--- manifest: $mf ---"
+            Get-Content -LiteralPath $mf -Raw -ErrorAction SilentlyContinue | ForEach-Object { Write-Host $_ }
+        }
+    }
     $lvRoot = if ($LvPath) { Split-Path -Parent $LvPath } else { '' }
     if ($lvRoot -and (Test-Path -LiteralPath $lvRoot)) {
         Write-Host "LabVIEW root: $lvRoot"
