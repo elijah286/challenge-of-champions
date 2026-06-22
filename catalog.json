@@ -1,11 +1,88 @@
 {
   "schemaVersion": 1,
-  "version": "3.35.3",
+  "version": "3.37.1",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest this source repo publishes. Each published version should also be tagged v<version> in this repo so consumers can pin an update to a specific release.",
     "releases": [
+      {
+        "version": "3.37.1",
+        "date": "2026-06-22",
+        "title": "Windows container jobs wait for the Docker engine instead of failing when a hosted runner starts up without it",
+        "summary": "GitHub's hosted windows-2022 runner pool is currently, intermittently, starting jobs before the Docker engine is up -- or on a VM where the docker service has not been registered yet (actions/runner-images#14252 and #13888). When a job landed on one of those runners, the worker image build and the Windows container activities (mass compile, VI Analyzer, VIDiff, snapshots, unit tests, Antidoc) failed immediately with 'failed to connect to the docker API ... the system cannot find the file specified' or 'Docker service not found on this runner', even though re-running usually lands on a healthy runner. Every Windows job that uses Docker now runs a shared ensure-docker step that waits up to three minutes for the engine to respond -- starting, or if necessary registering, the docker service first -- and only fails, with a clear message, if Docker never comes up. The worker image build and the VIDiff Windows job, which previously had no such guard at all, are now covered too. Healthy runners are unaffected (the check returns in about a second).",
+        "highlights": [
+          "A shared ensure-docker.ps1 waits for and starts the Docker engine, so a hosted-runner Docker hiccup no longer turns into an immediate red build",
+          "The worker image build and the VIDiff Windows container job, which had no Docker readiness check before, now use it too",
+          "Clear, actionable error if Docker never starts (re-run to get a healthy runner, or use a self-hosted Windows runner) instead of a cryptic npipe failure"
+        ]
+      },
+      {
+        "version": "3.37.0",
+        "date": "2026-06-22",
+        "title": "Container CI works on repos whose default branch is not main, and the worker image build no longer fails on a missing Dockerfile",
+        "summary": "Two fixes make a fresh container install actually run on more repositories. First, the worker image build was failing immediately with 'the system cannot find the file specified' because the install copied only labview-ci.Dockerfile, not the two Dockerfiles the Windows build actually uses (labview-vipm-base.Dockerfile and labview-vipc-layer.Dockerfile, introduced when the worker was split into a shared base plus a VIPC layer). The install now vendors all three, so Build LabVIEW CI Image succeeds and the container activities (mass compile, VI Analyzer, VIDiff, snapshots, unit tests, Antidoc) get a real image. Second, the container workflows assumed the default branch was named main: the 'Restore CI scripts' step ran 'git fetch origin main' and failed with exit 128 ('couldn't find remote ref main') on a repo whose default branch is master, and the push trigger only fired on main. The fetch now uses the repository's actual default branch, and Apply to New Repo rewrites the push-trigger branch to the target repo's default branch at install time, so push-to-default CI fires regardless of the branch name.",
+        "highlights": [
+          "Worker image build no longer fails on a missing Dockerfile: the install now vendors labview-vipm-base.Dockerfile and labview-vipc-layer.Dockerfile alongside labview-ci.Dockerfile",
+          "Container workflows fetch CI scripts from the repository's default branch instead of a hardcoded 'main', fixing the exit-128 'couldn't find remote ref main' failure on master-default repos",
+          "Apply to New Repo rewrites the workflow push-trigger branch to the target repo's default branch, so push-to-default CI runs on repos that don't use 'main'"
+        ]
+      },
+      {
+        "version": "3.36.1",
+        "date": "2026-06-22",
+        "title": "Re-running Apply to New Repo now repairs a non-markdown README too",
+        "summary": "When a repository already had the dashboard section added to a non-markdown README (e.g. ReadMe.txt, where GitHub shows the markdown as raw text instead of rendering the badge and link), re-running Apply to New Repo now creates a proper README.md so the dashboard link renders. Previously the re-install detected the existing marker and skipped the README entirely, leaving the badge unrendered. The original plain-text file is left untouched, and the previously injected non-rendering section is dropped from the new README.md so it is not duplicated. Markdown READMEs that already link the dashboard are still left alone.",
+        "highlights": [
+          "Re-installing into a repo whose README is plain text (ReadMe.txt, etc.) now migrates the dashboard badge into a real README.md that actually renders, instead of skipping it",
+          "The earlier non-rendering section spliced into the plain-text README is removed from the generated README.md so the section is not duplicated",
+          "Markdown READMEs already linking the dashboard remain untouched (no duplicate sections)"
+        ]
+      },
+      {
+        "version": "3.36.0",
+        "date": "2026-06-22",
+        "title": "Fresh installs build the worker container image automatically and CI waits for it",
+        "summary": "Installing into a new repository now makes the container CI work end to end without a manual step. When the custom-image capability is installed, Apply to New Repo dispatches the Build LabVIEW CI Image workflow the moment the install merges, so the worker container image (ghcr.io/<owner>/<repo>-labview, built with your baked dependency VIPC) exists for the first run. Container activities (mass compile, VI Analyzer, VIDiff, snapshots, unit tests, Antidoc) now wait for an in-progress image build instead of failing with a confusing manifest unknown / Failed to start container error. The README dashboard badge is also added correctly when the repository has a non-markdown README (e.g. ReadMe.txt): a proper README.md is created so the badge and link render instead of showing raw markdown.",
+        "highlights": [
+          "Apply to New Repo builds the worker container image right after the install merges, so container CI is ready without a separate manual build",
+          "Container CI activities wait for an in-progress worker-image build (with clear guidance on timeout) instead of failing on a missing image",
+          "Non-markdown READMEs (ReadMe.txt, etc.) get a real README.md with the dashboard badge so the link renders, leaving the original file untouched"
+        ]
+      },
+      {
+        "version": "3.35.6",
+        "date": "2026-06-22",
+        "title": "Dashboard dialogs no longer vanish mid-install when the page auto-refreshes",
+        "summary": "The dashboard auto-refresh that keeps the page live while CI runs no longer reloads the page while a dialog is open, so Apply to New Repo (and Configure, VI Analyzer, Unit Testing, and What\u0027s New) can finish without the dialog disappearing on its own. Previously a busy dashboard reloaded about once a minute via an HTML meta refresh and a queued-run fast reload, which destroyed the open install iframe before it could show the result -- even though the install itself had completed.",
+        "highlights": [
+          "Auto-refresh is now a guarded JavaScript timer instead of an uncancellable HTML meta refresh; it reloads on the same cadence but waits while a dialog is open and reloads once it is closed",
+          "The queued-run fast reload defers the same way, so neither refresh path can blow away an in-progress install",
+          "Apply to New Repo now reliably shows its Done summary with the pull request and dashboard links instead of the dialog closing unexpectedly"
+        ]
+      },
+      {
+        "version": "3.35.5",
+        "date": "2026-06-22",
+        "title": "VI Browser 2.0: paging through cases no longer zooms the diagram",
+        "summary": "In the position-aware VI Browser (Snapshot 2.0) renderer, clicking through a Case/Event/Sequence structure's cases no longer randomly zooms the block diagram. Double-clicking a case selector arrow (or the Fit button) is now ignored by the zoom handler, so the diagram size stays fixed while you navigate cases.",
+        "highlights": [
+          "Double-clicking the case selector arrows or the Fit button no longer triggers the double-click-to-zoom action.",
+          "Background double-click-to-zoom on the diagram itself is unchanged.",
+          "Case navigation and the diagram fit/size are unaffected otherwise."
+        ]
+      },
+      {
+        "version": "3.35.4",
+        "date": "2026-06-22",
+        "title": "Dependencies page surfaces the Linux note as a column info popover",
+        "summary": "The standalone \"Linux VIPC support is coming\" banner on the Dependencies page is gone. The Linux column header now carries the same info (i) marker the Win Beta column uses, and clicking it opens a popover explaining that the Linux container does not yet apply repository VIPC configurations, so Linux package coverage shows as missing for now. The Win Beta popover, which previously rendered far too narrow near the right edge of the table, now opens at a stable readable width.",
+        "highlights": [
+          "Replaces the page-wide Linux VIPC banner with a compact info popover on the Linux column header, matching the Win Beta treatment.",
+          "Gives the column info popover a fixed 320px width so it no longer collapses to one word per line near the right edge.",
+          "Keeps the same explanation text; only its presentation moved from a banner to an on-demand popover."
+        ]
+      },
       {
         "version": "3.35.3",
         "date": "2026-06-22",
@@ -2486,7 +2563,8 @@
       ".github/labview-ci/install.sh",
       ".github/labview-ci/install.ps1",
       ".github/labview-ci/README.md",
-      ".github/labview/wait-for-worker-image.sh"
+      ".github/labview/wait-for-worker-image.sh",
+      ".github/labview/ensure-docker.ps1"
     ]
   },
   "capabilities": [
@@ -2679,6 +2757,8 @@
         "windows": [
           ".github/workflows/build-labview-image.yml",
           ".github/docker/labview-ci.Dockerfile",
+          ".github/docker/labview-vipm-base.Dockerfile",
+          ".github/docker/labview-vipc-layer.Dockerfile",
           ".github/labview/vipm/"
         ],
         "linux": [
