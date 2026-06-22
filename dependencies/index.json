@@ -1,8 +1,15 @@
 {
   "schema": 1,
   "repo": "elijah286/challenge-of-champions",
-  "sha": "6fd270f443c90863492fd18f7b1e01a48350adae",
+  "sha": "537cf7e81e17212702387f5db8cf4a98c81363b0",
   "revisions": [
+    {
+      "sha": "537cf7e81e17212702387f5db8cf4a98c81363b0",
+      "short": "537cf7e",
+      "message": "Add LabVIEW CI pipeline",
+      "author": "Elijah Kerry",
+      "date": "2026-06-22T18:59:56Z"
+    },
     {
       "sha": "6fd270f443c90863492fd18f7b1e01a48350adae",
       "short": "6fd270f",
@@ -695,13 +702,6 @@
       "message": "fix: resolve LabVIEWCLI discovery for NI 2026 Windows image",
       "author": "Elijah Kerry",
       "date": "2026-06-05T01:21:47Z"
-    },
-    {
-      "sha": "198292c89f8d785c98461330b797f0ea9f099650",
-      "short": "198292c",
-      "message": "fix: stabilize Windows CI runs (PS5 compatibility, path detection, reliable status posting)",
-      "author": "Elijah Kerry",
-      "date": "2026-06-04T12:14:34Z"
     },
     {
       "sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712",
