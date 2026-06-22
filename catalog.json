@@ -1,20 +1,354 @@
 {
   "schemaVersion": 1,
-  "version": "3.32.1",
+  "version": "3.35.3",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest this source repo publishes. Each published version should also be tagged v<version> in this repo so consumers can pin an update to a specific release.",
     "releases": [
       {
-        "version": "3.32.1",
-        "date": "2026-06-20",
-        "title": "VI Browser 2.0 missing platform renders now stay actionable",
-        "summary": "When Windows or Linux 2.0 frames are missing for the selected VI, the VI Browser now keeps that platform selected and shows the empty render panel instead of disabling the platform or falling back to the other renderer. The panel offers the matching platform snapshot run for the current revision, so a missing Windows render prompts the Windows 2.0 workflow and a missing Linux render prompts the Linux 2.0 workflow.",
+        "version": "3.35.3",
+        "date": "2026-06-22",
+        "title": "Dependencies table uses aligned checkbox cells",
+        "summary": "The Dependencies page now keeps each runner-platform column fixed and centered so package rows line up with their headers. Dependency presence is shown as a checked box only; the table no longer labels cells with yes, exp, or other visible qualifiers.",
         "highlights": [
-          "Windows and Linux 2.0 platform buttons stay clickable even when that platform has no frames yet.",
-          "Missing platform frames show an empty panel that names the selected platform and workflow.",
-          "The run button dispatches the selected platform workflow for the current revision and VI context."
+          "Fixes runner-platform column alignment across VIPM/VIPC, NI Packages, and System Components tables.",
+          "Shows installed/present dependencies with a checked checkbox instead of yes or exp text.",
+          "Leaves missing, pending, unsupported, and not-used cells visually blank so the table scans by presence only."
+        ]
+      },
+      {
+        "version": "3.35.2",
+        "date": "2026-06-22",
+        "title": "Dashboard mobile cards align correctly",
+        "summary": "The CI Dashboard mobile layout now keeps each activity card row aligned as label-left and result-right, even when result cells carry inline desktop alignment. The mobile context controls are also tightened so the dashboard uses less vertical space before the revision cards.",
+        "highlights": [
+          "Moves the mobile dashboard card rules late in the stylesheet so they win over generic table and cell styles.",
+          "Forces activity labels to stay left-aligned and result chips/buttons to stay right-aligned on phone-width cards.",
+          "Tightens the mobile dashboard filter and Columns controls in the shared header context bar."
+        ]
+      },
+      {
+        "version": "3.35.1",
+        "date": "2026-06-22",
+        "title": "Dependencies page: Win Beta column with a click-to-explain note",
+        "summary": "The experimental Windows container column on the Dependencies page is now labelled Win Beta, and its column header is clickable: clicking it reveals a short note explaining that Win Beta is a separate, isolated Windows container where new capabilities and new action runners are built and proven -- such as getting VI Browser 2.0 snapshots to render on Windows -- so the in-progress work never disrupts the containers production actions rely on, until it is ready to replace the main Windows container.",
+        "highlights": [
+          "Renames the experimental Windows column to Win Beta across the VIPM/VIPC, NI Packages, and System Components tabs.",
+          "Makes the Win Beta header clickable to reveal an explanatory popover (closes on a second click, an outside click, or Escape), replacing the always-on banner.",
+          "No behaviour change to the existing Windows and Linux columns or to the opt-in EXPERIMENTAL_WINDOWS_IMAGE render lane."
+        ]
+      },
+      {
+        "version": "3.35.0",
+        "date": "2026-06-22",
+        "title": "Transparent worker-container rebuilds with in-flight coordination",
+        "summary": "Rebuilding the worker container is a lengthy (15+ minute) step, so it is now coordinated and transparent. Before a rebuild starts, LabVIEW CI handles CI that is already running against the container according to a configurable policy -- drain (let running jobs finish first, the default) or cancel (stop them now) -- and only ever touches jobs that started before the rebuild, so there is no wait deadlock with the tasks that already wait for the new image. The FAQ now explains exactly when a rebuild happens, how long it takes, and how in-flight work is handled.",
+        "highlights": [
+          "Adds a coordinate step to Build LabVIEW CI Image that drains or cancels in-flight worker-container CI before the rebuild, per container.rebuildPolicy in .github/labview-ci.yml (default drain) or a rebuild_policy dispatch input.",
+          "Skips jobs newer than the rebuild (already gated by wait-for-worker-image) so draining never deadlocks, and is best-effort so it never blocks the actual rebuild.",
+          "Documents the worker-container rebuild lifecycle -- triggers, the 15+ minute duration, the queue-and-wait behavior, and drain vs cancel -- in the FAQ."
+        ]
+      },
+      {
+        "version": "3.34.25",
+        "date": "2026-06-22",
+        "title": "Experimental Windows container lane on the Dependencies page",
+        "summary": "The Dependencies tables gain a third Windows (experimental) column so an isolated experimental Windows container can be tracked alongside the production Windows worker and Linux. Production actions keep running on the standard Windows worker; the VI Browser 2.0 Windows render opts into the experimental image only when the repository variable EXPERIMENTAL_WINDOWS_IMAGE is set, so new container work can be proven before it replaces the main Windows container. Until that image is published the experimental column is shown as experimental / pending.",
+        "highlights": [
+          "Adds a Windows (experimental) column to the VIPM/VIPC, NI Packages, and System Components tabs.",
+          "Wires an opt-in EXPERIMENTAL_WINDOWS_IMAGE repository variable into the Windows VI Browser 2.0 render so experimental runs use an isolated container and skip the production worker-build wait; unset leaves behaviour unchanged.",
+          "Shows the experimental column as experimental / pending until its image manifest is published, without affecting the existing Windows and Linux columns."
+        ]
+      },
+      {
+        "version": "3.34.24",
+        "date": "2026-06-22",
+        "title": "Dependencies source tables move into tabs",
+        "summary": "The Dependencies page now keeps VIPM/VIPC packages, NI Package Manager installed dependencies, and System Components in one shared table area with tabs. This keeps the dependency-source breakdown from the previous release while making the page easier to scan vertically.",
+        "highlights": [
+          "Adds tabs for VIPM / VIPC, NI Packages, and System Components on the Dependencies page.",
+          "Shows only the selected dependency-source table at a time, so the page no longer stacks all three tables vertically.",
+          "Keeps the same generated dependency inventory and Linux VIPC pending behavior."
+        ]
+      },
+      {
+        "version": "3.34.23",
+        "date": "2026-06-22",
+        "title": "Dashboard builds time out stalled GitHub API reads",
+        "summary": "The dashboard generator now gives GitHub API reads a bounded timeout, matching the existing timeout used for Pages JSON reads. This prevents a stalled API request from leaving the dashboard publish step running indefinitely while preserving the dependency-source table update from the previous release.",
+        "highlights": [
+          "Adds a 20-second timeout to dashboard GitHub API requests.",
+          "Lets a fresh dashboard publish cancel and replace a stuck dashboard-pages run through the existing workflow concurrency group.",
+          "Keeps the new VIPM, NI Package Manager installed dependencies, and System Components tables intact."
+        ]
+      },
+      {
+        "version": "3.34.22",
+        "date": "2026-06-22",
+        "title": "Dependencies page publishes separate dependency-source tables",
+        "summary": "Publishes the dependency-source table update with the dashboard and catalog in sync. The page now separates VIPM/VIPC packages, NI Package Manager installed dependencies such as LabVIEW and NI Unit Test Framework, and repo-provided system components such as the VI Browser 2.0 toimages Go renderer.",
+        "highlights": [
+          "Renames the NI section to NI Package Manager Installed Dependencies to make its source explicit.",
+          "Keeps the generated dashboard dependency inventory and published catalog on the same release.",
+          "Preserves the VIPM/VIPC table and Linux VIPC pending state while showing NIPM and system-component context separately."
+        ]
+      },
+      {
+        "version": "3.34.21",
+        "date": "2026-06-22",
+        "title": "Dependencies page separates VIPM, NI packages, and system components",
+        "summary": "The Dependencies page now groups dependency coverage by source instead of putting everything into a single VIPC table. VIPM/VIPC packages remain in their own table, NI Package Manager-installed dependencies such as LabVIEW, VI Analyzer support, Unit Test Framework, and VIPM are listed separately from worker manifests, and repository-provided system components such as the VI Browser 2.0 toimages Go renderer are called out in a third table.",
+        "highlights": [
+          "Adds a dedicated NI Package Manager Dependencies table that surfaces LabVIEW and NI Unit Test Framework alongside other NI-installed tooling from worker manifests.",
+          "Adds a System Components table for CI runtime pieces that do not come from VIPM or NIPM, including the VI Browser 2.0 toimages Go renderer.",
+          "Keeps the existing VIPM/VIPC package table and Linux VIPC pending banner intact while still showing Linux NI package and system-component context."
+        ]
+      },
+      {
+        "version": "3.34.19",
+        "date": "2026-06-22",
+        "title": "Windows runners share the repo worker by default",
+        "summary": "Windows LabVIEW action runners now default to the repository's shared worker image instead of mixing base-image and worker-image defaults by action. Mass Compile, VIDiff, VI Snapshots, and Windows VI Browser 2.0 join VIA, Unit Tests, and Antidoc on the shared Windows dependency container unless a repo explicitly opts an action back to base. The Dependencies page now collapses package coverage to Windows and Linux columns, with Linux still marked pending until Linux dependency application is implemented.",
+        "highlights": [
+          "Makes Mass Compile, VIDiff, VI Snapshots, and Windows VI Browser 2.0 default to ghcr.io/<owner>/<repo>-labview:latest.",
+          "Keeps config.container.use and per-action config.container.actions overrides, including base, as explicit escape hatches.",
+          "Collapses the Dependencies table to Windows and Linux OS-level coverage columns."
+        ]
+      },
+      {
+        "version": "3.34.18",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 zero-frame runs fail visibly",
+        "summary": "Windows VI Browser 2.0 render runs now propagate the Go runner process exit code reliably from the PowerShell container entrypoint. If the Go runner fails or a non-empty worklist produces zero frame JSON files, the workflow fails instead of finishing green with no Windows 2.0 output.",
+        "highlights": [
+          "Refreshes the runner process before reading ExitCode so failed Go render batches return non-zero from the container entrypoint.",
+          "Treats a missing runner exit code as a failed render instead of allowing PowerShell to exit 0.",
+          "Adds a final non-empty worklist / zero-output guard so Windows 2.0 runs cannot report success without published frames."
+        ]
+      },
+      {
+        "version": "3.34.17",
+        "date": "2026-06-22",
+        "title": "Dependencies page flags Linux VIPC support as pending",
+        "summary": "The Dependencies page now clearly explains that Linux containers do not yet apply repository VIPC configurations automatically. Linux package coverage is intentionally shown as missing until Linux VIPC application is implemented, while Windows worker coverage continues to use the configured worker manifests.",
+        "highlights": [
+          "Adds a prominent Dependencies page banner explaining that Linux VIPC configuration support is coming.",
+          "Forces Linux dependency columns to show VIPC packages as missing instead of implying repo VIPCs were baked into the Linux container.",
+          "Keeps generated dependency inventories honest by marking Linux VIPC coverage unsupported for now."
+        ]
+      },
+      {
+        "version": "3.34.16",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 uses the Go render path directly",
+        "summary": "The Windows VI Browser 2.0 container no longer blocks rendering on a separate PowerShell COM-readiness probe. It now prepares the LabVIEW container and immediately hands off to the same Go batch runner used by the Linux 2.0 path, letting lvctl own LabVIEW attach, launch, readiness, and per-VI rendering. The shared runner now fails when a non-empty batch produces zero frames, the Windows entrypoint times out a stuck Go runner while printing its captured logs, and newer manual Windows render runs replace stuck superseded runs.",
+        "highlights": [
+          "Removes the PowerShell GetActiveObject gate that prevented the Go renderer from running in the Windows container.",
+          "Keeps the existing Go runner/lvctl toolchain as the owner of LabVIEW startup and rendering on Windows.",
+          "Fails a non-empty Go render batch when every VI fails, while still allowing partial successes to publish.",
+          "Adds a Windows runner timeout that terminates stuck LabVIEW/lvctl runs and prints runner stdout/stderr before exiting.",
+          "Lets newer Windows 2.0 render dispatches cancel older in-progress runs in the same workflow."
+        ]
+      },
+      {
+        "version": "3.34.15",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 uses the Go render path directly",
+        "summary": "The Windows VI Browser 2.0 container no longer blocks rendering on a separate PowerShell COM-readiness probe. It now prepares the LabVIEW container and immediately hands off to the same Go batch runner used by the Linux 2.0 path, letting lvctl own LabVIEW attach, launch, readiness, and per-VI rendering. The shared runner now fails when a non-empty batch produces zero frames, the Windows entrypoint times out a stuck Go runner while printing its captured logs, and newer manual Windows render runs replace stuck superseded runs.",
+        "highlights": [
+          "Removes the PowerShell GetActiveObject gate that prevented the Go renderer from running in the Windows container.",
+          "Keeps the existing Go runner/lvctl toolchain as the owner of LabVIEW startup and rendering on Windows.",
+          "Fails a non-empty Go render batch when every VI fails, while still allowing partial successes to publish.",
+          "Adds a Windows runner timeout that terminates stuck LabVIEW/lvctl runs and prints runner stdout/stderr before exiting.",
+          "Lets newer Windows 2.0 render dispatches cancel older in-progress runs in the same workflow."
+        ]
+      },
+      {
+        "version": "3.34.14",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 uses the Go render path directly",
+        "summary": "The Windows VI Browser 2.0 container no longer blocks rendering on a separate PowerShell COM-readiness probe. It now prepares the LabVIEW container and immediately hands off to the same Go batch runner used by the Linux 2.0 path, letting lvctl own LabVIEW attach, launch, readiness, and per-VI rendering. The shared runner now fails when a non-empty batch produces zero frames, and the Windows entrypoint times out a stuck Go runner while printing its captured logs.",
+        "highlights": [
+          "Removes the PowerShell GetActiveObject gate that prevented the Go renderer from running in the Windows container.",
+          "Keeps the existing Go runner/lvctl toolchain as the owner of LabVIEW startup and rendering on Windows.",
+          "Fails a non-empty Go render batch when every VI fails, while still allowing partial successes to publish.",
+          "Adds a Windows runner timeout that terminates stuck LabVIEW/lvctl runs and prints runner stdout/stderr before exiting."
+        ]
+      },
+      {
+        "version": "3.34.13",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 uses the Go render path directly",
+        "summary": "The Windows VI Browser 2.0 container no longer blocks rendering on a separate PowerShell COM-readiness probe. It now prepares the LabVIEW container and immediately hands off to the same Go batch runner used by the Linux 2.0 path, letting lvctl own LabVIEW attach, launch, readiness, and per-VI rendering. The shared runner now fails when a non-empty batch produces zero frames so a broken render path cannot look successful.",
+        "highlights": [
+          "Removes the PowerShell GetActiveObject gate that prevented the Go renderer from running in the Windows container.",
+          "Keeps the existing Go runner/lvctl toolchain as the owner of LabVIEW startup and rendering on Windows.",
+          "Fails a non-empty Go render batch when every VI fails, while still allowing partial successes to publish."
+        ]
+      },
+      {
+        "version": "3.34.12",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 uses the Go render path directly",
+        "summary": "The Windows VI Browser 2.0 container no longer blocks rendering on a separate PowerShell COM-readiness probe. It now prepares the LabVIEW container and immediately hands off to the same Go batch runner used by the Linux 2.0 path, letting lvctl own LabVIEW attach, launch, readiness, and per-VI rendering.",
+        "highlights": [
+          "Removes the PowerShell GetActiveObject gate that prevented the Go renderer from running in the Windows container.",
+          "Keeps the existing Go runner/lvctl toolchain as the owner of LabVIEW startup and rendering on Windows.",
+          "Leaves workflow failure propagation in place so real Windows render failures remain visible."
+        ]
+      },
+      {
+        "version": "3.34.11",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 render failures are reported correctly",
+        "summary": "Windows VI Browser 2.0 runs now fail the workflow when the LabVIEW Windows container cannot start the COM-backed renderer, instead of reporting success with zero published frames. The renderer also waits longer for LabVIEW to become COM-ready in the stock Windows container so slow first launches have a chance to render before the run is marked failed.",
+        "highlights": [
+          "Propagates non-zero Windows render exit codes out of the workflow so failed LabVIEW startup is visible in the VI Browser.",
+          "Extends the COM-ready wait for the in-container LabVIEW startup from four minutes to ten minutes.",
+          "Keeps zero-frame renderer failures from being mistaken for successful runs that simply skipped a VI."
+        ]
+      },
+      {
+        "version": "3.34.10",
+        "date": "2026-06-22",
+        "title": "Mass Compile dashboard clears completed runs",
+        "summary": "Mass Compile cells now prefer the deployed summary report over a still-visible pending status, so a completed manual run immediately renders its percentage result instead of a stale running badge.",
+        "highlights": [
+          "Fixed a dashboard row state where a Mass Compile action could be done and successful in GitHub Actions while the dashboard still showed the compile spinner.",
+          "When masscompile/<sha>/summary.json exists, the dashboard now renders the report chip first; pending status remains only for runs whose report has not landed yet."
+        ]
+      },
+      {
+        "version": "3.34.9",
+        "date": "2026-06-22",
+        "title": "Populate history can re-run every selected activity",
+        "summary": "The Populate dashboard history dialog now lets Re-run all include selected activity rows that only have missing results. Re-run now queues every selected non-snapshot revision for the activity, replacing existing results where present and filling gaps where no prior result exists.",
+        "highlights": [
+          "Makes Re-run all select VI Analyzer, Antidoc, and other rows even when the selected revisions only have gaps for that activity.",
+          "Keeps snapshots as Render-only because the snapshot backfill workflow is content-addressed and only renders missing blobs.",
+          "Updates the Re-run tooltip so the dialog explains that existing results are replaced while missing ones are filled."
+        ]
+      },
+      {
+        "version": "3.34.8",
+        "date": "2026-06-22",
+        "title": "Dashboard document switching opens the selected revision directly",
+        "summary": "Removes the redundant Activity selector from VI Browser and report contexts now that Dashboard owns document switching. Dashboard report links now pass the report viewer a first-party relative source path, so changing from one document type to another opens the current revision immediately instead of landing on an empty viewer until the revision is reselected.",
+        "highlights": [
+          "Removes the old context-bar Activity selector so Dashboard is the single document-switching menu.",
+          "Report links now use the current revision when present, or the newest known revision otherwise.",
+          "Report viewer links pass relative iframe sources, so Mass Compile, VI Analyzer, Unit Tests, and Antidoc open content immediately."
+        ]
+      },
+      {
+        "version": "3.34.7",
+        "date": "2026-06-21",
+        "title": "Linux VI Browser 2.0 renders fall back from stale image overrides",
+        "summary": "Fixes manual Linux VI Browser 2.0 snapshot runs that appeared successful while rendering nothing because the TOIMAGES_IMAGE variable pointed at an old private image. The workflow now tries the requested override first, falls back to the repository-owned render image when the override cannot be pulled, and fails a manual run loudly if no render image is available at all.",
+        "highlights": [
+          "A stale or unauthorized TOIMAGES_IMAGE value no longer blocks Linux 2.0 rendering when the repo-owned image exists.",
+          "The renderer passes the actually pulled image into run-toimages.sh, so fallback runs render and publish frames normally.",
+          "Manual runs now fail visibly if no render image is pullable instead of ending green without producing frames."
+        ]
+      },
+      {
+        "version": "3.34.6",
+        "date": "2026-06-22",
+        "title": "Dependencies selector shows revision container config",
+        "summary": "The Dependencies page revision dropdown now stays active when a generated dependency inventory is available. It lists repository revisions, switches the table to the selected revision, and shows that revision's config.container routing so users can see which VIPC files and action-specific container tags were configured at that point in history.",
+        "highlights": [
+          "Keeps the revision dropdown enabled instead of locking the page to the dashboard build inventory.",
+          "Loads each selected revision's .github/labview-ci.yml and displays its container.use, container.vipc, and per-action routing.",
+          "Caches repository revision metadata in dependencies/index.json so the selector still has revisions when the live commits API is unavailable."
+        ]
+      },
+      {
+        "version": "3.34.5",
+        "date": "2026-06-22",
+        "title": "Dashboard activity links use the current or latest revision",
+        "summary": "The top-level Dashboard navigation now groups Overview, VI Browser, Mass Compile, VI Analyzer, Unit Tests, and Antidoc together. Revision-specific entries resolve the same way across the header: they use the revision already selected or shown by the current page, and fall back to the latest known VI snapshot revision when no current revision is available. The report revision picker also uses the same report availability fallback as Activity, checking index.html when summary metadata is missing.",
+        "highlights": [
+          "Dashboard is now a dropdown that exposes the revision-specific dashboard activities in one place.",
+          "VI Browser and report links use the current selected revision when one is available, otherwise the latest known revision.",
+          "The report revision picker now shares the Activity fallback from summary.json to index.html."
+        ]
+      },
+      {
+        "version": "3.34.4",
+        "date": "2026-06-22",
+        "title": "Activity switcher opens reports when the page exists",
+        "summary": "The VI Browser Activity switcher now treats a report as available when either its summary.json or its index.html exists for the selected revision. Previously it only trusted summary.json, so choosing Mass Compile, VI Analyzer, Unit Tests, or Antidoc could appear to do nothing even when the report page itself had been generated. The switcher still avoids missing reports, but now falls back to the real report page before showing the 'none yet' message.",
+        "highlights": [
+          "Activity report probes now fall back from summary.json to index.html for the selected revision.",
+          "Existing report pages open from the VI Browser Activity switcher even if their summary metadata is missing.",
+          "Missing reports still stay guarded, so the switcher does not intentionally navigate to a 404."
+        ]
+      },
+      {
+        "version": "3.34.3",
+        "date": "2026-06-22",
+        "title": "Windows VI Browser 2.0 dispatches render the selected revision",
+        "summary": "Running a Windows VI Browser 2.0 render from the browser no longer dispatches the workflow at a raw commit SHA, which GitHub can reject with HTTP 422. The page now dispatches the workflow on the repository's default branch and passes the selected revision as a target_sha input. The Windows workflow then materializes that target revision before building the worklist and rendering, so the generated <blob>.windows.json frames match the VI Browser revision the user selected.",
+        "highlights": [
+          "Fixes the HTTP 422 error when clicking Run the Windows 2.0 snapshot from the VI Browser.",
+          "Passes the selected revision as target_sha instead of using it as the workflow_dispatch ref.",
+          "Renders from a checked-out copy of target_sha so Windows 2.0 frames match the selected revision."
+        ]
+      },
+      {
+        "version": "3.34.2",
+        "date": "2026-06-22",
+        "title": "VI Browser 2.0 renders can be generated from the Windows container",
+        "summary": "The Windows VI Browser 2.0 path now uses the same cross-platform Go toimages renderer as the Linux path, built as Windows binaries and run inside the stock NI LabVIEW Windows container. Windows renders are published to Pages as <blob>.windows.json with a json-blobs.windows.json index, so the VI Browser's Windows tab can show the same in-place presentation as Linux once frames are generated. The Windows workflow skips only existing Windows JSON, so Linux <blob>.json files no longer hide missing Windows renders, and the catalog now installs the workflow plus its shared renderer assets.",
+        "highlights": [
+          "Adds the Windows VI Browser 2.0 workflow and shared toimages renderer assets to the snapshots capability, so consumers receive the Windows render path when they update.",
+          "Publishes <blob>.windows.json files and json-blobs.windows.json to Pages beside existing snapshot HTML and Linux <blob>.json frames.",
+          "Fixes Windows worklist seeding so existing Linux 2.0 frames never mask missing Windows 2.0 frames."
+        ]
+      },
+      {
+        "version": "3.34.1",
+        "date": "2026-06-22",
+        "title": "Header menus are unified into Settings and Tools",
+        "summary": "The desktop header now uses one consistent secondary menu model across dashboard, settings, report, and informational pages: Settings holds configuration sections, and Tools holds page-specific actions plus Clients, About, What's New / update status, and Appearance. The old Help plus three-dot split is removed, so the menus no longer duplicate each other or stack into overlapping popovers.",
+        "highlights": [
+          "Replaces the Help + three-dot split with a single Tools menu for shared utilities and page-specific actions.",
+          "Keeps Settings as the only configuration menu and makes the same Settings / Tools structure available across pages.",
+          "Opening Settings or Tools closes the other menu, eliminating the visible overlap state."
+        ]
+      },
+      {
+        "version": "3.34.0",
+        "date": "2026-06-22",
+        "title": "Dependency-aware worker image gating and dashboard inventory",
+        "summary": "Repo VIPC dependency changes now block downstream LabVIEW pipeline tasks until the matching worker image build has finished and the rebuilt GHCR image is available. The shared header shows a repo-wide banner while the worker image is updating, and the dashboard adds a top-level Dependencies page that lists every VIPC file, the packages inside it, and which runner/container columns currently include those packages.",
+        "highlights": [
+          "Adds a shared worker-image wait helper used by LabVIEW container workflows so VIPC changes do not run against stale containers.",
+          "Shows a global dashboard banner while Build LabVIEW CI Image is queued or running, explaining that pipeline tasks are waiting for the rebuilt GHCR image.",
+          "Adds the Dependencies tab with a VIPC/package tree and per-runner coverage columns backed by the generated dashboard dependency index."
+        ]
+      },
+      {
+        "version": "3.33.1",
+        "date": "2026-06-22",
+        "title": "Dashboard and VI Browser fit mobile screens",
+        "summary": "The dashboard revision table now switches to stacked cards at mobile and narrow-tablet widths, with filter controls and result badges wrapping inside the viewport instead of forcing horizontal overflow. The VI Browser now stacks its file tree above the viewer on phone-sized screens, so the sidebar no longer consumes nearly the whole width or pushes the viewer off the right edge.",
+        "highlights": [
+          "Dashboard revision rows collapse into width-safe cards earlier and wrap their controls cleanly on small screens.",
+          "VI Browser uses a stacked mobile layout with a bounded file tree and a full-width viewer below it.",
+          "A mobile audit at 390px and 320px confirmed the dashboard, VI Browser, and the rest of the dashboard pages avoid page-level horizontal overflow."
+        ]
+      },
+      {
+        "version": "3.33.0",
+        "date": "2026-06-21",
+        "title": "Help and the three-dot menu are consolidated",
+        "summary": "The top navigation now keeps shared utilities in one Help menu: Clients, About, What's New / update status, and Appearance. The three-dot menu is no longer a second utility menu; it only appears on pages that have extra context-specific commands, such as Populate history or VI Browser renders on the dashboard. This keeps settings and informational pages cleaner while preserving every existing action.",
+        "highlights": [
+          "Help now owns Clients, About, What's New / update status, and Appearance in one predictable place.",
+          "The three-dot menu hides on pages with no extra context actions instead of duplicating the Help menu.",
+          "Dashboard-specific commands still live in the three-dot menu, so Populate history and VI Browser renders remain available."
         ]
       },
       {
@@ -2151,7 +2485,8 @@
       ".github/labview-ci/install.py",
       ".github/labview-ci/install.sh",
       ".github/labview-ci/install.ps1",
-      ".github/labview-ci/README.md"
+      ".github/labview-ci/README.md",
+      ".github/labview/wait-for-worker-image.sh"
     ]
   },
   "capabilities": [
@@ -2178,6 +2513,7 @@
           ".github/pages/report-viewer.html",
           ".github/pages/integrate.html",
           ".github/pages/configure.html",
+          ".github/pages/dependencies.html",
           ".github/pages/whats-new.html",
           ".github/pages/unit-tests.html"
         ],
@@ -2305,7 +2641,6 @@
           ".github/labview/build-gallery.py",
           ".github/labview/PrintToSingleFileHtml/",
           ".github/workflows/vi-snapshots-json.yml",
-          ".github/workflows/vi-snapshots-json-windows.yml",
           ".github/workflows/build-toimages-image.yml",
           ".github/labview/run-toimages.sh",
           ".github/labview/build-json-worklist.sh",
@@ -2313,13 +2648,16 @@
         ],
         "windows": [
           ".github/workflows/vi-snapshots.yml",
+          ".github/workflows/vi-snapshots-json-windows.yml",
           ".github/labview/build-snapshots.ps1",
           ".github/labview/render-snapshots.ps1",
+          ".github/labview/build-json-worklist.sh",
+          ".github/labview/toimages/",
           ".github/labview/export-vi-snapshots.ps1"
         ],
         "linux": []
       },
-      "notes": "Snapshot rendering currently runs on the Windows container."
+      "notes": "Snapshot rendering runs on the Windows container. VI Browser 2.0 can also publish Windows frames JSON beside the Linux 2.0 frames."
     },
     {
       "id": "custom-image",
