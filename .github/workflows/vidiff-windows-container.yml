@@ -36,6 +36,7 @@ permissions:
   contents: read
   statuses: write
   packages: read
+  actions: read   # so wait-for-worker-image.sh can read the worker-image build runs
 
 jobs:
   vidiff:
@@ -97,7 +98,7 @@ jobs:
         shell: bash
         working-directory: head
         run: |
-          git fetch --no-tags origin main
+          git fetch --no-tags origin "${{ github.event.repository.default_branch }}"
           git checkout FETCH_HEAD -- .github/labview .github/workflows
 
       - name: Get list of changed VI/CTL files
@@ -190,6 +191,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           bash .github/labview/wait-for-worker-image.sh "${{ steps.shas.outputs.head }}" "${{ github.event.before }}"
+
+      - name: Ensure Docker daemon is running
+        shell: powershell
+        working-directory: head
+        run: ./.github/labview/ensure-docker.ps1
 
       - name: Pull LabVIEW container image
         shell: powershell
