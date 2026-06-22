@@ -107,6 +107,31 @@ function Show-UtfAddonsDiag([string]$LvPath) {
             Get-ChildItem -LiteralPath $rk -ErrorAction SilentlyContinue | ForEach-Object { Write-Host "    subkey: $($_.PSChildName)" }
         }
     }
+    # The -350053 error names the LabVIEW CLI "operation folder" as the place with
+    # "missing or bad files". Dump it so we can see whether the RunUnitTests operation
+    # is actually present for this LabVIEW (the UTF version-independent add-on is
+    # supposed to register it); a missing/broken RunUnitTests operation here is the
+    # real cause of -350053, independent of any VIPM package.
+    Write-Host '----- LabVIEW CLI operation folders -----'
+    foreach ($op in @('C:\Program Files (x86)\National Instruments\Shared\LabVIEW CLI\Operations',
+                      'C:\Program Files\National Instruments\Shared\LabVIEW CLI\Operations')) {
+        if (Test-Path -LiteralPath $op) {
+            Write-Host "OPERATIONS ROOT: $op"
+            Get-ChildItem -LiteralPath $op -Recurse -ErrorAction SilentlyContinue |
+                Select-Object -First 200 | ForEach-Object { Write-Host "  $($_.FullName)" }
+        } else {
+            Write-Host "absent: $op"
+        }
+    }
+    # Where does the UTF add-on keep its RunUnitTests CLI operation, if anywhere?
+    foreach ($addon in @('C:\Program Files\NI\LVAddons\utf64\1','C:\Program Files\NI\LVAddons\utf32\1')) {
+        if (Test-Path -LiteralPath $addon) {
+            $hits = @(Get-ChildItem -LiteralPath $addon -Recurse -ErrorAction SilentlyContinue |
+                Where-Object { $_.Name -match '(?i)run.?unit.?test|unit.?test.*\.(vi|lvclass)$|cli' })
+            Write-Host ("UTF add-on '{0}': {1} CLI/RunUnitTests-ish file(s)" -f $addon, $hits.Count)
+            $hits | Select-Object -First 50 | ForEach-Object { Write-Host "  $($_.FullName)" }
+        }
+    }
     Write-Host '===== end diagnostic ====='
 }
 
@@ -161,15 +186,26 @@ function Resolve-LabVIEWCLI([string]$LabVIEWExePath) {
     return $null
 }
 
+function Resolve-LabVIEWPort([string]$LabVIEWExePath) {
+    $ini = Join-Path (Split-Path -Parent $LabVIEWExePath) 'LabVIEW.ini'
+    if (Test-Path -LiteralPath $ini) {
+        $m = Select-String -LiteralPath $ini -Pattern '^server\.tcp\.port\s*=\s*(\d+)\s*$' -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($m -and $m.Matches.Count -gt 0) { return [int]$m.Matches[0].Groups[1].Value }
+    }
+    return 3363
+}
+
 $LabVIEWPath = Resolve-LabVIEWPath $LabVIEWPath
 Sync-PathFromRegistry
 $GCli        = Resolve-Cmd @('g-cli', 'g-cli.exe')
 $CliExe      = Resolve-LabVIEWCLI $LabVIEWPath
+$LabVIEWPort = Resolve-LabVIEWPort $LabVIEWPath
 
 Write-Host "=== Unit Tests (Windows) ==="
 Write-Host "  Workspace : $WorkspaceRoot"
 Write-Host "  Results   : $ResultsDir"
 Write-Host "  LabVIEW   : $LabVIEWPath  (v$LabVIEWVersion)"
+Write-Host "  VI Server : $LabVIEWPort"
 Write-Host "  LabVIEWCLI: $(if ($CliExe) { $CliExe } else { '<not found>' })"
 Write-Host "  g-cli     : $(if ($GCli) { $GCli } else { '<not found on PATH>' })"
 Write-Host "  Config    : $ConfigPath"
@@ -386,6 +422,21 @@ function Invoke-UtfTests($tool, [int]$index) {
             } else {
                 Write-Host "  [utf] (no CLI session-log path found in output)"
             }
+            # DIAGNOSTIC PROBE: re-run the SAME operation WITHOUT -JUnitReportPath. If it
+            # then loads/succeeds, the -350053 is specific to the JUnit-report step (its
+            # VIs), not the operation; if it still fails, the RunUnitTests operation cannot
+            # load at all in this LabVIEW. Output-only; does not affect the report.
+            $cmdNoJUnit = $tmpl.Replace('{cli}', $CliExe).Replace('{lv}', $LabVIEWPath).Replace('{proj}', $proj).Replace('{out}', $out).Replace('{ver}', $LabVIEWVersion)
+            $cmdNoJUnit = $cmdNoJUnit -replace '\s*-JUnitReportPath\s+"[^"]*"', ''
+            Write-Host "  [utf][diag] retry WITHOUT -JUnitReportPath:"
+            Write-Host "  [utf][diag] $cmdNoJUnit"
+            $prevEAP2 = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+            try {
+                $diagOut = (& cmd.exe /c $cmdNoJUnit 2>&1 | Out-String)
+                Write-Host $diagOut
+                Write-Host ("  [utf][diag] exit={0}" -f $LASTEXITCODE)
+            } catch { Write-Warning "  [utf][diag] runner error: $($_.Exception.Message)" }
+            $ErrorActionPreference = $prevEAP2
             # Record that UTF could not run, so the report shows the shared
             # "missing container tooling" banner. -350053 / "missing or bad files"
             # / "required modules or toolkits" => the UTF toolkit is absent.

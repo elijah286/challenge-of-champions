@@ -134,7 +134,7 @@
     '.lvci-nav a .lvci-ncount{font-size:10px;font-weight:700;color:#8b949e;background:rgba(177,186,196,.16);border-radius:999px;padding:1px 6px;min-width:16px;text-align:center;line-height:1.4}',
     // Grouped nav dropdowns (Settings / Help) — desktop top-nav menus.
     '.lvci-navgrp{position:relative;display:inline-flex;align-items:center}',
-    '.lvci-navgrp-btn{display:inline-flex;align-items:center;gap:5px;color:#8b949e;background:transparent;border:0;font:inherit;font-size:13.5px;font-weight:500;padding:6px 10px;border-radius:7px;white-space:nowrap;cursor:pointer}',
+    '.lvci-navgrp-btn{position:relative;display:inline-flex;align-items:center;gap:5px;color:#8b949e;background:transparent;border:0;font:inherit;font-size:13.5px;font-weight:500;padding:6px 10px;border-radius:7px;white-space:nowrap;cursor:pointer}',
     '.lvci-navgrp-btn:hover,.lvci-navgrp-btn.open{color:#e6edf3;background:rgba(177,186,196,.12)}',
     // Active "you are here" state for the grouped trigger (e.g. Settings while on a config page).
     '.lvci-navgrp-btn.on{color:#e6edf3;background:rgba(177,186,196,.16)}',
@@ -235,13 +235,8 @@
     '.lvci-ic{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}',
     '.lvci-ic svg{width:100%;height:100%;display:block}',
     '.lvci-btn .lvci-ic{width:15px;height:15px}',
-    // ── Secondary actions: "More" button → popover (Configure / Update / About / theme)
+    // ── Secondary menus: Settings / Tools dropdowns, plus the shared menu style
     '.lvci-dropdown{position:relative;display:inline-flex;align-items:center}',
-    '.lvci-more{position:relative;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid #30363d;background:transparent;color:#8b949e;border-radius:7px;cursor:pointer}',
-    '.lvci-more svg{width:18px;height:18px;display:block}',
-    '.lvci-more:hover{background:rgba(177,186,196,.12);color:#e6edf3}',
-    '.lvci-more.open{background:rgba(177,186,196,.16);color:#e6edf3;border-color:#8b949e}',
-    '@media(prefers-color-scheme:light){.lvci-more{border-color:#d0d7de;color:#57606a}.lvci-more:hover,.lvci-more.open{background:rgba(80,90,100,.08);color:#1f2328}}',
     '.lvci-dropdown-menu{display:none;position:absolute;top:100%;right:0;z-index:200;background:rgba(22,27,34,.98);border:1px solid #30363d;border-radius:10px;margin-top:8px;min-width:214px;padding:6px;',
       'box-shadow:0 8px 28px rgba(1,4,9,.5);-webkit-backdrop-filter:saturate(160%) blur(8px);backdrop-filter:saturate(160%) blur(8px)}',
     '.lvci-dropdown-menu.open{display:block;animation:lvci-pop .12s ease-out}',
@@ -274,7 +269,7 @@
     '.lvci-seg-btn:hover{color:#e6edf3;background:rgba(177,186,196,.12)}',
     '.lvci-seg-btn.on{background:#1f6feb;color:#fff}',
     '@media(prefers-color-scheme:light){.lvci-theme-lbl{color:#57606a}.lvci-seg{border-color:#d0d7de;background:rgba(80,90,100,.04)}.lvci-seg-btn{color:#57606a}.lvci-seg-btn+.lvci-seg-btn{border-left-color:#d0d7de}.lvci-seg-btn:hover{color:#1f2328;background:rgba(80,90,100,.08)}.lvci-seg-btn.on{background:#0969da;color:#fff}}',
-    '@media(max-width:820px){.lvci-dropdown,.lvci-more{display:none}}',
+    '@media(max-width:820px){.lvci-dropdown{display:none}}',
     // Status line (re-run feedback) sits just under the bar, full width
     '.lvci-status{display:none;align-items:center;gap:8px;font-size:12.5px;padding:7px 16px;border-bottom:1px solid #30363d;',
       'background:rgba(22,27,34,.96);color:#8b949e}',
@@ -298,6 +293,14 @@
     '.lvci-rebuild a{color:#58a6ff;text-decoration:none;font-weight:600;white-space:nowrap}',
     '.lvci-rebuild a:hover{text-decoration:underline}',
     '@media(prefers-color-scheme:light){.lvci-rebuild{background:rgba(9,105,218,.09);border-bottom-color:#d0d7de;color:#1f2328}.lvci-rebuild .lvci-rb-sub{color:#57606a}.lvci-rebuild a{color:#0969da}}',
+    '.lvci-depbar{display:none;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(210,153,34,.45);background:rgba(210,153,34,.14);color:#e6edf3;font-size:12.5px;line-height:1.5}',
+    '.lvci-depbar.show{display:flex}',
+    '.lvci-depbar .lvci-dep-spin{flex:0 0 auto;width:14px;height:14px;margin-top:3px;border:2px solid rgba(210,153,34,.38);border-top-color:#d29922;border-radius:50%;animation:lvci-spin .7s linear infinite}',
+    '.lvci-depbar .lvci-dep-txt{min-width:0}',
+    '.lvci-depbar .lvci-dep-sub{color:#8b949e}',
+    '.lvci-depbar a{color:#f0b72f;text-decoration:none;font-weight:600;white-space:nowrap}',
+    '.lvci-depbar a:hover{text-decoration:underline}',
+    '@media(prefers-color-scheme:light){.lvci-depbar{background:#fff8c5;border-bottom-color:#eedc82;color:#1f2328}.lvci-depbar .lvci-dep-sub{color:#57606a}.lvci-depbar a{color:#9a6700}}',
     // Global attention bar: a dismissible red banner naming the workflow(s) whose
     // newest run failed, with a one-click link straight to the failing run.
     '.lvci-alertbar{display:none;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid rgba(248,81,73,.4);background:rgba(248,81,73,.13);color:#e6edf3;font-size:12.5px;line-height:1.5}',
@@ -334,7 +337,7 @@
     '@media(max-width:820px){body{overflow-x:hidden}}',
     // Printing (Share -> Print, or the browser's own Print): drop the chrome so a
     // printout is just the report / snapshot content, not the surrounding header.
-    '@media print{.lvci-hdr,.lvci-status,.lvci-tok,.lvci-rebuild,.lvci-alertbar,.lvci-ctxbar,.lvci-menu,.lvci-dropdown-menu{display:none !important}}',
+    '@media print{.lvci-hdr,.lvci-status,.lvci-tok,.lvci-rebuild,.lvci-depbar,.lvci-alertbar,.lvci-ctxbar,.lvci-menu,.lvci-dropdown-menu{display:none !important}}',
     // ── Manual appearance override (Appearance control in the menu) ───────────
     // "System" keeps the prefers-color-scheme rules above. Forcing light/dark
     // sets data-lvci-theme on <html>; these rules re-assert the matching tokens
@@ -359,8 +362,6 @@
     ':root[data-lvci-theme=light] .lvci-ddver .lvci-ddver-tag{color:#57606a}',
     ':root[data-lvci-theme=light] .lvci-ddver.behind .lvci-ddver-tag,:root[data-lvci-theme=light] .lvci-ddver.behind .lvci-ic{color:#bf8700}',
     ':root[data-lvci-theme=light] .lvci-burger{border-color:#d0d7de}',
-    ':root[data-lvci-theme=light] .lvci-more{border-color:#d0d7de;color:#57606a}',
-    ':root[data-lvci-theme=light] .lvci-more:hover,:root[data-lvci-theme=light] .lvci-more.open{background:rgba(80,90,100,.08);color:#1f2328}',
     ':root[data-lvci-theme=light] .lvci-share{border-color:#d0d7de;color:#57606a}',
     ':root[data-lvci-theme=light] .lvci-share:hover,:root[data-lvci-theme=light] .lvci-share.open{background:rgba(80,90,100,.08);color:#1f2328}',
     ':root[data-lvci-theme=light] .lvci-share-h,:root[data-lvci-theme=light] .lvci-share-hint{color:#57606a}',
@@ -391,6 +392,9 @@
     ':root[data-lvci-theme=light] .lvci-rebuild{background:rgba(9,105,218,.09);border-bottom-color:#d0d7de;color:#1f2328}',
     ':root[data-lvci-theme=light] .lvci-rebuild .lvci-rb-sub{color:#57606a}',
     ':root[data-lvci-theme=light] .lvci-rebuild a{color:#0969da}',
+    ':root[data-lvci-theme=light] .lvci-depbar{background:#fff8c5;border-bottom-color:#eedc82;color:#1f2328}',
+    ':root[data-lvci-theme=light] .lvci-depbar .lvci-dep-sub{color:#57606a}',
+    ':root[data-lvci-theme=light] .lvci-depbar a{color:#9a6700}',
     ':root[data-lvci-theme=light] .lvci-alertbar{background:#ffebe9;border-bottom-color:#ffc1bc;color:#1f2328}',
     ':root[data-lvci-theme=light] .lvci-alertbar .lvci-alert-x:hover{color:#1f2328}',
     // Forced DARK — counteract an OS light preference
@@ -411,8 +415,6 @@
     ':root[data-lvci-theme=dark] .lvci-ddver .lvci-ddver-tag{color:#8b949e}',
     ':root[data-lvci-theme=dark] .lvci-ddver.behind .lvci-ddver-tag,:root[data-lvci-theme=dark] .lvci-ddver.behind .lvci-ic{color:#d29922}',
     ':root[data-lvci-theme=dark] .lvci-burger{border-color:#30363d}',
-    ':root[data-lvci-theme=dark] .lvci-more{border-color:#30363d;color:#8b949e}',
-    ':root[data-lvci-theme=dark] .lvci-more:hover,:root[data-lvci-theme=dark] .lvci-more.open{background:rgba(177,186,196,.12);color:#e6edf3}',
     ':root[data-lvci-theme=dark] .lvci-share{border-color:#30363d;color:#8b949e}',
     ':root[data-lvci-theme=dark] .lvci-share:hover,:root[data-lvci-theme=dark] .lvci-share.open{background:rgba(177,186,196,.12);color:#e6edf3}',
     ':root[data-lvci-theme=dark] .lvci-share-h,:root[data-lvci-theme=dark] .lvci-share-hint{color:#8b949e}',
@@ -441,6 +443,9 @@
     ':root[data-lvci-theme=dark] .lvci-rebuild{background:rgba(31,111,235,.12);border-bottom-color:#30363d;color:#e6edf3}',
     ':root[data-lvci-theme=dark] .lvci-rebuild .lvci-rb-sub{color:#8b949e}',
     ':root[data-lvci-theme=dark] .lvci-rebuild a{color:#58a6ff}',
+    ':root[data-lvci-theme=dark] .lvci-depbar{background:rgba(210,153,34,.14);border-bottom-color:rgba(210,153,34,.45);color:#e6edf3}',
+    ':root[data-lvci-theme=dark] .lvci-depbar .lvci-dep-sub{color:#8b949e}',
+    ':root[data-lvci-theme=dark] .lvci-depbar a{color:#f0b72f}',
     ':root[data-lvci-theme=dark] .lvci-menu a,:root[data-lvci-theme=dark] .lvci-menu button.lvci-m{color:#e6edf3}'
   ].join('\n');
 
@@ -542,8 +547,7 @@
   // ── Primary navigation (the durable site sections). Data-driven so future
   //    capabilities — Builds, Documentation, Unit Tests — are a one-line add. ─
   var NAV = [
-    { key: 'dashboard',   label: 'Dashboard',    href: navBase + '/' },
-    { key: 'vi-browser',  label: 'VI Browser',   href: navBase + '/vi-snapshots/' },
+    { key: 'dependencies', label: 'Dependencies', href: navBase + '/dependencies.html' },
     // Developer documentation. `doc: true` resolves the href/target at render
     // time from docUrl() / docExternal() (the canonical source site's
     // documentation.html, opened in a new tab from a consumer dashboard) -- the
@@ -555,7 +559,8 @@
   // Which nav item is "current" for each context (drives the active pill).
   var NAV_ACTIVE = {
     'dashboard': 'dashboard',
-    'vi-browser': 'vi-browser',
+    'vi-browser': 'dashboard',
+    'dependencies': 'dependencies',
     'vi-analyzer-report': 'dashboard',
     'masscompile-report': 'dashboard',
     'unit-tests-report': 'dashboard',
@@ -566,10 +571,10 @@
     'configure': 'settings',
     'vianalyzer': 'settings',
     'integrate': '',
-    'whats-new': '',
-    'faq': 'help',
+    'whats-new': 'tools',
+    'faq': 'tools',
     'documentation': 'docs',
-    'clients': 'clients'
+    'clients': 'tools'
   };
 
   // ── Per-revision DOCUMENT types ───────────────────────────────────────────
@@ -612,6 +617,69 @@
   // (the report half of the unified Activity switcher; per-VI lenses join later).
   var LENS_ORDER = ['snapshots', 'masscompile-report', 'vi-analyzer-report', 'unit-tests-report', 'antidoc-report'];
 
+  var SHA_RE = /^[0-9a-f]{7,40}$/i;
+  var revisionListCache = {};
+  function jget(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  function currentRevisionSha() {
+    if (cfg.sha && SHA_RE.test(cfg.sha)) return cfg.sha;
+    try {
+      var q = new URLSearchParams(location.search).get('sha');
+      if (q && SHA_RE.test(q)) return q;
+    } catch (e) {}
+    try {
+      var sel = document.getElementById('commit-select');
+      var v = sel && sel.value;
+      if (v && SHA_RE.test(v)) return v;
+    } catch (e2) {}
+    return '';
+  }
+  function loadRevisionList(root) {
+    root = trimSlash(root || base);
+    if (revisionListCache[root]) return revisionListCache[root];
+    revisionListCache[root] = Promise.all([jget(root + '/vi-snapshots/files.json'), jget(root + '/vi-snapshots/commits.json')]).then(function (res) {
+      var filesDoc = res[0], snap = res[1];
+      var fileCommits = (filesDoc && Array.isArray(filesDoc.commits)) ? filesDoc.commits : [];
+      var fileShas = {}; fileCommits.forEach(function (c) { if (c && c.sha) fileShas[c.sha] = 1; });
+      var order = [], bySha = {};
+      var put = function (c) { if (!c || !c.sha) return; var p = bySha[c.sha] || {}; for (var k in c) if (c[k] != null) p[k] = c[k]; bySha[c.sha] = p; if (order.indexOf(c.sha) < 0) order.push(c.sha); };
+      (Array.isArray(snap) ? snap : []).forEach(function (c) { if (!fileShas[c.sha]) put(c); });
+      fileCommits.forEach(function (c) { put({ sha: c.sha, short: c.short, message: c.message, author: c.author, date: c.date }); });
+      var list = order.map(function (s) { return bySha[s]; }).filter(function (c) { return c && c.sha; });
+      var cur = currentRevisionSha();
+      if (cur && !bySha[cur]) list.unshift({ sha: cur, short: cur.slice(0, 7), message: '' });
+      return list;
+    }).catch(function () { return []; });
+    return revisionListCache[root];
+  }
+  function resolveRevisionSha(root) {
+    var cur = currentRevisionSha();
+    if (cur) return Promise.resolve(cur);
+    return loadRevisionList(root).then(function (list) { return (list[0] && list[0].sha) || ''; });
+  }
+  function activityDest(key, sha, root) {
+    root = trimSlash(root || base);
+    if (key === 'snapshots') return root + '/vi-snapshots/' + (sha ? '?sha=' + encodeURIComponent(sha) : '');
+    var d = DOCTYPES[key]; if (!d || !sha) return root + '/';
+        var rel = '../' + d.prefix + '/' + sha + '/index.html';
+    var title = d.label + ' \u00b7 ' + sha.slice(0, 7);
+    return root + '/report/index.html?type=' + encodeURIComponent(key)
+         + '&sha=' + encodeURIComponent(sha)
+         + (cfg.platform ? '&platform=' + encodeURIComponent(cfg.platform) : '')
+          + '&src=' + encodeURIComponent(rel)
+         + '&title=' + encodeURIComponent(title);
+  }
+  function wireActivityLink(el, key, root, close) {
+    root = trimSlash(root || base);
+    el.href = activityDest(key, currentRevisionSha(), root);
+    resolveRevisionSha(root).then(function (sha) { if (sha) el.href = activityDest(key, sha, root); });
+    el.addEventListener('click', function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      if (close) close();
+      resolveRevisionSha(root).then(function (sha) { window.location.href = activityDest(key, sha, root); });
+    });
+  }
+
   // ── Context actions (surfaced on the right; collapse into the mobile menu).
   //    Each action: {label, kind|href, primary|accent, newTab}. `kind` triggers
   //    behavior owned by this header (configure/integrate modal-or-navigate,
@@ -651,7 +719,7 @@
   }
   function buildSecondaryActions() {
     // The per-repo configuration + Help entries, shared by every primary-chrome
-    // context so the Settings / Help nav is consistent across pages (incl. the
+    // context so the Settings / Tools nav is consistent across pages (incl. the
     // config pages themselves, where the current section also highlights).
     var cfgMenu = [
       { label: 'Configure Workers', svg: ICON.configure, kind: 'configure' },
@@ -670,13 +738,16 @@
         { label: 'Clients', svg: ICON.clients, href: base + '/clients.html', source: true },
         { label: 'About', svg: ICON.about, href: aboutUrl(), about: true, newTab: aboutExternal() }
       ],
-      'worker-manifest': [],
+      'worker-manifest': cfgMenu,
       'vi-browser': [
+        { label: 'Configure Workers', svg: ICON.configure, kind: 'configure' },
+        { label: 'VI Analyzer', svg: ICON.vianalyzer, kind: 'vianalyzer' },
+        { label: 'Unit Testing', svg: ICON.tests, kind: 'unittests' },
         { label: 'VI Browser renders', svg: ICON.vibrowser, kind: 'vibrowser' },
         { label: 'Clients', svg: ICON.clients, href: base + '/clients.html', source: true },
         { label: 'About', svg: ICON.about, href: aboutUrl(), about: true, newTab: aboutExternal() }
       ],
-      'report-viewer': [],
+      'report-viewer': cfgMenu,
       'configure': cfgMenu,
       'vianalyzer': cfgMenu,
       'unit-tests-config': cfgMenu,
@@ -685,7 +756,17 @@
       'faq': cfgMenu,
       'documentation': cfgMenu
     };
-    return (A[ctx] || []).filter(Boolean);
+    return (A[ctx] || cfgMenu).filter(Boolean);
+  }
+  function buildDashboardNavItems() {
+    return [
+      { label: 'Overview', href: navBase + '/' },
+      { label: 'VI Browser', svg: ICON.vibrowser, activity: 'snapshots' },
+      { label: 'Mass Compile', svg: ICON.configure, activity: 'masscompile-report' },
+      { label: 'VI Analyzer', svg: ICON.vianalyzer, activity: 'vi-analyzer-report' },
+      { label: 'Unit Tests', svg: ICON.tests, activity: 'unit-tests-report' },
+      { label: 'Antidoc', svg: ICON.docs, activity: 'antidoc-report' }
+    ];
   }
 
   // ── The canonical tooling site's Pages URL, derived from owner/repo the same
@@ -913,12 +994,12 @@
     return el;
   }
 
-  // Grouped top-nav dropdown (Settings / Help): a nav-styled trigger + a standard
+  // Grouped top-nav dropdown (Settings / Tools): a nav-styled trigger + a standard
   // dropdown menu of the given secondary actions. Desktop only — the nav is hidden
   // on mobile, where these same items stay in the hamburger menu.
   //
   // Only one top-bar popover is open at a time: every popover (the Settings /
-  // Help nav dropdowns, Share, and More) registers its close() in popoverCloses
+  // Tools nav dropdowns and Share) registers its close() in popoverCloses
   // and closes the others when it opens, so two menus can never overlap. Each
   // popover stops propagation on its own trigger click (so the document-level
   // outside-click handler doesn't immediately re-close it), which is exactly why
@@ -929,16 +1010,18 @@
       if (popoverCloses[i] !== self) popoverCloses[i]();
     }
   }
-  function makeNavDropdown(label, items, active) {
+  function makeNavDropdown(label, items, active, opts) {
+    opts = opts || {};
     var dd = document.createElement('div');
     dd.className = 'lvci-navgrp';
     var btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'lvci-navgrp-btn';
+    if (opts.id) btn.id = opts.id;
     if (active) { btn.classList.add('on'); btn.setAttribute('aria-current', 'page'); }
     btn.setAttribute('aria-haspopup', 'true');
     btn.setAttribute('aria-expanded', 'false');
-    btn.innerHTML = esc(label) + '<span class="lvci-navgrp-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4z"/></svg></span>';
+    btn.innerHTML = esc(label) + '<span class="lvci-navgrp-chev" aria-hidden="true"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M4 6l4 4 4-4z"/></svg></span>' + (opts.updateDot ? '<span class="lvci-mdot" aria-hidden="true"></span>' : '');
     dd.appendChild(btn);
     var menu = document.createElement('div');
     menu.className = 'lvci-dropdown-menu lvci-navgrp-menu';
@@ -946,14 +1029,17 @@
     popoverCloses.push(close);
     items.forEach(function (a) {
       var el;
-      if (a.href) {
+      if (a.activity) {
+        el = document.createElement('a');
+        wireActivityLink(el, a.activity, navBase, close);
+      } else if (a.href) {
         el = document.createElement('a'); el.href = a.href;
         if (a.newTab) { el.target = '_blank'; el.rel = 'noopener'; }
         el.addEventListener('click', close);
       } else {
         el = document.createElement('button'); el.type = 'button';
         el.addEventListener('click', function () {
-          if (a.kind === 'configure' || a.kind === 'vianalyzer' || a.kind === 'unittests' || a.kind === 'integrate') openPage(a.kind);
+          if (a.kind === 'configure' || a.kind === 'vianalyzer' || a.kind === 'unittests' || a.kind === 'integrate' || a.kind === 'vibrowser') openPage(a.kind);
           else if (a.kind === 'runhistory') runHistory();
           close();
         });
@@ -963,6 +1049,12 @@
       if (a.about) aboutEls.push(el);
       menu.appendChild(el);
     });
+    if (opts.tools) {
+      if (menu.children.length) { var vsep = document.createElement('div'); vsep.className = 'lvci-sep'; menu.appendChild(vsep); }
+      var ver = makeVerItem(); ver.addEventListener('click', close); menu.appendChild(ver); verEls.push(ver);
+      var tsep = document.createElement('div'); tsep.className = 'lvci-sep'; menu.appendChild(tsep);
+      menu.appendChild(themeControl());
+    }
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       var open = !menu.classList.contains('open');
@@ -1036,18 +1128,14 @@
   // in the context bar) and reuses its summary.json availability probe, so a report
   // that was not produced for this revision is shown disabled rather than 404ing.
   function lensDest(key, sha) {
-    sha = sha || cfg.sha || '';
-    if (key === 'snapshots') return base + '/vi-snapshots/' + (sha ? '?sha=' + encodeURIComponent(sha) : '');
-    var d = DOCTYPES[key]; if (!d || !sha) return base + '/';
-    // Always open a report through the framed viewer (shared chrome + this picker),
-    // whether we came from another report or from the VI Browser.
-    var bare = base + '/' + d.prefix + '/' + sha + '/index.html';
-    var title = d.label + ' \u00b7 ' + sha.slice(0, 7);
-    return base + '/report/index.html?type=' + encodeURIComponent(key)
-         + '&sha=' + encodeURIComponent(sha)
-         + (cfg.platform ? '&platform=' + encodeURIComponent(cfg.platform) : '')
-         + '&src=' + encodeURIComponent(bare)
-         + '&title=' + encodeURIComponent(title);
+    return activityDest(key, sha || cfg.sha || '', base);
+  }
+  function reportExists(d, sha) {
+    if (!d || !sha) return Promise.resolve(false);
+    var root = base + '/' + d.prefix + '/' + sha + '/';
+    return fetch(root + 'summary.json', { method: 'HEAD', cache: 'no-cache' })
+      .then(function (r) { return r.ok ? true : fetch(root + 'index.html', { method: 'HEAD', cache: 'no-cache' }).then(function (rr) { return rr.ok; }); })
+      .catch(function () { return fetch(root + 'index.html', { method: 'HEAD', cache: 'no-cache' }).then(function (r) { return r.ok; }).catch(function () { return false; }); });
   }
   function makeLensPicker(opts) {
     opts = opts || {};
@@ -1110,8 +1198,8 @@
       var d = DOCTYPES[key];
       if (!d || !sha) { go(key, sha); return; }
       note.textContent = '';
-      fetch(base + '/' + d.prefix + '/' + sha + '/summary.json', { method: 'HEAD', cache: 'no-cache' })
-        .then(function (r) { if (r.ok) go(key, sha); else noReport(d); })
+      reportExists(d, sha)
+        .then(function (ok) { if (ok) go(key, sha); else noReport(d); })
         .catch(function () { noReport(d); });
       function noReport(dd) {
         sel.value = current;
@@ -1126,8 +1214,8 @@
       LENS_ORDER.forEach(function (key) {
         if (key === current || key === 'snapshots') return;
         var d = DOCTYPES[key]; if (!d) return;
-        fetch(base + '/' + d.prefix + '/' + getSha() + '/summary.json', { method: 'HEAD', cache: 'no-cache' })
-          .then(function (r) { if (!r.ok) disableOpt(key, d); })
+        reportExists(d, getSha())
+          .then(function (ok) { if (!ok) disableOpt(key, d); })
           .catch(function () { disableOpt(key, d); });
       });
     }
@@ -1145,17 +1233,7 @@
   }
   function loadRevisions(selects) {
     if (!DOC || !selects.length) return;
-    var jget = function (u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); };
-    Promise.all([jget(base + '/vi-snapshots/files.json'), jget(base + '/vi-snapshots/commits.json')]).then(function (res) {
-      var filesDoc = res[0], snap = res[1];
-      var fileCommits = (filesDoc && Array.isArray(filesDoc.commits)) ? filesDoc.commits : [];
-      var fileShas = {}; fileCommits.forEach(function (c) { fileShas[c.sha] = 1; });
-      var order = [], bySha = {};
-      var put = function (c) { if (!c || !c.sha) return; var p = bySha[c.sha] || {}; for (var k in c) if (c[k] != null) p[k] = c[k]; bySha[c.sha] = p; if (order.indexOf(c.sha) < 0) order.push(c.sha); };
-      (Array.isArray(snap) ? snap : []).forEach(function (c) { if (!fileShas[c.sha]) put(c); });
-      fileCommits.forEach(function (c) { put({ sha: c.sha, short: c.short, message: c.message, author: c.author, date: c.date }); });
-      var list = order.map(function (s) { return bySha[s]; });
-      if (cfg.sha && !bySha[cfg.sha]) list.unshift({ sha: cfg.sha, short: cfg.short || cfg.sha.slice(0, 7), message: '' });
+    loadRevisionList(base).then(function (list) {
 
       // Probe which revisions actually have a report of THIS type; the current
       // revision is known-present (it's the page we're on).
@@ -1179,8 +1257,8 @@
       function next() {
         if (idx >= total) return;
         var c = toCheck[idx++];
-        fetch(base + '/' + DOC.prefix + '/' + c.sha + '/summary.json', { method: 'HEAD', cache: 'no-cache' })
-          .then(function (r) { avail[c.sha] = r.ok; }).catch(function () { avail[c.sha] = false; })
+        reportExists(DOC, c.sha)
+          .then(function (ok) { avail[c.sha] = ok; })
           .then(function () { done++; if (done === total) fill(); else next(); });
       }
       for (var k = 0; k < Math.min(CAP, total); k++) next();
@@ -1189,7 +1267,7 @@
 
   // ── Version / update menu entry ───────────────────────────────────────────
   // A single home for the installed version + the update affordance (it replaces
-  // the old always-on version pill). Used in the More popover and the mobile
+  // the old always-on version pill). Used in the Tools dropdown and the mobile
   // menu; renderBadge() fills its label/tag/icon and toggles the amber "behind"
   // state. Always links to What's New (release notes / the update flow).
   //
@@ -1377,6 +1455,8 @@
     var nav = document.createElement('nav');
     nav.className = 'lvci-nav';
     var activeKey = NAV_ACTIVE[ctx] || '';
+    var dashboardItems = buildDashboardNavItems();
+    nav.appendChild(makeNavDropdown('Dashboard', dashboardItems, activeKey === 'dashboard'));
     NAV.forEach(function (n) {
       var a = document.createElement('a');
       a.href = n.doc ? docUrl() : n.href;
@@ -1396,8 +1476,8 @@
     // Actions
     var actions = document.createElement('div');
     actions.className = 'lvci-actions';
-    // Live CI activity pill (transient) leads the cluster so the stable
-    // [primary action][More] pairing keeps its position when nothing is running.
+    // Live CI activity pill (transient) leads the cluster so the stable primary
+    // action keeps its position when nothing is running.
     var runChip = document.createElement('a');
     runChip.className = 'lvci-actpill';
     runChip.id = 'lvci-actpill';
@@ -1412,77 +1492,15 @@
     // shareable surfaces (VI Browser snapshots/diffs + per-revision reports); the
     // link the page keeps in its address bar is what gets copied / printed / shared.
     if (shareEnabled()) actions.appendChild(makeSharePopover());
-    // "More" popover — always present so the Appearance control is available
-    // site-wide; it also hosts any context-specific secondary actions
-    // (Configure Workers / Update / About on the dashboard and VI Browser).
+    // Desktop secondary navigation is intentionally two named menus everywhere:
+    // Settings for configuration, Tools for page actions + Clients / About /
+    // What's New / Appearance. This replaces the old Help + three-dot split.
     var secActions = buildSecondaryActions();
-    // Group the secondary actions into the desktop top-nav dropdowns: "Settings"
-    // gathers the per-repo configuration pages, "Help" gathers About / Clients;
-    // the rest (Populate history, VI Browser renders, ...) stays in the More menu.
     var SETTINGS_KINDS = { configure: 1, vianalyzer: 1, unittests: 1 };
     var settingsItems = secActions.filter(function (a) { return SETTINGS_KINDS[a.kind]; });
-    var helpItems = secActions.filter(function (a) { return a.about || a.source || a.doc; });
-    var moreItems = secActions.filter(function (a) { return !SETTINGS_KINDS[a.kind] && !a.about && !a.source && !a.doc; });
+    var toolsItems = secActions.filter(function (a) { return !SETTINGS_KINDS[a.kind]; });
     if (settingsItems.length) nav.appendChild(makeNavDropdown('Settings', settingsItems, activeKey === 'settings'));
-    if (helpItems.length) nav.appendChild(makeNavDropdown('Help', helpItems, activeKey === 'help'));
-    {
-      var dropdown = document.createElement('div');
-      dropdown.className = 'lvci-dropdown';
-      var moreBtn = document.createElement('button');
-      moreBtn.className = 'lvci-more';
-      moreBtn.id = 'lvci-more';
-      moreBtn.setAttribute('aria-label', 'More options');
-      moreBtn.setAttribute('aria-haspopup', 'true');
-      moreBtn.setAttribute('aria-expanded', 'false');
-      moreBtn.innerHTML = ICON.more + '<span class="lvci-mdot" aria-hidden="true"></span>';
-      dropdown.appendChild(moreBtn);
-      var ddMenu = document.createElement('div');
-      ddMenu.className = 'lvci-dropdown-menu';
-      var closeDD = function () { ddMenu.classList.remove('open'); moreBtn.classList.remove('open'); moreBtn.setAttribute('aria-expanded', 'false'); };
-      popoverCloses.push(closeDD);
-      moreItems.forEach(function (a) {
-        var el;
-        if (a.href) {
-          el = document.createElement('a');
-          el.href = a.href;
-          if (a.newTab) { el.target = '_blank'; el.rel = 'noopener'; }
-          el.addEventListener('click', closeDD);
-        } else {
-          el = document.createElement('button');
-          el.type = 'button';
-          el.addEventListener('click', function () {
-            if (a.kind === 'configure' || a.kind === 'integrate' || a.kind === 'unittests' || a.kind === 'vibrowser' || a.kind === 'vianalyzer') openPage(a.kind);
-            else if (a.kind === 'runhistory') runHistory();
-            closeDD();
-          });
-        }
-        el.innerHTML = iconHtml(a) + esc(a.label);
-        if (a.source) { el.style.display = 'none'; clientsEls.push(el); }
-        if (a.about) aboutEls.push(el);
-        ddMenu.appendChild(el);
-      });
-      // Version / update entry — the single home for the installed version and
-      // the update affordance (replaces the standalone badge); links to What's New.
-      if (ddMenu.children.length) { var vsep = document.createElement('div'); vsep.className = 'lvci-sep'; ddMenu.appendChild(vsep); }
-      var ddVer = makeVerItem(); ddVer.addEventListener('click', closeDD); ddMenu.appendChild(ddVer); verEls.push(ddVer);
-      // Appearance (theme) control — divided below.
-      var dsep = document.createElement('div'); dsep.className = 'lvci-sep'; ddMenu.appendChild(dsep);
-      ddMenu.appendChild(themeControl());
-      dropdown.appendChild(ddMenu);
-      moreBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var open = !ddMenu.classList.contains('open');
-        if (open) closeOtherPopovers(closeDD);
-        ddMenu.classList.toggle('open', open);
-        moreBtn.classList.toggle('open', open);
-        moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
-      // Clicks inside the popover (e.g. the Appearance buttons) keep it open.
-      ddMenu.addEventListener('click', function (e) { e.stopPropagation(); });
-      document.addEventListener('click', closeDD);
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeDD(); });
-      actions.appendChild(dropdown);
-    }
+    nav.appendChild(makeNavDropdown('Tools', toolsItems, activeKey === 'tools', { id: 'lvci-tools', updateDot: true, tools: true }));
     hdr.appendChild(actions);
 
     // Hamburger
@@ -1496,6 +1514,13 @@
     // Mobile menu
     var menu = document.createElement('div');
     menu.className = 'lvci-menu';
+    dashboardItems.forEach(function (n) {
+      var a = document.createElement('a');
+      if (n.activity) wireActivityLink(a, n.activity, navBase, function () { menu.classList.remove('open'); });
+      else a.href = n.href;
+      a.innerHTML = iconHtml(n) + esc(n.label);
+      menu.appendChild(a);
+    });
     NAV.forEach(function (n) {
       var a = document.createElement('a');
       a.href = n.doc ? docUrl() : n.href;
@@ -1566,6 +1591,18 @@
         '<span class="lvci-rb-sub">. This page refreshes automatically when it\u2019s done.</span></span>';
     }
 
+    var depbar = document.createElement('div');
+    depbar.id = 'lvci-depbar';
+    depbar.className = 'lvci-depbar';
+    depbar.setAttribute('role', 'status');
+    depbar.setAttribute('aria-live', 'polite');
+    depbar.innerHTML =
+      '<span class="lvci-dep-spin" aria-hidden="true"></span>' +
+      '<span class="lvci-dep-txt"><strong>Updating repo containers for new dependencies. </strong>' +
+      '<span class="lvci-dep-sub">Pipeline tasks that need the worker image wait until the rebuilt container is saved to GHCR by </span>' +
+      '<a target="_blank" rel="noopener" href="https://github.com/' + repo + '/actions">Build LabVIEW CI Image \u2197</a>' +
+      '<span class="lvci-dep-sub">.</span></span>';
+
     // Global attention bar (failure banner) — hidden until the activity poll
     // finds a workflow whose newest run failed; names it + links to the run.
     var alertBar = document.createElement('div');
@@ -1589,7 +1626,7 @@
     // On config pages it instead holds the Settings sub-nav (section tabs).
     var ctxbar = null;
     var isSettings = (NAV_ACTIVE[ctx] === 'settings');
-    if (revBar || ctx === 'vi-browser' || ctx === 'dashboard' || isSettings) { ctxbar = document.createElement('div'); ctxbar.id = 'lvci-ctxbar'; ctxbar.className = 'lvci-ctxbar'; if (revBar) ctxbar.appendChild(revBar.wrap); if (DOC) ctxbar.appendChild(makeLensPicker().wrap); if (isSettings) ctxbar.appendChild(makeSettingsNav()); }
+    if (revBar || ctx === 'vi-browser' || ctx === 'dashboard' || isSettings) { ctxbar = document.createElement('div'); ctxbar.id = 'lvci-ctxbar'; ctxbar.className = 'lvci-ctxbar'; if (revBar) ctxbar.appendChild(revBar.wrap); if (isSettings) ctxbar.appendChild(makeSettingsNav()); }
 
     // ── Mount at the very top of <body> ──────────────────────────────────────
     // Some pages use <body> ITSELF as a full-height flex/grid layout container
@@ -1625,6 +1662,7 @@
     document.body.insertBefore(menu, status);
     document.body.insertBefore(hdr, menu);
     if (ctxbar) document.body.insertBefore(ctxbar, menu);     // persistent context bar (revision selector) under the header
+    document.body.insertBefore(depbar, menu);                 // dependency/container rebuild bar
     document.body.insertBefore(alertBar, menu);               // global attention bar, directly under the header
     if (rebuild) document.body.insertBefore(rebuild, menu);   // directly under the bar
 
@@ -1633,19 +1671,9 @@
     // so a page can move its own revision selector / controls into the shared bar.
     try { window.lvciHeaderReady = true; document.dispatchEvent(new CustomEvent('lvci:ready')); } catch (e) {}
 
-    // VI Browser: it owns #commit-select and moves it into the context bar on the
-    // lvci:ready we just fired (dispatchEvent is synchronous, so it is in place now).
-    // Add the Activity picker beside it -> jump from the VI Browser to any of this
-    // revision's reports. The VI Browser changes revision in place, so the picker
-    // reads the live sha (commit selector / URL) and checks availability at click time.
-    if (ctx === 'vi-browser' && ctxbar) {
-      var viSha = function () {
-        var cs = document.getElementById('commit-select');
-        if (cs && cs.value) return cs.value;
-        try { return new URLSearchParams(location.search).get('sha') || ''; } catch (e) { return ''; }
-      };
-      try { ctxbar.appendChild(makeLensPicker({ current: 'snapshots', getSha: viSha, deferProbe: true }).wrap); } catch (e) {}
-    }
+    // VI Browser owns #commit-select and moves it into this context bar on the
+    // lvci:ready event above. Document switching now lives in the Dashboard menu,
+    // which resolves that live selected revision before navigating.
   }
 
   // ── Badge state ───────────────────────────────────────────────────────────
@@ -1680,6 +1708,7 @@
   var REBUILD_ON = (ctx === 'dashboard');
   var buildWas = false;
   var buildState = { active: false, url: '' };
+  var depBuildState = { active: false, url: '' };
 
   // Re-point the About menu entries at the (possibly relocated) source site once
   // loadVersion has refined srcRepo — see aboutUrl(). Keeps href + new-tab target
@@ -1762,6 +1791,7 @@
   // it finishes so the freshly built version appears without a manual reload.
   function isDashGen(w) { return (w.path || '').toLowerCase().indexOf('dashboard-pages.yml') >= 0; }
   function isPagesPub(w) { return (w.name || '').toLowerCase() === 'pages build and deployment'; }
+  function isWorkerBuild(w) { return (w.path || '').toLowerCase().indexOf('build-labview-image.yml') >= 0 || (w.name || '').toLowerCase() === 'build labview ci image'; }
   function pickRebuild(runs) {
     var gen = null, pub = null;
     for (var i = 0; i < runs.length; i++) {
@@ -1769,6 +1799,24 @@
       else if (isPagesPub(runs[i])) { if (!pub) pub = runs[i]; }
     }
     return gen || pub;                          // prefer the generator over the bare publish
+  }
+  function pickWorkerBuild(runs) {
+    for (var i = 0; i < runs.length; i++) if (isWorkerBuild(runs[i])) return runs[i];
+    return null;
+  }
+  function renderDependencyBuild(run) {
+    var bar = document.getElementById('lvci-depbar');
+    if (!bar) return;
+    if (!run) {
+      bar.classList.remove('show');
+      depBuildState = { active: false, url: '' };
+      return;
+    }
+    var url = run.html_url || ('https://github.com/' + repo + '/actions/workflows/build-labview-image.yml');
+    var a = bar.querySelector('a');
+    if (a) { a.href = url; a.textContent = (run.name || 'Build LabVIEW CI Image') + ' \u2197'; }
+    depBuildState = { active: true, url: url };
+    bar.classList.add('show');
   }
   function renderRebuild(run) {
     var card = document.getElementById('lvci-rebuild');
@@ -1935,6 +1983,7 @@
           if (buildWas && !rb) autoRefresh();   // a rebuild we were showing just finished
           buildWas = !!rb;
         }
+        renderDependencyBuild(pickWorkerBuild(act));
         // Tooling-upgrade indicator: remember the active runs, refresh the
         // committed catalog, then decide whether a real update is mid-flight (so
         // the menu links to it instead of offering to start another).
@@ -2013,7 +2062,7 @@
     }
 
     // 2) Update-available dot on the menu trigger(s).
-    ['lvci-more', 'lvci-burger'].forEach(function (id) {
+    ['lvci-tools', 'lvci-burger'].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.classList.toggle('has-update', hasUpdate);
     });

@@ -54,6 +54,29 @@ $PublicRepoUrl    = if ($Env:VIPM_PUBLIC_REPO_URL) { $Env:VIPM_PUBLIC_REPO_URL }
 $Env:VIPM_NONINTERACTIVE    = '1'
 $Env:VIPM_ASSUME_YES        = '1'
 $Env:NO_COLOR               = '1'
+# Turn on VIPM's verbose debug log so a failing build records WHY an install
+# fails - e.g. why `vipm refresh` reports success yet `vipm install <name>`
+# returns exit 3 "package not found" (an empty resolver index), and why applying
+# the .vipc file returns Code 42. Overridable: set VIPM_DEBUG=0 to quiet it once
+# the install path is proven. See docs.vipm.io/latest/cli/environment-variables.
+$Env:VIPM_DEBUG             = if ($null -ne $Env:VIPM_DEBUG -and $Env:VIPM_DEBUG -ne '') { $Env:VIPM_DEBUG } else { '1' }
+# Make VIPM treat this `docker build` step as a CI environment. The official VIPM
+# docs note the CLI auto-detects CI from these env vars and then uses its longer,
+# CI-tuned default timeouts and non-interactive behavior; during `docker build`
+# none of them are set, so VIPM falls back to short desktop defaults that can
+# abort a cold headless LabVIEW. (VIPM_TIMEOUT still overrides the actual value.)
+if (-not $Env:CI)             { $Env:CI = 'true' }
+if (-not $Env:GITHUB_ACTIONS)  { $Env:GITHUB_ACTIONS = 'true' }
+# VIPM has "several ways" to decide a repo is public, INCLUDING the environment
+# (per JKI). In GitHub Actions these are set automatically, but inside `docker
+# build` they are absent, so derive them from the public repo URL and export them
+# for VIPM's environment-based public-repo detection. (Owner/name parsed from
+# https://github.com/<owner>/<name>.git.) Do not clobber values already present.
+if ($PublicRepoUrl -match 'github\.com[:/]+(?<owner>[^/]+)/(?<name>[^/]+?)(?:\.git)?/?$') {
+    if (-not $Env:GITHUB_SERVER_URL)       { $Env:GITHUB_SERVER_URL = 'https://github.com' }
+    if (-not $Env:GITHUB_REPOSITORY)        { $Env:GITHUB_REPOSITORY = "$($Matches.owner)/$($Matches.name)" }
+    if (-not $Env:GITHUB_REPOSITORY_OWNER) { $Env:GITHUB_REPOSITORY_OWNER = $Matches.owner }
+}
 # Bound the per-operation timeout. During `docker build` the GITHUB_ACTIONS / CI
 # env vars are NOT present, so VIPM does not apply its longer "CI" default timeouts
 # and its short defaults (check_for_updates ~270s, library_list ~330s) can abort a
@@ -125,7 +148,7 @@ if (-not $VipmExe -or -not (Test-Path $VipmExe)) {
         Write-Warning ("VIPM add-on install SKIPPED: could not install VIPM from '" + $VipmInstallerUrl + "' (" + $_.Exception.Message + "). " +
             "Core image (LabVIEW + VI Analyzer) is unaffected; VIPM-only add-ons such as Antidoc are NOT baked in. " +
             "Provide a reachable VIPM_INSTALLER_URL to enable them.")
-        exit 0
+        exit 1
     }
 }
 
@@ -295,8 +318,230 @@ function Get-VipcPackageSpecs([string]$VipcPath) {
     return @($specs)
 }
 
+function Split-VipmPackageSpec([string] $Spec) {
+    $s = ([string]$Spec).Trim()
+    $aliases = @{
+        # Older VIPC files can use the short/legacy VI Tester name, while the
+        # public VIPM repository indexes expose the package under this ID.
+        'jki_vi_tester' = 'jki_labs_tool_vi_tester'
+    }
+    if ($s -match '^(?<name>[^@]+)@(?<version>.+)$') {
+        $name = $Matches.name.Trim()
+        if ($aliases.ContainsKey($name)) { $name = $aliases[$name] }
+        return [pscustomobject]@{ Name = $name; Version = $Matches.version.Trim(); Minimum = $false }
+    }
+    if ($s -match '^(?<name>[A-Za-z0-9_\.\-]+)\s*>\=\s*(?<version>.+)$') {
+        $name = $Matches.name.Trim()
+        if ($aliases.ContainsKey($name)) { $name = $aliases[$name] }
+        return [pscustomobject]@{ Name = $name; Version = $Matches.version.Trim(); Minimum = $true }
+    }
+    if ($aliases.ContainsKey($s)) { $s = $aliases[$s] }
+    return [pscustomobject]@{ Name = $s; Version = ''; Minimum = $false }
+}
+
+function Get-NumericVersionKey([string] $Version) {
+    $nums = @([regex]::Matches(([string]$Version), '\d+') | ForEach-Object { [int]$_.Value })
+    while ($nums.Count -lt 6) { $nums += 0 }
+    return ($nums[0..5] | ForEach-Object { '{0:D8}' -f $_ }) -join '.'
+}
+
+function ConvertFrom-VipmRepositoryIndex([string] $IndexPath, [string] $BaseUrl, [string] $Name) {
+    $packages = New-Object System.Collections.Generic.List[object]
+    $current = $null
+    foreach ($line in Get-Content -LiteralPath $IndexPath -ErrorAction Stop) {
+        if ($line -match '^\[Package\s+(?<id>.+)\]\s*$') {
+            if ($current) { $packages.Add($current) }
+            $id = $Matches.id.Trim()
+            $pkgName = $id
+            $pkgVersion = ''
+            if ($id -match '^(?<name>.+)-(?<version>\d+(?:\.\d+)+(?:[A-Za-z0-9_.-]*)?)$') {
+                $pkgName = $Matches.name
+                $pkgVersion = $Matches.version
+            }
+            $current = [ordered]@{
+                Id          = $id
+                Name        = $pkgName
+                Version     = $pkgVersion
+                VersionKey  = Get-NumericVersionKey $pkgVersion
+                Repository  = $Name
+                BaseUrl     = $BaseUrl
+                PackageUrl  = ''
+                PackageMD5  = ''
+                Dependencies = ''
+            }
+            continue
+        }
+        if (-not $current) { continue }
+        if ($line -match '^(?<key>[^=]+)=(?<value>.*)$') {
+            $key = $Matches.key.Trim()
+            $value = $Matches.value.Trim()
+            switch ($key) {
+                'Package.URL' { $current.PackageUrl = $value }
+                'Package.MD5' { $current.PackageMD5 = $value.ToLowerInvariant() }
+                'Dependencies.Requires' { $current.Dependencies = $value }
+            }
+        }
+    }
+    if ($current) { $packages.Add($current) }
+    return @($packages | ForEach-Object { [pscustomobject]$_ })
+}
+
+function Get-PublicVipmRepositoryPackages {
+    $repoDir = Join-Path $env:TEMP 'vipm-public-indexes'
+    New-Item -ItemType Directory -Force -Path $repoDir | Out-Null
+    $repos = @(
+        [pscustomobject]@{
+            Name = 'NI LabVIEW Tools Network'
+            Url = 'http://download.ni.com/evaluation/labview/lvtn/vipm/index.vipr'
+            BaseUrl = 'http://download.ni.com/evaluation/labview/lvtn/vipm/'
+            FileName = 'ni-lvtn.vipr'
+        },
+        [pscustomobject]@{
+            Name = 'VIPM Community'
+            Url = 'http://www.jkisoft.com/packages/jkisoft.ogpd'
+            BaseUrl = 'http://www.jkisoft.com/packages/'
+            FileName = 'vipm-community.ogpd'
+        }
+    )
+    $all = New-Object System.Collections.Generic.List[object]
+    foreach ($repo in $repos) {
+        $indexFile = Join-Path $repoDir $repo.FileName
+        Write-Host "Downloading public VIPM repository index: $($repo.Url)"
+        Invoke-WebRequest -Uri $repo.Url -OutFile $indexFile -UseBasicParsing -TimeoutSec 120 | Out-Null
+        foreach ($pkg in (ConvertFrom-VipmRepositoryIndex $indexFile $repo.BaseUrl $repo.Name)) { $all.Add($pkg) }
+    }
+    Write-Host "Loaded $($all.Count) package versions from public VIPM indexes."
+    return @($all.ToArray())
+}
+
+function Resolve-PublicVipmPackageUrl($Package) {
+    $url = [string]$Package.PackageUrl
+    if ($url -match '^https?://') { return $url }
+    if ($url -match '^packages/') { return ([string]$Package.BaseUrl).TrimEnd('/') + '/' + $url }
+    if ($url -match '^sf://opengtoolkit/(?<file>[^/]+)$') {
+        $file = $Matches.file
+        if ($Package.Name -match '^oglib_(?<lib>.+)$') {
+            $lib = $Matches.lib
+            $major = if ($Package.Version -match '^(?<major>\d+)\.') { $Matches.major } else { '4' }
+            return "https://downloads.sourceforge.net/project/opengtoolkit/lib_$lib/$major.x/$file`?download"
+        }
+    }
+    if ($url -match '^sf://(?<project>[^/]+)/(?<file>[^/]+)$') {
+        return "https://downloads.sourceforge.net/project/$($Matches.project)/$($Matches.file)`?download"
+    }
+    if ($url) { return ([string]$Package.BaseUrl).TrimEnd('/') + '/' + $url.TrimStart('/') }
+    return ''
+}
+
+function Select-PublicVipmPackage($Request, [object[]] $Packages) {
+    $matches = @($Packages | Where-Object { $_.Name -eq $Request.Name })
+    if ($matches.Count -eq 0) { return $null }
+    if ($Request.Version) {
+        if ($Request.Minimum) {
+            $minKey = Get-NumericVersionKey $Request.Version
+            $matches = @($matches | Where-Object { $_.VersionKey -ge $minKey })
+        } else {
+            $matches = @($matches | Where-Object { $_.Version -eq $Request.Version })
+        }
+    }
+    return @($matches | Sort-Object VersionKey -Descending | Select-Object -First 1)[0]
+}
+
+function Get-PublicVipmDependencyRequests($Package) {
+    $deps = @()
+    $text = [string]$Package.Dependencies
+    if ([string]::IsNullOrWhiteSpace($text)) { return @() }
+    foreach ($part in ($text -split ',')) {
+        $p = $part.Trim()
+        if ($p -match '^(?<name>[A-Za-z0-9_\.\-]+)\s*(?<op>>=|=|==)?\s*(?<version>[A-Za-z0-9_.\-]+)?') {
+            $op = [string]$Matches.op
+            $deps += [pscustomobject]@{
+                Name = $Matches.name.Trim()
+                Version = if ($Matches.version) { $Matches.version.Trim() } else { '' }
+                Minimum = ($op -eq '>=' -or -not $op)
+            }
+        }
+    }
+    return @($deps)
+}
+
+function Save-PublicVipmPackage($Package, [string] $OutDir) {
+    New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+    $ext = '.vip'
+    if ([string]$Package.PackageUrl -match '\.(?<ext>vip|ogp)(?:$|\?)') { $ext = '.' + $Matches.ext }
+    $fileName = '{0}-{1}{2}' -f $Package.Name, $Package.Version, $ext
+    $outFile = Join-Path $OutDir $fileName
+    if (Test-Path $outFile) { return $outFile }
+    $url = Resolve-PublicVipmPackageUrl $Package
+    if (-not $url) { throw "No downloadable package URL found for $($Package.Id) from $($Package.Repository)." }
+    Write-Host "  Downloading $($Package.Id) from $url"
+    Invoke-WebRequest -Uri $url -OutFile $outFile -UseBasicParsing -MaximumRedirection 10 -TimeoutSec 300 -Headers @{ 'User-Agent' = 'challenge-of-champions VIPM downloader' } | Out-Null
+    $bytes = Get-Content -LiteralPath $outFile -Encoding Byte -TotalCount 4
+    if ($bytes.Count -lt 4 -or $bytes[0] -ne 0x50 -or $bytes[1] -ne 0x4b) {
+        throw "Downloaded file for $($Package.Id) is not a VIP/ZIP archive: $outFile"
+    }
+    if ($Package.PackageMD5) {
+        $md5 = (Get-FileHash -LiteralPath $outFile -Algorithm MD5).Hash.ToLowerInvariant()
+        if ($md5 -ne $Package.PackageMD5) { throw "MD5 mismatch for $($Package.Id): expected $($Package.PackageMD5), got $md5" }
+    }
+    return $outFile
+}
+
+function Get-LocalVipFilesForSpecs([string[]] $Specs) {
+    $repoPackages = @(Get-PublicVipmRepositoryPackages)
+    $rootRequests = @($Specs | ForEach-Object { Split-VipmPackageSpec $_ })
+    $exactByName = @{}
+    foreach ($root in $rootRequests) {
+        if ($root.Version -and -not $root.Minimum) { $exactByName[$root.Name] = $root }
+    }
+    $resolved = New-Object System.Collections.Generic.List[object]
+    $visiting = @{}
+    $visited = @{}
+    $visitedPackageIds = @{}
+
+    function Resolve-One($Request) {
+        if ($Request.Minimum -and $exactByName.ContainsKey($Request.Name)) {
+            $Request = $exactByName[$Request.Name]
+        }
+        $key = '{0}@{1}:{2}' -f $Request.Name, $Request.Version, $Request.Minimum
+        if ($visited.ContainsKey($key)) { return }
+        if ($visiting.ContainsKey($key)) { return }
+        $visiting[$key] = $true
+        $pkg = Select-PublicVipmPackage $Request $repoPackages
+        if (-not $pkg) {
+            if ($Request.Version) { throw "Package '$($Request.Name)' version '$($Request.Version)' was not found in the public VIPM indexes." }
+            throw "Package '$($Request.Name)' was not found in the public VIPM indexes."
+        }
+        if ($visitedPackageIds.ContainsKey($pkg.Id)) {
+            $visited[$key] = $true
+            $visiting.Remove($key)
+            return
+        }
+        foreach ($dep in (Get-PublicVipmDependencyRequests $pkg)) { Resolve-One $dep }
+        $resolved.Add($pkg)
+        $visitedPackageIds[$pkg.Id] = $true
+        $visited[$key] = $true
+        $visiting.Remove($key)
+    }
+
+    foreach ($root in $rootRequests) { Resolve-One $root }
+    $downloadDir = Join-Path $env:TEMP 'vipm-package-files'
+    $files = New-Object System.Collections.Generic.List[string]
+    foreach ($pkg in $resolved) { $files.Add((Save-PublicVipmPackage $pkg $downloadDir)) }
+    return @($files.ToArray() | Select-Object -Unique)
+}
+
 $applyFailed = $false
-# VIPM 2026 Q3 (26.3) CLI flags (verified against docs.vipm.io command-reference):
+# Set when a best-effort tooling VIPC (ci-tooling*) does not fully install. This is
+# surfaced as a warning but does NOT fail the image build (the required essentials
+# and project dependencies are what gate CI correctness).
+$script:bestEffortFailed = $false
+# Set once a VIPM call reports the engine-startup timeout. After that the headless
+# VIPM engine is wedged and will NOT recover within this build, so every subsequent
+# 'vipm install' would burn another full VIPM_TIMEOUT (900s) before failing. We use
+# this flag to abort the remaining install attempts immediately rather than stacking
+# 15-minute timeouts into a multi-hour hang (build 27910621710 ran 90+ min that way).
+$script:VipmEngineDead = $false
 #   * --labview-version / --labview-bitness are GLOBAL options and must PRECEDE the
 #     'install' subcommand; they target the LabVIEW baked into the image.
 #   * There is NO '--refresh' option on 'install' anymore - the package list is
@@ -323,7 +568,50 @@ function Invoke-VipmInstall {
     # code 8 (IO_ERROR) - e.g. the engine-startup timeout vs. the engine rejecting
     # the .vipc file itself.
     $script:LastVipmOutput = ($out | Out-String)
+    # A 'wait for VIPM startup' timeout means the engine is wedged for the rest of
+    # this build; record it so callers stop hammering it (each retry costs ~900s).
+    if ($script:LastVipmOutput -match 'wait for VIPM startup') { $script:VipmEngineDead = $true }
     return $LASTEXITCODE
+}
+
+# Install a set of package SPECS (name@version) using the by-name path first and,
+# when the container resolver index is empty, the public-index local-file fallback.
+# Returns $true only if every spec installed. Stops early (returns $false) the
+# moment the VIPM engine wedges so we never stack 900s timeouts.
+function Install-VipmSpecs {
+    param([string[]] $Specs)
+    if (-not $Specs -or $Specs.Count -eq 0) { return $true }
+    Write-Host ("  Installing by name: " + ($Specs -join ', '))
+    $rc = Invoke-VipmInstall @Specs
+    $failed = $false
+    if ($rc -ne 0) {
+        Write-Host "  batch install failed (exit $rc); retrying each package individually ..."
+        foreach ($spec in $Specs) {
+            $rc = Invoke-VipmInstall $spec
+            if ($rc -ne 0) { Write-Warning "  package '$spec' failed (exit $rc)."; $failed = $true }
+            if ($script:VipmEngineDead) { Write-Warning '  VIPM engine wedged; stopping per-package retries.'; return $false }
+        }
+    }
+    if ($rc -eq 0 -and -not $failed) { return $true }
+    if ($script:VipmEngineDead) { Write-Warning '  VIPM engine wedged; skipping the local-file fallback.'; return $false }
+    Write-Host '  VIPM name-based resolution failed; downloading public .vip files and installing from local files ...'
+    try {
+        $vipFiles = @(Get-LocalVipFilesForSpecs $Specs)
+        Write-Host ("  Installing local VIP files: " + (($vipFiles | ForEach-Object { Split-Path $_ -Leaf }) -join ', '))
+        $rc = Invoke-VipmInstall @vipFiles
+        if ($rc -eq 0) { return $true }
+        Write-Host "  local VIP file batch install failed (exit $rc); retrying each file individually ..."
+        $localFailed = $false
+        foreach ($vipFile in $vipFiles) {
+            $rc = Invoke-VipmInstall $vipFile
+            if ($rc -ne 0) { Write-Warning "  local package file '$vipFile' failed (exit $rc)."; $localFailed = $true }
+            if ($script:VipmEngineDead) { Write-Warning '  VIPM engine wedged; stopping per-file retries.'; return $false }
+        }
+        return (-not $localFailed)
+    } catch {
+        Write-Warning ("  local VIP file fallback failed: " + $_.Exception.Message)
+        return $false
+    }
 }
 
 # Refresh all package sources once (best-effort - a refresh failure is only a warning
@@ -342,6 +630,33 @@ function Invoke-VipmInstall {
 function New-PublicRepoWorkdir {
     param([string] $RepoUrl)
     $work = Join-Path $env:TEMP ('vipm-install-' + [Guid]::NewGuid().ToString('N'))
+
+    # Preferred: actually CLONE the public repo so the working directory is a REAL
+    # git checkout - a genuine remote, real HEAD/commits, and the project's own
+    # .vipc present on disk - rather than a fabricated stub. If VIPM Community
+    # Edition verifies repository visibility by shelling out to git (git rev-parse
+    # HEAD / git ls-remote origin reaching GitHub), only a real clone satisfies it.
+    # Shallow + single-branch + no-tags keeps it fast. Best-effort: any failure
+    # (no git, no network in the build layer) falls back to the fabricated .git
+    # context below, which is enough to read .git/config's origin URL.
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+        try {
+            Write-Host "Cloning public repo for VIPM CE context: $RepoUrl"
+            & git clone --depth 1 --single-branch --no-tags --quiet $RepoUrl $work 2>&1 | Out-Host
+            if (($LASTEXITCODE -eq 0) -and (Test-Path (Join-Path $work '.git'))) {
+                Write-Host "  Cloned public repo into $work"
+                return $work
+            }
+            Write-Warning "  git clone failed (exit $LASTEXITCODE); falling back to a fabricated .git context."
+        } catch {
+            Write-Warning ("  git clone threw (" + $_.Exception.Message + "); falling back to a fabricated .git context.")
+        }
+        if (Test-Path $work) { Remove-Item -Recurse -Force $work -ErrorAction SilentlyContinue }
+    }
+
+    # Fallback: minimal fabricated .git (origin URL only). Enough for VIPM to read
+    # .git/config's origin remote, but with no commits a deeper `git rev-parse HEAD`
+    # / `git ls-remote` check would not pass - hence the real clone is preferred.
     New-Item -ItemType Directory -Path (Join-Path $work '.git\objects')    -Force | Out-Null
     New-Item -ItemType Directory -Path (Join-Path $work '.git\refs\heads') -Force | Out-Null
     Set-Content -Path (Join-Path $work '.git\HEAD') -Value 'ref: refs/heads/main' -NoNewline -Encoding ascii
@@ -358,6 +673,21 @@ try {
     Write-Host "Running VIPM installs from a public-repo context (origin=$PublicRepoUrl) to satisfy Community Edition."
     Set-Location $installWorkdir
 
+    # Diagnostic (per JKI): show what `git` reports from the EXACT directory vipm
+    # runs in - this is one of the signals VIPM uses to decide the repo is public.
+    # If these don't show a clean working tree with a public origin remote, VIPM's
+    # public-repo detection can't succeed regardless of anything else.
+    if (Get-Command git -ErrorAction SilentlyContinue) {
+        Write-Host "--- git context for VIPM (cwd=$installWorkdir) ---"
+        Write-Host '$ git status'
+        & git status 2>&1 | Out-Host
+        Write-Host '$ git remote -v'
+        & git remote -v 2>&1 | Out-Host
+        Write-Host '$ git rev-parse HEAD'
+        & git rev-parse HEAD 2>&1 | Out-Host
+        Write-Host '--- end git context ---'
+    }
+
     # Force a full re-download of the package spec index. A fresh headless VIPM in a
     # container starts with an empty CLI spec cache (C:\ProgramData\JKI\VIPM\cache);
     # a plain `vipm refresh` reported "complete" but downloaded no specs, so every
@@ -365,51 +695,87 @@ try {
     Write-Host 'Refreshing VIPM package sources (vipm refresh --force) ...'
     & $VipmExe refresh --force 2>&1 | Out-Host
 
+    # Phase A (REQUIRED, installed FIRST): the UTF JUnit essentials the built-in
+    # 'LabVIEWCLI -OperationName RunUnitTests' operation links against. Install them
+    # before any heavy tooling VIPC so they land while the engine is fresh - even if
+    # a later add-on (e.g. Antidoc) wedges the engine, headless UTF still works.
+    # Without them RunUnitTests fails with LabVIEW CLI error -350053. Override the
+    # list with VIPM_REQUIRED_PACKAGES (comma/semicolon separated name@version); set
+    # it to a single '-' to disable the required pre-install entirely.
+    $requiredRaw = if ($null -ne $Env:VIPM_REQUIRED_PACKAGES) { $Env:VIPM_REQUIRED_PACKAGES } else {
+        'ni_lib_utf_junit_report@1.0.1.43,ni_lib_junit_results_api@1.0.1.6,ni_lib_simple_xml@1.0.0.4'
+    }
+    $requiredSpecs = @($requiredRaw -split '[,;]' | ForEach-Object { $_.Trim() } | Where-Object { $_ -and $_ -ne '-' })
+    if ($requiredSpecs.Count -gt 0) {
+        Write-Host ("Installing REQUIRED UTF essentials first: " + ($requiredSpecs -join ', '))
+        if (Install-VipmSpecs $requiredSpecs) {
+            Write-Host 'REQUIRED UTF essentials installed.'
+        } else {
+            Write-Warning 'One or more REQUIRED UTF essentials failed to install; headless UTF (RunUnitTests) will fail with -350053.'
+            $applyFailed = $true
+        }
+    }
+
+    # Apply REQUIRED (project) VIPCs before BEST-EFFORT tooling VIPCs (ci-tooling*).
+    # A best-effort add-on (Antidoc) can wedge the headless VIPM engine, so it must
+    # run LAST - otherwise it would kill the engine before a required project VIPC
+    # (the OpenG / domain dependencies the project's VIs load against) gets to apply.
+    $vipcFiles = @($vipcFiles | Sort-Object @{ Expression = { if ($_.Name -like 'ci-tooling*') { 1 } else { 0 } } }, Name)
+
     foreach ($vipc in $vipcFiles) {
-        Write-Host "Applying VIPC: $($vipc.Name)"
-        # Preferred path: install the .vipc file directly (the form VIPM documents:
-        # `vipm install -y project.vipc`). VIPM resolves the full package set from the
-        # file, including transitive dependencies, rather than us parsing names.
-        Write-Host "  Installing from file: vipm install -y '$($vipc.Name)'"
-        $rc = Invoke-VipmInstall '-y' $vipc.FullName
-        if ($rc -eq 0) { continue }
+        # Tooling VIPCs (ci-tooling*.vipc) carry opportunistic add-ons (Antidoc,
+        # Caraya, VI Tester). Antidoc's heavy dependency tree can wedge the headless
+        # VIPM engine, so a tooling VIPC failure is BEST-EFFORT: it warns but does not
+        # fail the image build (the required essentials above are already installed).
+        # Any other (project) VIPC is REQUIRED - its packages are what the project's
+        # VIs load against, so a failure must fail the build.
+        $bestEffort = ($vipc.Name -like 'ci-tooling*')
+        $label = if ($bestEffort) { 'best-effort tooling' } else { 'required project' }
+        $vipcFailed = $false
 
-        # ONLY the genuine "wait for VIPM startup" timeout means the VIPM engine
-        # never came online; retrying by name would hit the SAME wall and burn
-        # another VIPM_TIMEOUT apiece (build 27885267098 wasted ~64 min that way),
-        # so skip the fallback and surface the engine-startup failure immediately.
-        #
-        # Other exit-8 failures (notably Code 42 "This file does not appear to be a
-        # valid VI package configuration", seen once the engine is pre-launched and
-        # `vipm refresh` already succeeded) mean the engine IS up but rejected the
-        # .vipc-FILE apply path. In that case the by-name install below bypasses the
-        # file entirely and can still succeed, so we must fall through to it.
-        if (($rc -eq 8 -or $rc -eq 124) -and ($script:LastVipmOutput -match 'wait for VIPM startup')) {
-            Write-Warning ("  VIPM could not install '$($vipc.Name)' (exit $rc): the VIPM engine never " +
-                "came online ('wait for VIPM startup' timeout). Skipping the per-package fallback (same root cause).")
-            $applyFailed = $true
-            continue
+        if ($script:VipmEngineDead) {
+            Write-Warning ("  Skipping '$($vipc.Name)' ($label): the VIPM engine wedged earlier in this build and will not recover.")
+            $vipcFailed = $true
         }
-
-        # Fall back to per-package install by name parsed from the .vipc's config.xml.
-        # (The engine is up - `refresh` succeeded - so this can resolve and install.)
-        Write-Host "  install from file failed (exit $rc); falling back to per-package names ..."
-        $specs = @(Get-VipcPackageSpecs $vipc.FullName)
-        if ($specs.Count -eq 0) {
-            Write-Warning "VIPM could not install from '$($vipc.Name)' (exit $rc) and no package names could be parsed."
-            $applyFailed = $true
-            continue
-        }
-        Write-Host ("  Installing by name: " + ($specs -join ', '))
-        $rc = Invoke-VipmInstall @specs
-        if ($rc -ne 0) {
-            Write-Host "  batch install failed (exit $rc); retrying each package individually ..."
-            foreach ($spec in $specs) {
-                $rc = Invoke-VipmInstall $spec
-                if ($rc -ne 0) {
-                    Write-Warning "  package '$spec' failed (exit $rc)."
-                    $applyFailed = $true
+        else {
+            Write-Host "Applying VIPC: $($vipc.Name) [$label]"
+            # Preferred path: install the .vipc file directly (the form VIPM documents:
+            # `vipm install -y project.vipc`).
+            Write-Host "  Installing from file: vipm install -y '$($vipc.Name)'"
+            $rc = Invoke-VipmInstall '-y' $vipc.FullName
+            if ($rc -eq 0 -and $script:LastVipmOutput -match 'No packages were installed') {
+                Write-Warning "  VIPM accepted '$($vipc.Name)' but reported that no packages were installed; falling back to package-level install."
+                $rc = 42
+            }
+            if ($rc -ne 0) {
+                if (($rc -eq 8 -or $rc -eq 124) -and ($script:LastVipmOutput -match 'wait for VIPM startup')) {
+                    # Engine never came online; the by-name fallback would hit the same
+                    # wall and burn another VIPM_TIMEOUT, so surface it immediately.
+                    Write-Warning ("  VIPM could not install '$($vipc.Name)' (exit $rc): the VIPM engine never came online ('wait for VIPM startup').")
+                    $vipcFailed = $true
                 }
+                else {
+                    # Code 42 etc. mean the engine is up but rejected the .vipc-FILE
+                    # apply path; the by-name + local-file fallback can still succeed.
+                    Write-Host "  install from file failed (exit $rc); falling back to per-package names ..."
+                    $specs = @(Get-VipcPackageSpecs $vipc.FullName)
+                    if ($specs.Count -eq 0) {
+                        Write-Warning "VIPM could not install from '$($vipc.Name)' (exit $rc) and no package names could be parsed."
+                        $vipcFailed = $true
+                    }
+                    elseif (-not (Install-VipmSpecs $specs)) {
+                        $vipcFailed = $true
+                    }
+                }
+            }
+        }
+
+        if ($vipcFailed) {
+            if ($bestEffort) {
+                $script:bestEffortFailed = $true
+                Write-Warning ("  '$($vipc.Name)' did not fully install, but it is best-effort tooling - continuing the build.")
+            } else {
+                $applyFailed = $true
             }
         }
     }
@@ -434,14 +800,23 @@ if ($VipmEngineProc -and -not $VipmEngineProc.HasExited) {
 }
 
 if ($applyFailed) {
-    Write-Warning ('One or more VIPM packages could not be installed. VIPM-distributed add-ons ' +
-        '(Antidoc, Caraya, VI Tester, and the UTF JUnit Report library that the RunUnitTests ' +
-        'CLI operation links against to emit its JUnit report) may be absent, so headless UTF ' +
-        'may fail with LabVIEW CLI error -350053. Check the install log above for the failing ' +
-        'package(s) and confirm they exist on the configured VIPM repository. Core image ' +
-        '(LabVIEW + VI Analyzer + UTF) is unaffected.')
-    # Best-effort: never fail the whole image build over optional VIPM add-ons.
-    exit 0
+    $message = ('One or more REQUIRED VIPM packages could not be installed (a project .vipc ' +
+        'dependency or a UTF JUnit essential the RunUnitTests CLI links against). Headless UTF ' +
+        'may fail with LabVIEW CLI error -350053, or project VIs may not load. Check the install ' +
+        'log above for the failing package(s) and confirm they exist on the configured VIPM repository.')
+    if ($Env:VIPM_ALLOW_MISSING_PACKAGES -eq '1') {
+        Write-Warning ($message + ' VIPM_ALLOW_MISSING_PACKAGES=1 is set, so the image build will continue without those packages.')
+        exit 0
+    }
+    Write-Error ($message + ' Failing the image build so CI cannot publish or run against a worker image with stale/missing required dependencies. Set VIPM_ALLOW_MISSING_PACKAGES=1 only for emergency best-effort builds.')
+    exit 1
 }
 
-Write-Host 'All VIPM packages installed successfully.'
+if ($script:bestEffortFailed) {
+    Write-Warning ('Some best-effort tooling add-ons (e.g. Antidoc / Caraya / VI Tester from ci-tooling.vipc) ' +
+        'did not fully install - typically because a heavy dependency tree wedged the headless VIPM engine. ' +
+        'The image is still valid: the required project dependencies and UTF JUnit essentials are present. ' +
+        'Bake the missing add-on separately (e.g. a dedicated VIPC) if you need it in the worker.')
+}
+
+Write-Host 'Required VIPM packages installed successfully.'
