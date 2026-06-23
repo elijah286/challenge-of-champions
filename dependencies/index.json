@@ -1,8 +1,15 @@
 {
   "schema": 1,
   "repo": "elijah286/challenge-of-champions",
-  "sha": "8aa93b87bbadce17d8b17a8c26b24843bfe01d06",
+  "sha": "0e71c2409db0c2d5c1c050a074bf0506f5cbafee",
   "revisions": [
+    {
+      "sha": "0e71c2409db0c2d5c1c050a074bf0506f5cbafee",
+      "short": "0e71c24",
+      "message": "ci: adopt LabVIEW CI tooling v3.43.2 (full update)",
+      "author": "github-actions[bot]",
+      "date": "2026-06-23T12:04:10Z"
+    },
     {
       "sha": "8aa93b87bbadce17d8b17a8c26b24843bfe01d06",
       "short": "8aa93b8",
@@ -697,13 +704,6 @@
       "date": "2026-06-05T01:42:30Z"
     },
     {
-      "sha": "3399b37c12186d41db7d380470afed9519e15d62",
-      "short": "3399b37",
-      "message": "feat: add default-off checkbox to hide/show CI-only revisions on dashboard",
-      "author": "Elijah Kerry",
-      "date": "2026-06-05T01:38:11Z"
-    },
-    {
       "sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712",
       "short": "0d83d34",
       "message": "minor improvements",
@@ -1021,6 +1021,16 @@
       "details": "NI-published Windows VIPM package that enables VIPC application during worker builds. Linux installs VIPM from the native Debian package during its worker build."
     }
   ],
+  "dragon": {
+    "available": false,
+    "column": "winExp",
+    "ready": false,
+    "health": "",
+    "manifest_version": "",
+    "files": [],
+    "install_set": [],
+    "conflicts": []
+  },
   "system": [
     {
       "name": "VI Browser 2.0 toimages runner",
