@@ -1212,13 +1212,21 @@
       "platform": "linux",
       "defaultTag": "latest",
       "tag": "latest",
-      "ready": false,
-      "packages": [],
+      "ready": true,
+      "packages": [
+        "dataflow_g_lib_g_image-0.5.0.1",
+        "oglib_appcontrol-4.1.0.7",
+        "oglib_array-4.1.0.13",
+        "oglib_error-4.2.0.23",
+        "oglib_file-4.0.0.20",
+        "oglib_lvdata-4.2.0.21",
+        "oglib_string-4.1.0.12"
+      ],
       "failed_packages": [],
-      "nipkg_ready": false,
+      "nipkg_ready": true,
       "nipkg_packages": [],
-      "labview_version": "",
-      "version": "latest"
+      "labview_version": "2026",
+      "version": "linux-de0459c92301"
     }
   ]
 }
