@@ -1,8 +1,15 @@
 {
   "schema": 1,
   "repo": "elijah286/challenge-of-champions",
-  "sha": "0e71c2409db0c2d5c1c050a074bf0506f5cbafee",
+  "sha": "148704a310c16ff64a83f678952d83214d045be4",
   "revisions": [
+    {
+      "sha": "148704a310c16ff64a83f678952d83214d045be4",
+      "short": "148704a",
+      "message": "Add LabVIEW CI pipeline",
+      "author": "Elijah Kerry",
+      "date": "2026-06-23T18:26:12Z"
+    },
     {
       "sha": "0e71c2409db0c2d5c1c050a074bf0506f5cbafee",
       "short": "0e71c24",
@@ -697,13 +704,6 @@
       "date": "2026-06-05T12:05:41Z"
     },
     {
-      "sha": "f962eb94b309e7e8cf2e8c318dd8e712094d3232",
-      "short": "f962eb9",
-      "message": "feat: link dashboard message column to VI Browser at specific SHA",
-      "author": "elijah286",
-      "date": "2026-06-05T01:42:30Z"
-    },
-    {
       "sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712",
       "short": "0d83d34",
       "message": "minor improvements",
@@ -932,6 +932,7 @@
         "dataflow_g_lib_g_image-0.5.0.1",
         "jki_lib_caraya-1.4.4.148",
         "jki_vi_tester",
+        "ni_lib_junit_results_api-1.0.1.6",
         "ni_lib_utf_junit_report-1.0.1.43"
       ],
       "error": ""
