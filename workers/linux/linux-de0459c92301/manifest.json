@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "platform": "linux",
+  "version": "linux-de0459c92301",
+  "labview_version": "2026",
+  "base_image": "nationalinstruments/labview:latest-linux",
+  "base_digest": "ghcr.io/elijah286/challenge-of-champions-labview@sha256:5f7763f057677b3e6989e25fdca2c26465a4a44922a77034fba373d7bfbc3762",
+  "image_ref": "ghcr.io/elijah286/challenge-of-champions-labview:linux-de0459c92301",
+  "build_date": "2026-06-23T18:33:45Z",
+  "git_sha": "148704a310c16ff64a83f678952d83214d045be4",
+  "run_url": "https://github.com/elijah286/challenge-of-champions/actions/runs/28047811471",
+  "vipc": [
+    {
+      "file": "COTC Dependencies.vipc",
+      "packages": [
+        "dataflow_g_lib_g_image-0.5.0.1",
+        "oglib_appcontrol-4.1.0.7",
+        "oglib_array-4.1.0.13",
+        "oglib_error-4.2.0.23",
+        "oglib_file-4.0.0.20",
+        "oglib_lvdata-4.2.0.21",
+        "oglib_string-4.1.0.12"
+      ],
+      "present": true
+    }
+  ],
+  "nipkg_raw": "",
+  "nipkg_packages": []
+}
