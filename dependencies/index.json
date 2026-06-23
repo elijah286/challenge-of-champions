@@ -1,8 +1,15 @@
 {
   "schema": 1,
   "repo": "elijah286/challenge-of-champions",
-  "sha": "6dc4c52371e01c0e4539c80bbc703a123efd2dec",
+  "sha": "8aa93b87bbadce17d8b17a8c26b24843bfe01d06",
   "revisions": [
+    {
+      "sha": "8aa93b87bbadce17d8b17a8c26b24843bfe01d06",
+      "short": "8aa93b8",
+      "message": "Add LabVIEW CI pipeline",
+      "author": "Elijah Kerry",
+      "date": "2026-06-23T02:17:09Z"
+    },
     {
       "sha": "6dc4c52371e01c0e4539c80bbc703a123efd2dec",
       "short": "6dc4c52",
@@ -697,13 +704,6 @@
       "date": "2026-06-05T01:38:11Z"
     },
     {
-      "sha": "0492c18e26680a0584c94e0930b831ae2eb0a77f",
-      "short": "0492c18",
-      "message": "fix: resolve LabVIEWCLI discovery for NI 2026 Windows image",
-      "author": "Elijah Kerry",
-      "date": "2026-06-05T01:22:00Z"
-    },
-    {
       "sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712",
       "short": "0d83d34",
       "message": "minor improvements",
@@ -929,10 +929,10 @@
       "capability": "",
       "configured": true,
       "packages": [
+        "dataflow_g_lib_g_image-0.5.0.1",
         "jki_lib_caraya-1.4.4.148",
         "jki_vi_tester",
-        "ni_lib_utf_junit_report-1.0.1.43",
-        "wovalab_lib_antidoc_cli-3.3.0.117"
+        "ni_lib_utf_junit_report-1.0.1.43"
       ],
       "error": ""
     },
@@ -1029,8 +1029,8 @@
       "details": "Batch runner compiled from repo Go source; Linux uses the toimages GHCR image and Windows builds runner.exe in the workflow.",
       "platforms": {
         "windows": {
-          "present": true,
-          "label": "workflow-built"
+          "present": false,
+          "label": ""
         },
         "linux": {
           "present": true,
@@ -1045,8 +1045,8 @@
       "details": "Renderer used by VI Browser 2.0 to drive LabVIEW and emit position-aware frame JSON.",
       "platforms": {
         "windows": {
-          "present": true,
-          "label": "workflow-built"
+          "present": false,
+          "label": ""
         },
         "linux": {
           "present": true,
