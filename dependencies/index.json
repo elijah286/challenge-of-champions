@@ -1,8 +1,15 @@
 {
   "schema": 1,
   "repo": "elijah286/challenge-of-champions",
-  "sha": "537cf7e81e17212702387f5db8cf4a98c81363b0",
+  "sha": "6dc4c52371e01c0e4539c80bbc703a123efd2dec",
   "revisions": [
+    {
+      "sha": "6dc4c52371e01c0e4539c80bbc703a123efd2dec",
+      "short": "6dc4c52",
+      "message": "ci: adopt LabVIEW CI tooling v3.40.0 (full update)",
+      "author": "github-actions[bot]",
+      "date": "2026-06-23T01:26:45Z"
+    },
     {
       "sha": "537cf7e81e17212702387f5db8cf4a98c81363b0",
       "short": "537cf7e",
@@ -697,13 +704,6 @@
       "date": "2026-06-05T01:22:00Z"
     },
     {
-      "sha": "5762568bc1f1473f2867c7818a9b378e895df29c",
-      "short": "5762568",
-      "message": "fix: resolve LabVIEWCLI discovery for NI 2026 Windows image",
-      "author": "Elijah Kerry",
-      "date": "2026-06-05T01:21:47Z"
-    },
-    {
       "sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712",
       "short": "0d83d34",
       "message": "minor improvements",
@@ -914,8 +914,33 @@
   },
   "vipc": [
     {
+      "path": ".github/labview/antidoc/antidoc.vipc",
+      "role": "capability",
+      "capability": "antidoc",
+      "configured": true,
+      "packages": [
+        "wovalab_lib_antidoc_cli-3.3.0.117"
+      ],
+      "error": ""
+    },
+    {
+      "path": ".github/labview/vipm/ci-tooling.vipc",
+      "role": "core",
+      "capability": "",
+      "configured": true,
+      "packages": [
+        "jki_lib_caraya-1.4.4.148",
+        "jki_vi_tester",
+        "ni_lib_utf_junit_report-1.0.1.43",
+        "wovalab_lib_antidoc_cli-3.3.0.117"
+      ],
+      "error": ""
+    },
+    {
       "path": "COTC Dependencies.vipc",
-      "configured": false,
+      "role": "project",
+      "capability": "",
+      "configured": true,
       "packages": [
         "dataflow_g_lib_g_image-0.5.0.1",
         "oglib_appcontrol-4.1.0.7",
@@ -926,12 +951,6 @@
         "oglib_string-4.1.0.12"
       ],
       "error": ""
-    },
-    {
-      "path": "github/labview/vipm/ci-tooling.vipc",
-      "configured": false,
-      "packages": [],
-      "error": "[Errno 2] No such file or directory: 'github/labview/vipm/ci-tooling.vipc'"
     }
   ],
   "nipm": [
@@ -976,6 +995,19 @@
       "details": "NI UTF support package used by the Windows unit-test runner."
     },
     {
+      "name": "JKI Dragon",
+      "source": "NI Package Manager",
+      "packages": {
+        "windows": [
+          "jki-dragon"
+        ]
+      },
+      "platforms": [
+        "windows"
+      ],
+      "details": "JKI Dragon dependency-management tooling installed from the LabVIEW 2026 NI Package Manager feed."
+    },
+    {
       "name": "VI Package Manager",
       "source": "NI Package Manager",
       "packages": {
@@ -986,7 +1018,7 @@
       "platforms": [
         "windows"
       ],
-      "details": "NI-published VIPM package that enables VIPC application during Windows worker builds."
+      "details": "NI-published Windows VIPM package that enables VIPC application during worker builds. Linux installs VIPM from the native Debian package during its worker build."
     }
   ],
   "system": [
@@ -1044,6 +1076,7 @@
         "oglib_string-4.1.0.12",
         "wovalab_lib_antidoc_cli-3.3.0.117"
       ],
+      "failed_packages": [],
       "nipkg_ready": true,
       "nipkg_packages": [
         {
@@ -1166,15 +1199,15 @@
       "key": "linux",
       "label": "Linux",
       "platform": "linux",
-      "tag": "base",
-      "ready": true,
+      "defaultTag": "latest",
+      "tag": "latest",
+      "ready": false,
       "packages": [],
-      "version": "pending",
-      "unsupported": true,
+      "failed_packages": [],
       "nipkg_ready": false,
       "nipkg_packages": [],
-      "nipkg_version": "latest",
-      "labview_version": ""
+      "labview_version": "",
+      "version": "latest"
     }
   ]
 }
