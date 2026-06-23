@@ -12,7 +12,7 @@
     *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5}a{color:var(--link);text-decoration:none}a:hover{text-decoration:underline}.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 64px}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}.hero h1{margin:0 0 4px;font-size:1.55em}.sub{margin:0;color:var(--fg-muted);font-size:.9em}.controls{display:grid;grid-template-columns:minmax(260px,1fr) auto;gap:12px;align-items:end;margin:18px 0}.field label{display:block;color:var(--fg-muted);font-size:.78em;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}select,button{font:inherit}select{width:100%;padding:9px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--fg)}button{border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--fg);padding:9px 12px;cursor:pointer}button:hover{border-color:var(--link)}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 16px}.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:13px}.card .k{color:var(--fg-muted);font-size:.76em;font-weight:700;text-transform:uppercase;letter-spacing:.04em}.card .v{margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.note{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:11px 13px;color:var(--fg-muted);font-size:.88em;margin-bottom:16px}.note.warn{border-color:rgba(210,153,34,.55);background:rgba(210,153,34,.10);color:var(--fg)}.table-wrap{overflow:auto;border:1px solid var(--border);border-radius:8px;background:var(--surface)}table{width:100%;border-collapse:collapse;min-width:980px}th,td{border-bottom:1px solid var(--border);padding:8px 9px;text-align:left;vertical-align:top}th{position:sticky;top:0;background:var(--surface);color:var(--fg-muted);font-size:.75em;text-transform:uppercase;letter-spacing:.04em;z-index:1}td.pkg{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84em}.vipc-row{background:color-mix(in srgb,var(--surface) 80%,var(--chip));font-weight:700}.vipc-row td{padding-top:10px;padding-bottom:10px}.twisty{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-right:5px;border:1px solid var(--border);border-radius:4px;color:var(--fg-muted);font-size:.8em}.vipc-path{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;font-size:.75em;color:var(--fg-muted);font-weight:600}.yes{color:var(--ok)}.no{color:var(--bad)}.maybe{color:var(--warn)}.cell{white-space:nowrap;text-align:center}.cell .mark{font-weight:800;font-size:1em}.cell .why{display:block;color:var(--fg-muted);font-size:.68em;margin-top:1px}.empty{padding:28px;text-align:center;color:var(--fg-muted)}.hidden{display:none}@media(max-width:760px){.hero{display:block}.controls{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.wrap{padding-inline:14px}}
   </style>
   <style>
-    .dep-tabs{margin-top:22px}.dep-tablist{display:flex;gap:6px;overflow:auto;border-bottom:1px solid var(--border);margin-bottom:10px}.dep-tab{border:1px solid transparent;border-bottom:0;border-radius:7px 7px 0 0;background:transparent;color:var(--fg-muted);font-weight:700;padding:8px 11px;white-space:nowrap}.dep-tab:hover{border-color:var(--border);color:var(--fg)}.dep-tab.active{background:var(--surface);border-color:var(--border);color:var(--fg);position:relative;top:1px}.dep-panel{display:none}.dep-panel.active{display:block}.dep-panel h2{font-size:1.02em;margin:0 0 6px}.dep-caption{margin:0 0 8px;color:var(--fg-muted);font-size:.86em}.table-wrap{margin-bottom:18px}.empty{padding:14px;color:var(--fg-muted)}.dep-panel table{table-layout:fixed}.dep-panel th:first-child{width:auto}.dep-panel th.dep-col,.dep-panel td.cell{width:112px;min-width:112px;max-width:112px;text-align:center;vertical-align:middle}.dep-panel th.dep-col{padding-left:6px;padding-right:6px}.dep-check{width:16px;height:16px;margin:0;accent-color:var(--ok);opacity:1;vertical-align:middle}.dep-check:disabled{opacity:1}.dep-empty{display:inline-block;width:16px;height:16px}.dep-na{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;font-size:.72em;font-weight:700;color:var(--fg-muted);letter-spacing:.02em}.dep-bang{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--bad);color:#fff;font-weight:800;font-size:11px;line-height:1}.exp-head{background:none;border:0;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center;gap:5px;width:100%}.exp-head .exp-name{border-bottom:1px dotted currentColor}.exp-head .exp-i{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid currentColor;border-radius:50%;font-size:9px;font-style:normal;line-height:1;font-weight:700}.exp-head:hover{color:var(--link)}.col-head{display:inline-flex;align-items:center;justify-content:center;gap:6px}.col-head .exp-head{width:auto}.col-link{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}.col-link:hover{color:var(--link);border-bottom-color:var(--link)}.exp-pop{position:fixed;width:320px;max-width:calc(100vw - 16px);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;box-shadow:0 8px 26px rgba(0,0,0,.32);z-index:60;font-size:.84em;font-weight:400;line-height:1.5;color:var(--fg);text-transform:none;letter-spacing:normal}.exp-pop .exp-pop-h{display:block;margin-bottom:5px;font-size:1.02em}
+    .dep-tabs{margin-top:22px}.dep-tablist{display:flex;gap:6px;overflow:auto;border-bottom:1px solid var(--border);margin-bottom:10px}.dep-tab{border:1px solid transparent;border-bottom:0;border-radius:7px 7px 0 0;background:transparent;color:var(--fg-muted);font-weight:700;padding:8px 11px;white-space:nowrap}.dep-tab:hover{border-color:var(--border);color:var(--fg)}.dep-tab.active{background:var(--surface);border-color:var(--border);color:var(--fg);position:relative;top:1px}.dep-panel{display:none}.dep-panel.active{display:block}.dep-panel h2{font-size:1.02em;margin:0 0 6px}.dep-caption{margin:0 0 8px;color:var(--fg-muted);font-size:.86em}.table-wrap{margin-bottom:18px}.empty{padding:14px;color:var(--fg-muted)}.dep-panel table{table-layout:fixed}.dep-panel th:first-child{width:auto}.dep-panel th.dep-col,.dep-panel td.cell{width:112px;min-width:112px;max-width:112px;text-align:center;vertical-align:middle}.dep-panel th.dep-col{padding-left:6px;padding-right:6px}.dep-check{width:16px;height:16px;margin:0;accent-color:var(--ok);opacity:1;vertical-align:middle}.dep-check:disabled{opacity:1}.dep-empty{display:inline-block;width:16px;height:16px}.dep-na{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;font-size:.72em;font-weight:700;color:var(--fg-muted);letter-spacing:.02em}.dep-bang{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--bad);color:#fff;font-weight:800;font-size:11px;line-height:1}.dragon-file td{background:var(--surface);font-weight:600}.dragon-sep td{padding-top:14px}.exp-head{background:none;border:0;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;padding:0;display:inline-flex;align-items:center;justify-content:center;gap:5px;width:100%}.exp-head .exp-name{border-bottom:1px dotted currentColor}.exp-head .exp-i{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid currentColor;border-radius:50%;font-size:9px;font-style:normal;line-height:1;font-weight:700}.exp-head:hover{color:var(--link)}.col-head{display:inline-flex;align-items:center;justify-content:center;gap:6px}.col-head .exp-head{width:auto}.col-link{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor}.col-link:hover{color:var(--link);border-bottom-color:var(--link)}.exp-pop{position:fixed;width:320px;max-width:calc(100vw - 16px);background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px;box-shadow:0 8px 26px rgba(0,0,0,.32);z-index:60;font-size:.84em;font-weight:400;line-height:1.5;color:var(--fg);text-transform:none;letter-spacing:normal}.exp-pop .exp-pop-h{display:block;margin-bottom:5px;font-size:1.02em}
   </style>
 </head>
 <body>
@@ -43,12 +43,12 @@
       </div>
       <section class="dep-panel active" id="panel-vipc" role="tabpanel" aria-labelledby="tab-vipc">
         <h2>VIPM / VIPC Packages</h2>
-        <p class="dep-caption">Repository VIPC files and the VIPM packages they request.</p>
+        <p class="dep-caption">Repository VIPC files and the VIPM packages they request, plus VIPM dependencies requested by <code>.dragon</code> files.</p>
         <div class="table-wrap" id="vipcWrap"><div class="empty">Loading...</div></div>
       </section>
       <section class="dep-panel" id="panel-nipm" role="tabpanel" aria-labelledby="tab-nipm">
         <h2>NI Package Manager Installed Dependencies</h2>
-        <p class="dep-caption">NI software installed or expected through NI Package Manager, including LabVIEW and UTF.</p>
+        <p class="dep-caption">NI software installed or expected through NI Package Manager, including LabVIEW and UTF, plus NIPM dependencies requested by <code>.dragon</code> files.</p>
         <div class="table-wrap" id="nipmWrap"><div class="empty">Loading...</div></div>
       </section>
       <section class="dep-panel" id="panel-system" role="tabpanel" aria-labelledby="tab-system">
@@ -383,8 +383,7 @@
       }
       return (v.configured === false ? ' <span class="pill" title="Not listed in config.container.vipc, so its packages are not baked into the worker">not included</span>' : '');
     }
-    function renderVipc(vipcs, colStates){
-      if (!vipcs.length) { $("vipcWrap").innerHTML = '<div class="empty">No VIPC files were found in this revision.</div>'; return; }
+    function renderVipc(vipcs, colStates, dragon){
       const heads = COLS.map(headCell).join('');
       const rows = [];
       vipcs.forEach((v, idx) => {
@@ -395,13 +394,24 @@
           else (v.packages || []).forEach(pkg => rows.push('<tr><td class="pkg">' + esc(pkg) + '</td>' + COLS.map(c => statusCell(pkg, colStates[c.key])).join('') + '</tr>'));
         }
       });
+      const dragonRows = dragonGroupRows(dragon, 'vipm');
+      if (!vipcs.length && !dragonRows.length) { $("vipcWrap").innerHTML = '<div class="empty">No VIPC files or <code>.dragon</code> VIPM dependencies were found in this revision.</div>'; return; }
+      if (dragonRows.length) {
+        rows.push('<tr class="dragon-sep"><td colspan="' + (COLS.length + 1) + '"><span class="why">Requested by <code>.dragon</code> dependency files (applied in the Win Beta container):</span></td></tr>');
+        rows.push.apply(rows, dragonRows);
+      }
       $("vipcWrap").innerHTML = '<table><thead><tr><th>VIPC / Package</th>' + heads + '</tr></thead><tbody>' + rows.join('') + '</tbody></table>';
-      Array.from(document.querySelectorAll('.vipc-row')).forEach((row, i) => row.addEventListener('click', () => { vipcs[i].open = !vipcs[i].open; renderVipc(vipcs, colStates); }));
+      Array.from(document.querySelectorAll('.vipc-row')).forEach((row, i) => row.addEventListener('click', () => { vipcs[i].open = !vipcs[i].open; renderVipc(vipcs, colStates, dragon); }));
     }
-    function renderNipm(platformStates){
+    function renderNipm(platformStates, dragon){
       const heads = COLS.map(headCell).join('');
       const deps = (platformStates.nipmDeps && platformStates.nipmDeps.length) ? platformStates.nipmDeps : NIPM_DEPS;
       const rows = deps.map(dep => '<tr><td class="pkg"><strong>' + esc(dep.name) + '</strong><br><span class="why">' + esc(dep.source) + '</span></td>' + COLS.map(c => nipmCell(dep, c, platformStates[c.key])).join('') + '</tr>');
+      const dragonRows = dragonGroupRows(dragon, 'nipm');
+      if (dragonRows.length) {
+        rows.push('<tr class="dragon-sep"><td colspan="' + (COLS.length + 1) + '"><span class="why">Requested by <code>.dragon</code> dependency files (applied in the Win Beta container):</span></td></tr>');
+        rows.push.apply(rows, dragonRows);
+      }
       $("nipmWrap").innerHTML = '<table><thead><tr><th>NI Package</th>' + heads + '</tr></thead><tbody>' + rows.join('') + '</tbody></table>';
     }
     function systemLabel(comp, key){
@@ -463,9 +473,65 @@
       COLS.forEach(c => { colStates[c.key] = platformStates[c.key] || {}; });
       const system = await systemForRevision(sha);
       $("vipcCard").textContent = String(vipcs.length);
-      renderVipc(vipcs, colStates);
-      renderNipm(platformStates);
+      const dragon = generatedInventory && generatedInventory.dragon;
+      renderVipc(vipcs, colStates, dragon);
+      renderNipm(platformStates, dragon);
       renderSystem(system, colStates);
+    }
+
+    const DRAGON_STATUS = {
+      installed:        { kind:'ok'  },
+      wrong_version:    { kind:'err' },
+      missing:          { kind:'err' },
+      resolution_failed:{ kind:'err' },
+      install_failed:   { kind:'err' },
+      conflict:         { kind:'err' },
+      unsupported:      { kind:'na'  },
+      not_attempted:    { kind:'na'  },
+      pending:          { kind:'na'  }
+    };
+    function dragonStatusLabel(dep){
+      if (dep.message) return dep.message;
+      const decl = dep.declared_version ? (' ' + dep.declared_version) : '';
+      const got = dep.installed_version ? (' ' + dep.installed_version) : '';
+      switch (dep.status){
+        case 'installed': return 'Installed' + (got || decl);
+        case 'wrong_version': return 'Installed' + got + ', declared' + decl;
+        case 'missing': return 'Declared but not installed in the worker';
+        case 'resolution_failed': return 'Could not resolve from the configured feeds';
+        case 'install_failed': return 'Installation failed in the worker';
+        case 'conflict': return 'Declared with different versions across .dragon files';
+        case 'unsupported': return 'NIPM dependencies are not yet applied by the VIPM CLI';
+        case 'not_attempted': return 'Not attempted in this worker';
+        default: return 'Win Beta image has not been built with these dependencies yet';
+      }
+    }
+    function dragonDepCell(dep, col){
+      if (col.key !== 'winExp') return naCell('Requested by a .dragon file - applied in the Win Beta container');
+      const meta = DRAGON_STATUS[dep.status] || { kind:'na' };
+      const label = dragonStatusLabel(dep);
+      if (meta.kind === 'ok') return presentCell(label);
+      if (meta.kind === 'err') return errorCell(label);
+      return naCell(label);
+    }
+    function dragonGroupRows(dragon, manager){
+      if (!dragon || dragon.available === false) return [];
+      const span = COLS.length + 1;
+      const rows = [];
+      (dragon.files || []).forEach(f => {
+        const deps = (f.dependencies || []).filter(d => d.manager === manager);
+        if (!deps.length && !f.error) return;
+        const lv = f.labview_version ? (' <span class="pill" title="Declared LabVIEW year">LabVIEW ' + esc(f.labview_version) + '</span>') : '';
+        const count = deps.length + ' ' + (manager === 'vipm' ? 'VIPM' : 'NIPM') + (deps.length === 1 ? ' dependency' : ' dependencies');
+        rows.push('<tr class="dragon-file"><td colspan="' + span + '"><span class="vipc-path">' + esc(f.source_file) + '</span> <span class="pill" title="JKI Dragon dependency file">Dragon</span> <span class="pill">' + count + '</span>' + lv + '</td></tr>');
+        if (f.error){ rows.push('<tr><td class="pkg" colspan="' + span + '"><span class="why">' + esc(f.error) + '</span></td></tr>'); return; }
+        deps.forEach(d => {
+          const feed = d.feed_name ? (' <span class="pill" title="NIPM feed">' + esc(d.feed_name) + '</span>') : '';
+          const ver = d.declared_version ? (' <span class="why" title="Declared version">' + esc(d.declared_version) + '</span>') : '';
+          rows.push('<tr><td class="pkg">' + esc(d.package_id) + feed + ver + '</td>' + COLS.map(c => dragonDepCell(d, c)).join('') + '</tr>');
+        });
+      });
+      return rows;
     }
 
     function renderGenerated(data){
@@ -490,8 +556,8 @@
       COLS.forEach(c => { if (!platformStates[c.key]) platformStates[c.key] = colStates[c.key] || (c.image === "experimental" ? markExperimentalPending({}) : { tag:'base', label:'base', ready:true, packages:new Set(), nipkg:[], nipkgNames:new Set(), labview:'' }); });
       COLS.forEach(c => { if (!colStates[c.key]) colStates[c.key] = (c.image === "experimental") ? markExperimentalPending({}) : { tag:"base", label:"base", ready:true, packages:new Set(), failed:new Set() }; });
       setStatus("");
-      renderVipc((data.vipc || []).map(v => ({ path:v.path, role:v.role, capability:v.capability, configured:v.configured !== false, packages:v.packages || [], error:v.error || "", open:true })), colStates);
-      renderNipm(platformStates);
+      renderVipc((data.vipc || []).map(v => ({ path:v.path, role:v.role, capability:v.capability, configured:v.configured !== false, packages:v.packages || [], error:v.error || "", open:true })), colStates, data.dragon);
+      renderNipm(platformStates, data.dragon);
       renderSystem(data.system || [], colStates);
     }
 
