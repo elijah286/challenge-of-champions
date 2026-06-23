@@ -345,6 +345,22 @@ jobs:
                   print('Staged VIPC:', p); staged += 1
               else:
                   print('Configured VIPC not found (skipping):', p)
+          # Capability-scoped VIPCs (e.g. Antidoc) live under .github/labview/<cap>/
+          # and are baked into the worker ONLY when that capability is installed -
+          # detected by the presence of its action workflow. This keeps an add-on's
+          # VIPM dependencies (and their chains) out of every worker unless the
+          # functionality is actually used, so each repo applies only the
+          # dependency sets it needs. New VIPM capabilities follow this pattern:
+          # add .github/labview/<cap>/<cap>.vipc and a (vipc_path, signal) row here.
+          capability_vipcs = [
+              ('.github/labview/antidoc/antidoc.vipc', '.github/workflows/run-antidoc-windows-container.yml'),
+          ]
+          for vipc_path, signal in capability_vipcs:
+              if os.path.isfile(vipc_path) and os.path.isfile(signal):
+                  shutil.copy2(vipc_path, dest / os.path.basename(vipc_path))
+                  print('Staged capability VIPC:', vipc_path); staged += 1
+              elif os.path.isfile(vipc_path):
+                  print('Capability VIPC present but capability not installed (skipping):', vipc_path)
           if not staged:
               print('No VIPC files to stage.')
           PY

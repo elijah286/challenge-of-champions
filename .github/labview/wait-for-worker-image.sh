@@ -30,14 +30,24 @@ if [ -z "$repo" ] || [ -z "$sha" ]; then
   exit 0
 fi
 
-# Most-recent "Build LabVIEW CI Image" run in a given API listing, as
-# "<status> <conclusion>" (empty when there is no such run). Errors (e.g. a missing
-# Actions:read scope) degrade to "" so a permission gap can never wedge CI here.
+# Look up the most-recent "Build LabVIEW CI Image" run in a given API listing and
+# stash the result in two globals -- done WITHOUT a command-substitution subshell
+# so the success flag survives into the caller: LR_OUT is "<status> <conclusion>"
+# (empty when there is no such run) and LR_OK is true only when the API call itself
+# succeeded. That lets the caller tell "no build run" apart from "couldn't reach
+# the Actions API" (a transient blip, a rate limit, or a missing actions:read
+# scope); a permission gap can never wedge CI here.
+LR_OUT=""
+LR_OK=false
 latest_run() {
-  gh api "$1" \
-    --jq "([.workflow_runs[]|select(.name==\"$workflow_name\")]|sort_by(.created_at)|last) as \$r
-          | if \$r then \"\(\$r.status) \(\$r.conclusion)\" else \"\" end" \
-    2>/dev/null || echo ""
+  if LR_OUT="$(gh api "$1" \
+      --jq "([.workflow_runs[]|select(.name==\"$workflow_name\")]|sort_by(.created_at)|last) as \$r
+            | if \$r then \"\(\$r.status) \(\$r.conclusion)\" else \"\" end" 2>/dev/null)"; then
+    LR_OK=true
+  else
+    LR_OK=false
+    LR_OUT=""
+  fi
 }
 
 api_sha="repos/${repo}/actions/runs?head_sha=${sha}&per_page=50"
@@ -47,15 +57,23 @@ api_repo="repos/${repo}/actions/runs?per_page=50"
 changed=false
 if [ -n "${before:-}" ] && git cat-file -e "${before}^{commit}" 2>/dev/null; then
   if git diff --name-only "$before" "$sha" \
-      | grep -Eq '(\.vipc$|^\.github/docker/labview-ci\.Dockerfile$|^\.github/labview/vipm/)'; then
+      | grep -Eq '(\.vipc$|^\.github/docker/labview-ci\.Dockerfile$|^\.github/docker/labview-vipm-base\.Dockerfile$|^\.github/docker/labview-vipc-layer\.Dockerfile$|^\.github/docker/labview-ci-linux\.Dockerfile$|^\.github/docker/labview-ci-linux-beta\.Dockerfile$|^\.github/labview/build-worker-manifest\.py$|^\.github/labview/wait-for-worker-image\.sh$|^\.github/labview/vipm/|^\.github/workflows/build-labview-image\.yml$|^\.github/workflows/build-labview-linux-image\.yml$|^\.github/workflows/build-labview-linux-beta-image\.yml$)'; then
     changed=true
   fi
 fi
 
 # (2) Is a worker-image build currently in progress or queued (repo-wide)?
+# Retry on a FAILED API call (api_ok=false) so a transient Actions-API hiccup
+# can't make a job skip the wait and start on a stale or half-built image. A
+# genuine permission gap keeps api_ok=false through all attempts and then falls
+# through (building=false), so CI is never wedged here.
 building=false
-repo_latest="$(latest_run "$api_repo")"
-repo_status="${repo_latest%% *}"
+for _ in 1 2 3; do
+  latest_run "$api_repo"
+  [ "$LR_OK" = "true" ] && break
+  sleep 2
+done
+repo_status="${LR_OUT%% *}"
 case "$repo_status" in
   in_progress|queued|requested|waiting|pending) building=true ;;
 esac
@@ -65,12 +83,21 @@ if [ "$changed" != "true" ] && [ "$building" != "true" ]; then
   exit 0
 fi
 
-if [ "$changed" = "true" ]; then
-  echo "Worker inputs changed in this push - waiting for '$workflow_name' for $sha."
-  api="$api_sha"
-else
+# Prefer the repo-wide listing whenever a build is actually in progress or queued.
+# A fresh install (or a "Configure Workers" rebuild) dispatches the build via
+# workflow_dispatch on the branch tip, which is almost always a DIFFERENT commit
+# than the one this CI job runs on -- and tooling changes under .github/** never
+# trigger a per-commit push build at all (build-labview-image.yml's push filter is
+# `**.vipc` with `!.github/**`). Keying the wait to this job's exact SHA in those
+# cases would never find the build and would time out after appear_seconds. Only
+# fall back to the per-commit listing when nothing is building yet but this push
+# changed a worker input -- a project *.vipc triggers a push build on THIS commit.
+if [ "$building" = "true" ]; then
   echo "A '$workflow_name' build is in progress - waiting so CI runs on the freshly built worker image."
   api="$api_repo"
+else
+  echo "Worker inputs changed in this push - waiting for '$workflow_name' for $sha."
+  api="$api_sha"
 fi
 
 appear_deadline=$(( $(date +%s) + appear_seconds ))
@@ -79,7 +106,8 @@ seen=false
 
 while :; do
   now=$(date +%s)
-  run="$(latest_run "$api")"
+  latest_run "$api"
+  run="$LR_OUT"
   status="${run%% *}"
   conclusion="${run##* }"
   if [ -n "$run" ]; then seen=true; fi
