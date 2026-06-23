@@ -1,11 +1,167 @@
 {
   "schemaVersion": 1,
-  "version": "3.43.2",
+  "version": "3.46.8",
   "name": "LabVIEW CI",
   "description": "Portable, repo-agnostic CI/CD capabilities for LabVIEW repositories: mass compile, VI Analyzer, VIDiff comparison reports, VI snapshots / VI Browser, and a status dashboard. Driven entirely by this catalog so the configurator UI and the installer stay in sync and new capabilities are a one-entry change.",
   "history": {
     "comment": "Release notes for the tooling, newest first. `version` (above) is the CURRENT published release and MUST equal releases[0].version. The dashboard version badge and the What's New dialog read these notes to tell a consumer what changed between the version they run and the latest this source repo publishes. Each published version should also be tagged v<version> in this repo so consumers can pin an update to a specific release.",
     "releases": [
+      {
+        "version": "3.46.8",
+        "date": "2026-06-23",
+        "title": "Private GitHub repo installs get setup guidance",
+        "type": "patch",
+        "summary": "Adds detailed private GitHub repository install documentation and links it from the Apply to New Repo repository field and the installer README. The guide explains token repository access, required and optional fine-grained permissions, GitHub Pages behavior for private repositories, and what happens after the install PR is merged.",
+        "highlights": [
+          "Documents private GitHub repo prerequisites and fine-grained token permissions in the installer guide.",
+          "Links the Apply to New Repo page near the --repo owner/name flag for users specifying a target repository.",
+          "Adds a private-repo setup link beside the Apply page target repo field before users create a token."
+        ]
+      },
+      {
+        "version": "3.46.7",
+        "date": "2026-06-23",
+        "title": "GitLab installs initialize empty projects directly",
+        "type": "patch",
+        "summary": "GitLab browser installs now handle brand-new empty projects without requiring users to create a README or initial commit first. When no target branch exists, the installer creates the initial branch directly and reports setup as complete instead of trying to open a merge request into a missing branch. If a previous failed install left only a generated ci/install branch, retrying creates a normal main branch from it.",
+        "highlights": [
+          "Creates the first GitLab branch directly when the project has no existing target branch.",
+          "Avoids opening impossible merge requests into a missing target branch.",
+          "Recovers projects where an earlier install created only a generated ci/install branch by creating main from that branch."
+        ]
+      },
+      {
+        "version": "3.46.6",
+        "date": "2026-06-23",
+        "title": "Installer shows honest end-to-end setup progress",
+        "type": "patch",
+        "summary": "Apply to a new repository now tracks the full install after the pull request is created: merge, dashboard publishing, worker container image builds, and final CI readiness. The progress bar no longer turns green while background image builds are still running, and installed GitHub Actions workflows now use clear run names so users can tell dashboard, Windows, and Linux work apart in the Actions list.",
+        "highlights": [
+          "Adds an overall setup progress panel with step status and expected durations for merge, dashboard publishing, image builds, and CI readiness.",
+          "Keeps watching Windows and Linux worker image workflows after install merge and explains why image builds can take 5-90 minutes.",
+          "Adds descriptive GitHub Actions run names for dashboard publishing, image builds, snapshots, mass compile, VI Analyzer, VIDiff, unit tests, Antidoc, update, release, and diagnostic workflows."
+        ]
+      },
+      {
+        "version": "3.46.5",
+        "date": "2026-06-23",
+        "title": "GitLab browser installs tolerate empty repository trees",
+        "type": "patch",
+        "summary": "Fixes the GitLab browser install path when GitLab returns 404 Tree Not Found while reading the target repository tree. The installer now resolves the default branch to a commit SHA before listing files and treats a missing tree as an empty inventory, so fresh GitLab projects can continue to the install commit and merge request instead of reporting a misleading token visibility error.",
+        "highlights": [
+          "Reads the GitLab default branch commit before listing repository files.",
+          "Treats GitLab 404 Tree Not Found during file inventory as an empty repository tree.",
+          "Prevents the Apply page from mislabeling this GitLab tree response as a token visibility problem."
+        ]
+      },
+      {
+        "version": "3.46.4",
+        "date": "2026-06-23",
+        "title": "GitLab installs can open a merge request from the browser",
+        "type": "patch",
+        "summary": "Apply to a new repository now supports a GitLab token install path. GitLab mode can store a GitLab host and token in the browser, create an install branch, commit the generated GitLab CI scaffold plus shared LabVIEW CI payload, and open a merge request. The command-line fallback now explains exactly where to run the generated scripts: in a local terminal from a cloned repository, not inside the GitLab web UI.",
+        "highlights": [
+          "Adds a GitLab token panel for browser-based install branch, commit, and merge-request creation.",
+          "Keeps GitLab.com as the default host while allowing self-managed GitLab server URLs.",
+          "Clarifies command-line fallback steps: clone the repo locally, cd into it, paste the command in Terminal/Git Bash/PowerShell, review, commit, and push."
+        ]
+      },
+      {
+        "version": "3.46.3",
+        "date": "2026-06-23",
+        "title": "Capability chooser stays closed on first load",
+        "type": "patch",
+        "summary": "Hardens the Apply page capability chooser so it stays collapsed on initial load even if the browser restores prior details state or a local copy carries stale markup. The chooser body is explicitly hidden while the details element is closed, and initialization closes the chooser after capabilities render.",
+        "highlights": [
+          "Adds an explicit closed-state CSS rule for the capability chooser body.",
+          "Closes the capability chooser during Apply page initialization after capabilities render.",
+          "Keeps the 3.46.2 worker-image warning and confirmation behavior unchanged."
+        ]
+      },
+      {
+        "version": "3.46.2",
+        "date": "2026-06-23",
+        "title": "Capability changes warn before long worker image builds",
+        "type": "patch",
+        "summary": "Apply to a new repository now keeps the capability picker collapsed by default and warns before edited choices trigger a custom Windows LabVIEW worker image build, which can add 60-90 minutes to first-time setup. Fresh worker image builds also skip Unit-Test-only VIPM package requirements when the Unit Tests capability is not installed, while Unit Tests installs still require the UTF/JUnit packages they need.",
+        "highlights": [
+          "Collapses the Apply page capability chooser behind a Defaults are recommended control.",
+          "Warns and confirms when edited capability choices still include the custom Windows LabVIEW worker image build path.",
+          "Lets fresh custom Windows worker images build without Unit-Test-only VIPM requirements unless Unit Tests are selected."
+        ]
+      },
+      {
+        "version": "3.46.1",
+        "date": "2026-06-23",
+        "title": "Apply flow shows the GitLab install target",
+        "type": "patch",
+        "summary": "Restores the GitHub/GitLab install target selector on the current 3.46 Apply page and wires GitLab selection through the command-line installer, download bundle, and provider scaffold. GitLab mode hides GitHub-only pull-request options, copies the GitLab install command from the green action, omits GitHub workflows, and writes the initial .gitlab-ci.yml plus .gitlab/labview-ci/ Pages scaffold.",
+        "highlights": [
+          "Adds a visible Install target dropdown at the top of Step 1 in Apply to a new repository.",
+          "Selecting GitLab updates the command with --provider gitlab and changes the green action to the GitLab command path.",
+          "The installer now supports --provider gitlab, records provider: gitlab, omits .github/workflows, and writes the GitLab CI/Pages scaffold."
+        ]
+      },
+      {
+        "version": "3.46.0",
+        "date": "2026-06-23",
+        "title": "Unit Test Framework: run all projects by default, or pick specific ones by revision",
+        "type": "minor",
+        "summary": "The Unit Testing configurator now leads with a default-on \"Run every LabVIEW project found in each revision\" option for the Unit Test Framework. With it on, CI discovers and runs every .lvproj that contains tests in whatever revision is being tested - so re-running an older revision runs the projects it had then, and brand-new projects are picked up automatically without any config change. Unchecking it switches to explicit control: a revision picker lets you reach a project that only existed in an older revision (the tree is read at that commit), tick exactly the .lvproj you want, and those run in any revision where they exist while being skipped where absent. A project you tick from an old revision stays selected and is clearly marked when it is not in the latest revision.",
+        "highlights": [
+          "Default \"Run every project\" mode handles old re-runs and new projects automatically (empty locations).",
+          "Explicit mode adds a revision picker so projects that no longer exist at HEAD are still selectable.",
+          "Ticked projects run where present and are skipped where absent; selecting none falls back to running all."
+        ]
+      },
+      {
+        "version": "3.45.1",
+        "date": "2026-06-23",
+        "title": "VI Browser is usable on phones and small screens",
+        "summary": "The VI Browser now adapts to narrow screens so the snapshot and block diagram get the whole viewport. On phones the VI tree becomes an off-canvas drawer that opens with a \"VIs\" button and closes when you pick a VI (or tap the dimmed backdrop), and the viewer toolbar collapses to a single slim, horizontally scrollable row. The desktop layout is unchanged, and switching revisions or other document types still uses the always-visible shared header.",
+        "highlights": [
+          "On small screens the VI file tree slides in as an off-canvas drawer instead of permanently occupying the top of the screen, so the open VI fills the viewport",
+          "A \"VIs\" toggle in the viewer toolbar opens the tree; selecting a VI, tapping the backdrop, or the drawer's close button collapses it again",
+          "The viewer toolbar (1.0 / 2.0 / Diff and the front-panel / block-diagram switches) becomes one compact, horizontally scrollable row to free up vertical space",
+          "Revision switching and navigation to other document types stay in the always-visible header, so the drawer is never needed to move around the site",
+          "Desktop layout and workflow are unchanged"
+        ]
+      },
+      {
+        "version": "3.45.0",
+        "date": "2026-06-23",
+        "title": "Consistent sub-item navigation in the shared sub-header",
+        "summary": "Every page now navigates its sub-views from the same sub-header strip instead of a mix of sub-header tabs (Settings) and in-body tabs (Dependencies). A page declares its tabs via window.LVCI.subnav and the shared header renders them in the context bar next to the Settings nav, so sub-item navigation looks and works the same across all documents.",
+        "highlights": [
+          "New header subnav API (window.LVCI.subnav + lvci:subnav event + lvciSetSubnavActive) renders page sub-views in the same context-bar strip the Settings sections use",
+          "The Dependencies page moves its VIPM / NI Packages / System Components tabs from the page body into the shared sub-header",
+          "One consistent place to switch sub-views on every document; panels stay in the body and switch via the shared event"
+        ]
+      },
+      {
+        "version": "3.44.1",
+        "date": "2026-06-23",
+        "title": "Populate history dialog: activity controls always fit and line up",
+        "type": "patch",
+        "summary": "Reworks the Populate dashboard history dialog so the per-activity Skip / Fill / Re-run controls can no longer be clipped by the dialog edge. Each activity row now places the name and description on the left with a meta line beneath (revision counts plus any Windows/Linux platform toggles), and pins the segmented control to the right where it stays vertically centred and aligned across every row - no matter how much metadata it carries. The layout reflows to a single stacked column on narrow and mobile screens, and the dialog is a little wider so it has room to breathe.",
+        "highlights": [
+          "Skip / Fill / Re-run controls are never cropped, even on rows that show platform toggles and long counts.",
+          "Every activity's control lines up on the right for a clean, scannable layout that scales as new activities are added.",
+          "Renders correctly on mobile - rows collapse to a single, left-aligned column."
+        ]
+      },
+      {
+        "version": "3.44.0",
+        "date": "2026-06-23",
+        "title": "Pick which .lvproj projects the Unit Test Framework runs",
+        "type": "minor",
+        "summary": "The Unit Testing configurator now surfaces the .lvproj projects it finds in your repository on the Unit Test Framework tab and lets you tick the ones the headless NI Unit Test Framework runner should open. Each ticked project is run when it is present in the revision being tested and is simply skipped when it is not part of that revision, so it is safe to enable every project you might ever test - including ones that only exist in some past or future revisions.",
+        "highlights": [
+          "Unit Test Framework tab lists discovered .lvproj files as checkboxes; ticking one runs it, unticking removes it.",
+          "Explains that ticked projects run if present and are skipped when absent from a revision.",
+          "Free-text Other test locations remain for folders or globs."
+        ]
+      },
       {
         "version": "3.43.2",
         "date": "2026-06-23",
