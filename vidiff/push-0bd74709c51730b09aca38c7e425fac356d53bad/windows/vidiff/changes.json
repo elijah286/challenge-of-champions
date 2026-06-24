@@ -1,7 +1,15 @@
 {
   "platform": "windows",
   "files": [
-    {"file": "MC Screen/MC Screen/Actor Core.vi", "type": "added", "report": "MC_Screen-MC_Screen-Actor_Core.vi/index.html"},
-    {"file": "main.vi", "type": "modified", "report": "main.vi/index.html"}
+    {
+      "file": "MC Screen/MC Screen/Actor Core.vi",
+      "type": "added",
+      "report": "MC_Screen-MC_Screen-Actor_Core.vi/index.html"
+    },
+    {
+      "file": "main.vi",
+      "type": "modified",
+      "report": "main.vi/index.html"
+    }
   ]
 }
