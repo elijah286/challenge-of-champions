@@ -1,10 +1,10 @@
-LabVIEWCLI started logging in file:  /tmp/lvtemporary_47197.log
+LabVIEWCLI started logging in file:  /tmp/lvtemporary_696581.log
 Using LabVIEW: "/usr/local/natinst/LabVIEW-2026-64/labviewprofull"
 LabVIEW launched successfully.
 Connection established with LabVIEW at port number 3363.
 
 Operation output: 
-#### Starting Mass Compile: Wed, Jun 24, 2026 05:00:40 AM
+#### Starting Mass Compile: Wed, Jun 24, 2026 11:39:10 PM
   Directory: "/workspace"
 /workspace/.github/labview/PrintToSingleFileHtml/PrintToSingleFileHtml.lvclass (PrintToSingleFileHtml.lvclass)
     - The class expected to be at "/workspace/.github/labview/CoreOperation/CoreOperation.lvclass" was loaded from "/usr/local/natinst/share/nilvcli/Operations/CoreOperation/CoreOperation.lvclass".
@@ -17,7 +17,7 @@ Search failed to find "LV AI Core.lvlib:VI generator.vi" previously from "/works
   ### Bad VI:    "Answer from Contestant Msg.lvclass:Send Template.vi"	Path="/workspace/Controller/Controller Messages/Answer from Contestant Msg/Send Template.vi" 
   ### Bad VI:    "Answer from Contestant Msg.lvclass:Do.vi"	Path="/workspace/Controller/Controller Messages/Answer from Contestant Msg/Do.vi" 
   ### Bad VI:    "Untitled 2.vi"	Path="/workspace/Untitled 2.vi" 
-#### Finished Mass Compile: Wed, Jun 24, 2026 05:00:54 AM
+#### Finished Mass Compile: Wed, Jun 24, 2026 11:39:24 PM
 
 MassCompile operation failed.
 
