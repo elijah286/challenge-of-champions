@@ -1,8 +1,15 @@
 {
   "schema": 1,
   "repo": "elijah286/challenge-of-champions",
-  "sha": "56ddc14366412b21284b1210498ca34557b9453b",
+  "sha": "2fc7e1e69663281b36616da592072abb19abdbc5",
   "revisions": [
+    {
+      "sha": "2fc7e1e69663281b36616da592072abb19abdbc5",
+      "short": "2fc7e1e",
+      "message": "Add LabVIEW CI pipeline",
+      "author": "Elijah Kerry",
+      "date": "2026-06-25T17:32:10Z"
+    },
     {
       "sha": "56ddc14366412b21284b1210498ca34557b9453b",
       "short": "56ddc14",
@@ -695,13 +702,6 @@
       "message": "fix: correct dashboard workflow python indentation for vi-browser fallback copy",
       "author": "elijah286",
       "date": "2026-06-05T15:20:23Z"
-    },
-    {
-      "sha": "87d449cae547f28f08ae3f5d47025e1ade904728",
-      "short": "87d449c",
-      "message": "fix: always deploy vi-browser entry under vi-snapshots from dashboard workflow",
-      "author": "elijah286",
-      "date": "2026-06-05T15:19:28Z"
     },
     {
       "sha": "0d83d346da3d3fe1fc36ee40fb283da0ef857712",
