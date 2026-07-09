@@ -781,13 +781,6 @@
       "date": "2024-05-17T17:19:33Z"
     },
     {
-      "sha": "eff9a664410ee93984150561edac9e2552837e22",
-      "short": "eff9a66",
-      "message": "Squashed commit of the following:",
-      "author": "Elijah Kerry",
-      "date": "2024-05-17T17:07:57Z"
-    },
-    {
       "sha": "dbf0fa5447b21e38f7d818ccb8f1947119b8bd96",
       "short": "dbf0fa5",
       "message": "Fixed UI layout issues",
