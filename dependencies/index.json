@@ -1282,6 +1282,10 @@
           "version": "26.3.0.49236-0+f84"
         },
         {
+          "name": "eula-ni-standard",
+          "version": "26.5.0.49245-0+f93"
+        },
+        {
           "name": "jki-dragon",
           "version": "2026.1.0-828"
         },
@@ -1488,6 +1492,10 @@
         {
           "name": "ni-certificates",
           "version": "26.3.0.49183-0+f31"
+        },
+        {
+          "name": "ni-certificates",
+          "version": "26.5.0.49183-0+f31"
         },
         {
           "name": "ni-codesignapi",
@@ -2226,6 +2234,10 @@
           "version": "26.3.0.49236-0+f84"
         },
         {
+          "name": "ni-msiproperties",
+          "version": "26.5.0.49245-0+f93"
+        },
+        {
           "name": "ni-mstudio-cw3dgraph",
           "version": "8.7.5.49154-0+f2"
         },
@@ -2458,6 +2470,10 @@
           "version": "26.3.0.49300-0+f148"
         },
         {
+          "name": "ni-package-manager",
+          "version": "26.5.0.49301-0+f149"
+        },
+        {
           "name": "ni-package-manager-deployment-support",
           "version": "17.5.0.49152-0+f0"
         },
@@ -2608,6 +2624,10 @@
         {
           "name": "ni-package-manager-deployment-support",
           "version": "26.3.0.49300-0+f148"
+        },
+        {
+          "name": "ni-package-manager-deployment-support",
+          "version": "26.5.0.49301-0+f149"
         },
         {
           "name": "ni-package-manager-released-feed",
@@ -2762,6 +2782,10 @@
           "version": "26.3.0.49300-0+f148"
         },
         {
+          "name": "ni-package-manager-released-feed",
+          "version": "26.5.0.49301-0+f149"
+        },
+        {
           "name": "ni-package-manager-upgrader",
           "version": "17.0.0.49157-0+f5"
         },
@@ -2916,6 +2940,10 @@
         {
           "name": "ni-package-manager-upgrader",
           "version": "26.3.0.49300-0+f148"
+        },
+        {
+          "name": "ni-package-manager-upgrader",
+          "version": "26.5.0.49301-0+f149"
         },
         {
           "name": "ni-portable-configuration",
@@ -3386,6 +3414,10 @@
           "version": "26.3.0.49300-0+f148"
         },
         {
+          "name": "system-windows-x64",
+          "version": "26.5.0.49301-0+f149"
+        },
+        {
           "name": "system-windows-x86",
           "version": "19.0.0.49152-0+f0"
         },
@@ -3419,7 +3451,7 @@
         }
       ],
       "labview_version": "2026",
-      "version": "win-1854c29fc027"
+      "version": "win-2d94b165da09"
     },
     {
       "key": "linux",
