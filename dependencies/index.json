@@ -809,6 +809,13 @@
       "date": "2024-05-15T20:19:08Z"
     },
     {
+      "sha": "27c2970c84667ecb41c43b4f56b8ac067297b011",
+      "short": "27c2970",
+      "message": "Added configuration file",
+      "author": "Elijah Kerry",
+      "date": "2024-05-15T18:29:37Z"
+    },
+    {
       "sha": "8c690e533a6dd70b6d86e5bdfa520053c9401cc0",
       "short": "8c690e5",
       "message": "Added instructions to the screen and fixed another bug in the DAQ task",
